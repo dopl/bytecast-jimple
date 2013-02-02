@@ -1,0 +1,9 @@
+if:
+	cmp	[operand_value_1],[operand_value_2]
+	jg/jl/jng/jnl/je/jne	[address]
+
+print:
+	callq/call	<[method_name]@plt>
+
+calling a method/function/procedure:
+	call	[address]<[method_name]>
