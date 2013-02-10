@@ -28,12 +28,12 @@ public class JInstructionInfo {
         return this.start_index;
     }
     
-    protected void setInstruction_Name(String name)
+    public void setInstruction_Name(String name)
     {
         this.instruction_name = name;
     }
     
-    protected void setInstruction_Name(int count)
+    public void setInstructions_Count(int count)
     {
         this.instructions_count = count;
     }

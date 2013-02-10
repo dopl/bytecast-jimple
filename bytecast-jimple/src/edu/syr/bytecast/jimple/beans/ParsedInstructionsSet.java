@@ -25,12 +25,12 @@ public class ParsedInstructionsSet {
         return this.info;
     }
     
-    protected void setInstructions_List(List<IInstruction> list)
+    public void setInstructions_List(List<IInstruction> list)
     {
         this.instructions_List= list;
     }
     
-    protected void setInfo(JInstructionInfo type)
+    public void setInfo(JInstructionInfo type)
     {
         this.info = type;
     }
