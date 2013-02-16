@@ -4,7 +4,6 @@
  */
 package edu.syr.bytecast.jimple.impl;
 
-import com.sun.xml.internal.fastinfoset.UnparsedEntity;
 import edu.syr.bytecast.amd64.api.instruction.IInstruction;
 import edu.syr.bytecast.jimple.beans.ParsedInstructionsSet;
 import java.util.List;

@@ -11,6 +11,7 @@
                 <root id="test.src.dir"/>
             </test-roots>
         </data>
+<<<<<<< HEAD
         <references xmlns="http://www.netbeans.org/ns/ant-project-references/1">
             <reference>
                 <foreign-project>bytecast-amd64</foreign-project>
@@ -29,5 +30,8 @@
                 <id>jar</id>
             </reference>
         </references>
+=======
+        <references xmlns="http://www.netbeans.org/ns/ant-project-references/1"/>
+>>>>>>> a84e48144068bff454fe2f2b410084d022d12171
     </configuration>
 </project>

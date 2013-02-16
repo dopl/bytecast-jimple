@@ -371,6 +371,8 @@ is divided into following sections:
         </condition>
     </target>
     <target if="${nb.junit.single}" name="-init-macrodef-junit-single" unless="${nb.junit.batch}">
+<<<<<<< HEAD
+=======
         <macrodef name="junit" uri="http://www.netbeans.org/ns/j2se-project/3">
             <attribute default="${includes}" name="includes"/>
             <attribute default="${excludes}" name="excludes"/>
@@ -394,12 +396,39 @@ is divided into following sections:
         </macrodef>
     </target>
     <target if="${nb.junit.batch}" name="-init-macrodef-junit-batch" unless="${nb.junit.single}">
+>>>>>>> a84e48144068bff454fe2f2b410084d022d12171
         <macrodef name="junit" uri="http://www.netbeans.org/ns/j2se-project/3">
             <attribute default="${includes}" name="includes"/>
             <attribute default="${excludes}" name="excludes"/>
             <attribute default="**" name="testincludes"/>
             <attribute default="" name="testmethods"/>
             <element name="customize" optional="true"/>
+<<<<<<< HEAD
+            <sequential>
+                <property name="junit.forkmode" value="perTest"/>
+                <junit dir="${work.dir}" errorproperty="tests.failed" failureproperty="tests.failed" fork="true" forkmode="${junit.forkmode}" showoutput="true" tempdir="${build.dir}">
+                    <test methods="@{testmethods}" name="@{testincludes}" todir="${build.test.results.dir}"/>
+                    <syspropertyset>
+                        <propertyref prefix="test-sys-prop."/>
+                        <mapper from="test-sys-prop.*" to="*" type="glob"/>
+                    </syspropertyset>
+                    <formatter type="brief" usefile="false"/>
+                    <formatter type="xml"/>
+                    <jvmarg value="-ea"/>
+                    <customize/>
+                </junit>
+            </sequential>
+        </macrodef>
+    </target>
+    <target if="${nb.junit.batch}" name="-init-macrodef-junit-batch" unless="${nb.junit.single}">
+        <macrodef name="junit" uri="http://www.netbeans.org/ns/j2se-project/3">
+            <attribute default="${includes}" name="includes"/>
+            <attribute default="${excludes}" name="excludes"/>
+            <attribute default="**" name="testincludes"/>
+            <attribute default="" name="testmethods"/>
+            <element name="customize" optional="true"/>
+=======
+>>>>>>> a84e48144068bff454fe2f2b410084d022d12171
             <sequential>
                 <property name="junit.forkmode" value="perTest"/>
                 <junit dir="${work.dir}" errorproperty="tests.failed" failureproperty="tests.failed" fork="true" forkmode="${junit.forkmode}" showoutput="true" tempdir="${build.dir}">
@@ -888,6 +917,7 @@ is divided into following sections:
         <propertyfile file="${built-jar.properties}">
             <entry key="${basedir}" value=""/>
         </propertyfile>
+<<<<<<< HEAD
         <antcall target="-maybe-call-dep">
             <param name="call.built.properties" value="${built-jar.properties}"/>
             <param location="${project.bytecast-amd64}" name="call.subproject"/>
@@ -902,6 +932,8 @@ is divided into following sections:
             <param name="call.target" value="jar"/>
             <param name="transfer.built-jar.properties" value="${built-jar.properties}"/>
         </antcall>
+=======
+>>>>>>> a84e48144068bff454fe2f2b410084d022d12171
     </target>
     <target depends="init,-check-automatic-build,-clean-after-automatic-build" name="-verify-automatic-build"/>
     <target depends="init" name="-check-automatic-build">
@@ -1382,6 +1414,7 @@ is divided into following sections:
         <propertyfile file="${built-clean.properties}">
             <entry key="${basedir}" value=""/>
         </propertyfile>
+<<<<<<< HEAD
         <antcall target="-maybe-call-dep">
             <param name="call.built.properties" value="${built-clean.properties}"/>
             <param location="${project.bytecast-amd64}" name="call.subproject"/>
@@ -1396,6 +1429,8 @@ is divided into following sections:
             <param name="call.target" value="clean"/>
             <param name="transfer.built-clean.properties" value="${built-clean.properties}"/>
         </antcall>
+=======
+>>>>>>> a84e48144068bff454fe2f2b410084d022d12171
     </target>
     <target depends="init" name="-do-clean">
         <delete dir="${build.dir}"/>

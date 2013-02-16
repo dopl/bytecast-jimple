@@ -53,6 +53,7 @@ public abstract class AbstractFilter {
           JInstructionInfo jinfo = new  JInstructionInfo();
           jinfo.setInstruction_Name(type);
           jinfo.setInstructions_Count(count);
+          jinfo.setStart_Index(j);
           pis.setInfo(jinfo);
           pis.setInstructions_List(inst_list);
           parsed_inst_list.add(pis);
