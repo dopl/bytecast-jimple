@@ -1,2 +1,3 @@
-/bytecast-jimple/nbproject/private/
-/bytecast-jimple/build/
+private/
+build/
+dist/
