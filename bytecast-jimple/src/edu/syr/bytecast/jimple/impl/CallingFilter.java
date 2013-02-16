@@ -19,13 +19,28 @@ public class CallingFilter implements IFilter {
     {
         //this is frame to define the calling section in future
         IInstruction ins = instList.get(index);
+        //calling without parameter
         if( ins.getInstructiontype() == InstructionType.CALLQ 
-                && ins.getOperands().get(0).getOperandType() == OperandType.MEMORY_ADDRESS )
+                && ins.getOperands().get(0).getOperandType() == OperandType.MEMORY_ADDRESS 
+                && ins.getOperands().get(1).getOperandValue() == OperandType.MEMORY_ADDRESS )
+                //the value of the second operand should be the SectionName, it hasn't been set up in AMD64 api
         {
             return true;
         }
-        else
-            return false;
+        //calling with parameter
+        if( ins.getInstructiontype() == InstructionType.MOV
+                && ins.getOperands().get(0).getOperandType() == OperandType.CONSTANT
+                && ins.getOperands().get(1).getOperandValue() == OperandType.REGISTER )
+        {
+            ins = instList.get(index + 1);
+            if( ins.getInstructiontype() == InstructionType.CALLQ
+                    && ins.getOperands().get(0).getOperandType() == OperandType.MEMORY_ADDRESS
+                    && ins.getOperands().get(1).getOperandValue() == OperandType.MEMORY_ADDRESS ) //SectionName
+            {
+                return true;
+            }
+        }
+        return false;
     } 
     
 }
