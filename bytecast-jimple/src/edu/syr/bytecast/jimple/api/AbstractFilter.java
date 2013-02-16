@@ -16,42 +16,49 @@ import java.util.List;
  */
 public abstract class AbstractFilter {
   
-  public void scan(List<IInstruction> unparsed_inst_list, List<ParsedInstructionsSet> parsed_inst_list, List<IFilterRule> rulesList, String type) {
-      int index = 0;  
-      int rules_size = rulesList.size(); 
+  private int inst_count;
+  private String filter_name;
+  
+  public int getInst_Count()
+  {
+    return inst_count;
+  }
+  
+  public void setInst_Count(int count)
+  {
+    inst_count = count;
+  }
+  
+  public String getFilter_Name()
+  {
+    return filter_name;
+  }
+  
+  public void setFilter_Name(String name)
+  {
+    filter_name = name; 
+  }
+  
+  public void scan(List<IInstruction> unparsed_inst_list, List<ParsedInstructionsSet> parsed_inst_list, IFilter filter){//, String type, int count) {
       int unparsed_list_size = unparsed_inst_list.size();
-      
-      int i = 0;
-      //for(int i=0;i<rules_size;i++){
-        for(int j=index;j<unparsed_list_size;j++){
-          if(rulesList.get(i).doTest(unparsed_inst_list.get(j))){
-            i++;
-            //index = j+1;
-            //break;
-          }
-          index = j+1;
-          if(index >= unparsed_list_size)
-            break;
-          if(i >= rules_size)
-          {
-            i = 0;
-            
-            ParsedInstructionsSet pis= new ParsedInstructionsSet();
-            int u = j - rules_size;
-            List<IInstruction> inst_list = new ArrayList<IInstruction>();
-            for(int k=u;k<j;k++)
-              inst_list.add(unparsed_inst_list.get(k));
-            
-            JInstructionInfo jinfo = new  JInstructionInfo();
-            jinfo.setInstruction_Name(type);
-            jinfo.setInstructions_Count(rules_size);
-            pis.setInfo(jinfo);
-            pis.setInstructions_List(inst_list);
-            parsed_inst_list.add(pis);
-            
-            //Under construction
-          }
+      int count = getInst_Count();
+      String type = getFilter_Name();
+      for(int j=0;j<unparsed_list_size;j++){
+        if(filter.doTest(unparsed_inst_list, j)){
+          ParsedInstructionsSet pis= new ParsedInstructionsSet();
+          List<IInstruction> inst_list = new ArrayList<IInstruction>();
+          for(int k = j; k < j+count; k++)
+            inst_list.add(unparsed_inst_list.get(k));
+          
+          JInstructionInfo jinfo = new  JInstructionInfo();
+          jinfo.setInstruction_Name(type);
+          jinfo.setInstructions_Count(count);
+          pis.setInfo(jinfo);
+          pis.setInstructions_List(inst_list);
+          parsed_inst_list.add(pis);
+          j = j + count;
+          j--;
         }
-      //}
+      }
     }
 }

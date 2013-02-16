@@ -12,7 +12,8 @@ import java.util.List;
  *
  * @author QSA
  */
-public interface IFilter {
-    void scan(List<IInstruction> unparsed_inst_list, List<ParsedInstructionsSet> parsed_inst_list, List<IFilterRule> rulesList);
+public interface IFilter{
+  boolean doTest(List<IInstruction> instList, int index);
+    //void scan(List<IInstruction> unparsed_inst_list, List<ParsedInstructionsSet> parsed_inst_list, List<IFilterRule> rulesList);
     
 }
