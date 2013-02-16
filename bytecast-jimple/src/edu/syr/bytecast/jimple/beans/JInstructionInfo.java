@@ -38,7 +38,7 @@ public class JInstructionInfo {
         this.instructions_count = count;
     }
     
-    protected void setStart_Index(int index)
+    public void setStart_Index(int index)
     {
         this.start_index = index;
     }
