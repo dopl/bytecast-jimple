@@ -1,5 +1,6 @@
-package edu.syr.bytecast.fsys;
+package edu.syr.bytecast.interfaces.fsys;
 import java.util.*;
+import java.io.*;
 
 public class ExeObj {
     
@@ -31,17 +32,8 @@ public class ExeObj {
     public void setSegments(List<ExeObjSegment> segments) {
         m_segments=segments;
     }
-    
-    public List<ExeObjDependency> getDependencies(){
-        return m_dependencies;
-    }    
-     
-    public void setDependencies(List<ExeObjDependency> dependencies){
-        m_dependencies = dependencies;
-    }   
-    
-    public void printExeObj(){
-        
+ 
+    public void printExeObj(){        
         System.out.printf("entryPointIndex: %016x\n", m_entryPointIndex);
         System.out.println("::Segment Data::");
          
@@ -50,32 +42,15 @@ public class ExeObj {
             System.out.println("Label:  " + m_segments.get(i).getLabel());
             System.out.printf("StartAddress:  %016x\n", m_segments.get(i).getStartAddress());
             System.out.printf("Number of Bytes:  %016x\n\n", m_segments.get(i).getBytes().size());
-        }  
-        System.out.println("::Dependency Data::");
-        for(int i = 0; i <  m_dependencies.size(); i++)
-        {
-            System.out.println("Name:  " + m_dependencies.get(i).getDependencyName());
-            System.out.println("DependencyPath: " + m_dependencies.get(i).getDependencyPath());
-            if(m_dependencies.get(i).getDependencyType() == ExeObjDependency.ExeObjDependencyType.KERNEL)
-            {
-                String type = "KERNEL";
-                System.out.printf("Type:   " + type);
-            }
-            else if(m_dependencies.get(i).getDependencyType() == ExeObjDependency.ExeObjDependencyType.FILE)
-            {
-                String type = "FILE";
-                System.out.printf("Type:  " + type + "\n");
-            }
-            else
-            {
-                System.out.printf("Type:  %016x\n", m_dependencies.get(i).getDependencyType());
-            }
-            System.out.printf("StartOffset:  %016x\n\n", m_dependencies.get(i).getStartOffset());
-        }  
+        }         
+    }
+    
+    public void saveExeObj(String file_name) throws IOException
+    {
         
     }
+    
     private long m_entryPointIndex;
     private List<ExeObjSegment> m_segments;
-    private List<ExeObjDependency> m_dependencies;
     
 }

@@ -38,7 +38,6 @@ public class MockBytecastFsys implements IBytecastFsys {
   @Override
   public ExeObj parse() throws Exception {
     ExeObj ret = new ExeObj();
-    ret.setDependencies(null);
     ret.setEntryPointIndex(0);
     ret.setSegments(null);
     return ret;
