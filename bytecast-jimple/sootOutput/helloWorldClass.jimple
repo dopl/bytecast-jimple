@@ -1,0 +1,16 @@
+public class helloWorldClass extends java.lang.Object
+{
+
+    public static void main(java.lang.String[])
+    {
+        java.lang.String $r0;
+        java.lang.String[] l0;
+        java.io.PrintStream local1;
+
+        $r0 := @parameter0: java.lang.String;
+        l0 := @parameter0: java.lang.String[];
+        local1 = <java.lang.System: java.io.PrintStream out>;
+        virtualinvoke local1.<java.io.PrintStream: void println(java.lang.String)>("$r0");
+        return;
+    }
+}

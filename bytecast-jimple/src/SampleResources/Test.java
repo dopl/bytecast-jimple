@@ -25,7 +25,7 @@ public class Test {
     
     public static void main(String[] args) throws FileNotFoundException, IOException   
     {
-        args = new String[]{"1"};
+        args = new String[]{"2"};
         //Resolution Step
         Scene.v().loadClassAndSupport("java.lang.Object");
         Scene.v().loadClassAndSupport("java.lang.System");
@@ -46,21 +46,35 @@ public class Test {
     
     //Add local
     PatchingChain<Unit> units = jBody.getUnits();
+    
+    soot.jimple.ParameterRef paramRef = soot.jimple.Jimple.v().newParameterRef(soot.RefType.v("java.lang.String"), 0);
+    soot.Local paramLocal = soot.jimple.Jimple.v().newLocal("$r0", soot.RefType.v("java.lang.String"));
+    jBody.getLocals().add(paramLocal);
+    soot.jimple.Stmt stmt = soot.jimple.Jimple.v().newIdentityStmt(paramLocal, paramRef);
+    jBody.getUnits().add(stmt);
+
+   
+    
     Local arg = Jimple.v().newLocal("l0", ArrayType.v(RefType.v("java.lang.String"), 1));
     jBody.getLocals().add(arg);
     //Assign locals the method parameters
     //Unit u = new Units(java.util.Iterator())
     //List<Unit> units = new ArrayList<Unit>();// = getUnits(mainMethod.getActiveBody());
-    units.add(Jimple.v().newIdentityStmt(arg, Jimple.v().newParameterRef(ArrayType.v(RefType.v("java.lang.String"), 1), 0)));
-    
-    SootMethod toCall = Scene.v().getMethod("<java.io.PrintStream: void println(java.lang.String)>");
     
     Local tmpRef = Jimple.v().newLocal("local1", RefType.v("java.io.PrintStream"));
     jBody.getLocals().add(tmpRef);
+    
+    units.add(Jimple.v().newIdentityStmt(arg, Jimple.v().newParameterRef(ArrayType.v(RefType.v("java.lang.String"), 1), 0)));
     units.add(Jimple.v().newAssignStmt(tmpRef, Jimple.v().newStaticFieldRef( Scene.v().getField("<java.lang.System: java.io.PrintStream out>").makeRef())));
-    units.add(Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(tmpRef, toCall.makeRef(), StringConstant.v("Hello world!"))));
     
+    SootMethod toCall = Scene.v().getMethod("<java.io.PrintStream: void println(java.lang.String)>");
+    units.add(Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(tmpRef, toCall.makeRef(), StringConstant.v(paramLocal.getName()))));
     
+    //soot.jimple.Jimple.v().newStaticInvokeExpr.
+    //soot.jimple.Jimple.v().newAssignStmt(arg, arg)
+    //soot.jimple.Jimple.v().newStaticInvokeExpr
+    units.add(Jimple.v().newReturnVoidStmt());
+
     if(args[0].equals("1"))
     {
         String fileName = SourceLocator.v().getFileNameFor(testClass, Options.output_format_class);
@@ -78,7 +92,7 @@ public class Test {
     {
         String fileName = SourceLocator.v().getFileNameFor(testClass, Options.output_format_jimple);
         OutputStream streamOut = new FileOutputStream(fileName);
-        System.out.println(fileName);
+        System.out.println("File Name = "+fileName);
         PrintWriter writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
         Printer.v().printTo(testClass, writerOut);
         writerOut.flush();
