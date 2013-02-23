@@ -18,6 +18,30 @@
 
 package edu.syr.bytecast.test.mockups;
 
-public class MockBytecastFsys {
+import edu.syr.bytecast.interfaces.fsys.ExeObj;
+import edu.syr.bytecast.interfaces.fsys.IBytecastFsys;
+
+public class MockBytecastFsys implements IBytecastFsys {
+
+  private String m_filePath;
+  
+  @Override
+  public void setFilepath(String file_path) {
+    m_filePath = file_path;
+  }
+
+  @Override
+  public String getFilepath() {
+    return m_filePath;
+  }
+
+  @Override
+  public ExeObj parse() throws Exception {
+    ExeObj ret = new ExeObj();
+    ret.setDependencies(null);
+    ret.setEntryPointIndex(0);
+    ret.setSegments(null);
+    return ret;
+  }
   
 }
