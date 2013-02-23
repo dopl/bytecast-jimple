@@ -1,21 +1,4 @@
-/*
- * This file is part of Bytecast.
- *
- * Bytecast is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Bytecast is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Bytecast.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
-package edu.syr.bytecast.interfaces.fsys;
+package edu.syr.bytecast.fsys;
 import java.util.*;
 
 public class ExeObj {
@@ -73,7 +56,20 @@ public class ExeObj {
         {
             System.out.println("Name:  " + m_dependencies.get(i).getDependencyName());
             System.out.println("DependencyPath: " + m_dependencies.get(i).getDependencyPath());
-            System.out.printf("Type:  %016x\n", m_dependencies.get(i).getDependencyType());
+            if(m_dependencies.get(i).getDependencyType() == ExeObjDependency.ExeObjDependencyType.KERNEL)
+            {
+                String type = "KERNEL";
+                System.out.printf("Type:   " + type);
+            }
+            else if(m_dependencies.get(i).getDependencyType() == ExeObjDependency.ExeObjDependencyType.FILE)
+            {
+                String type = "FILE";
+                System.out.printf("Type:  " + type + "\n");
+            }
+            else
+            {
+                System.out.printf("Type:  %016x\n", m_dependencies.get(i).getDependencyType());
+            }
             System.out.printf("StartOffset:  %016x\n\n", m_dependencies.get(i).getStartOffset());
         }  
         
