@@ -22,5 +22,7 @@ public enum OperandType {
     REGISTER,
     CONSTANT,
     NUMBER,
-    MEMORY_ADDRESS
+    MEMORY_ADDRESS,
+    
+    SECTION_NAME,
 }

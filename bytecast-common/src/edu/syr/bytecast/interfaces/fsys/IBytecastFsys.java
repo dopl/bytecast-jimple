@@ -16,10 +16,10 @@
  *
  */
 
-package edu.syr.bytecast.test.interfaces;
+package edu.syr.bytecast.interfaces.fsys;
 
-public interface ITestCase {
-    TestResult getResult();
-    String getTestName();
-    void setTestName(String testName);
+public interface IBytecastFsys {
+    public void setFilepath(String file_path);
+    public String getFilepath();
+    public ExeObj parse() throws Exception;
 }
