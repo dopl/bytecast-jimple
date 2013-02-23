@@ -7,6 +7,7 @@ package edu.syr.bytecast.jimple.impl;
 import edu.syr.bytecast.amd64.api.constants.InstructionType;
 import edu.syr.bytecast.amd64.api.constants.OperandType;
 import edu.syr.bytecast.amd64.api.instruction.IInstruction;
+import edu.syr.bytecast.jimple.api.AbstractFilter;
 import edu.syr.bytecast.jimple.api.IFilter;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
  *
  * @author Fei Qi
  */
-public class CallingFilter implements IFilter {
+public class CallingFilter extends AbstractFilter implements IFilter{
     public boolean doTest(List<IInstruction> instList, int index)
     {
         //this is frame to define the calling section in future
