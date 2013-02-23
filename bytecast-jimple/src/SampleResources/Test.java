@@ -55,6 +55,22 @@ public class Test {
     
     //Add local
     PatchingChain<Unit> units = jBody.getUnits();
+    
+    /*
+     * example on how to capture the thisref and parameters.
+    RefType hello_world_type = RefType.v("helloWorldClass");
+    Value this_ref = Jimple.v().newThisRef(hello_world_type);
+    Type string_type = RefType.v("java.lang.String");
+    Type string_array_type = ArrayType.v(string_type, 1);
+    Value param1 = Jimple.v().newParameterRef(string_array_type, 0);
+    
+    Local this_ref_local = Jimple.v().newLocal("this_ref", (Type) hello_world_type);
+    Unit this_ref_assign = Jimple.v().newIdentityStmt(this_ref_local, this_ref);
+    
+    Local param1_local = Jimple.v().newLocal("param1", (Type) string_array_type);
+    Unit param1_assign = Jimple.v().newIdentityStmt(param1_local, param1);
+    */
+    
     Local arg = Jimple.v().newLocal("l0", ArrayType.v(RefType.v("java.lang.String"), 1));
     jBody.getLocals().add(arg);
     //Assign locals the method parameters
