@@ -49,10 +49,12 @@ public class RunProcess {
    
     private BufferedReader m_reader;
     private List<String> m_lines;
+    private volatile boolean m_done;
     
     public StreamEater(InputStream stream) {
       m_reader = new BufferedReader(new InputStreamReader(stream));
       m_lines = new ArrayList<String>();
+      m_done = false;
       Thread thread = new Thread(this);
       thread.setDaemon(true);
       thread.start();
@@ -72,9 +74,17 @@ public class RunProcess {
           System.exit(0);
         }
       }
+      m_done = true;
     }
     
     public List<String> getLines(){
+      while(m_done == false){
+        try {
+          Thread.sleep(100);
+        } catch(Exception ex){
+          //ignore
+        }
+      }
       return m_lines;
     }
   }
