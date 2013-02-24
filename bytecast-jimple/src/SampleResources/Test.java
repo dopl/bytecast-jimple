@@ -1,3 +1,21 @@
+/*
+ * This file is part of Bytecast.
+ *
+ * Bytecast is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Bytecast is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Bytecast.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 package SampleResources;
 
 //Tutorial available on http://www.sable.mcgill.ca/soot/tutorial/createclass/   ---QSA
@@ -13,15 +31,6 @@ import soot.jimple.StringConstant;
 import soot.options.Options;
 import soot.util.JasminOutputStream;
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- *
- * @author QSA
- */
 public class Test {
     
     public static void main(String[] args) throws FileNotFoundException, IOException   
@@ -52,6 +61,22 @@ public class Test {
     
     //Add local
     PatchingChain<Unit> units = jBody.getUnits();
+    
+    /*
+     * example on how to capture the thisref and parameters.
+    RefType hello_world_type = RefType.v("helloWorldClass");
+    Value this_ref = Jimple.v().newThisRef(hello_world_type);
+    Type string_type = RefType.v("java.lang.String");
+    Type string_array_type = ArrayType.v(string_type, 1);
+    Value param1 = Jimple.v().newParameterRef(string_array_type, 0);
+    
+    Local this_ref_local = Jimple.v().newLocal("this_ref", (Type) hello_world_type);
+    Unit this_ref_assign = Jimple.v().newIdentityStmt(this_ref_local, this_ref);
+    
+    Local param1_local = Jimple.v().newLocal("param1", (Type) string_array_type);
+    Unit param1_assign = Jimple.v().newIdentityStmt(param1_local, param1);
+    */
+    
     Local arg = Jimple.v().newLocal("l0", ArrayType.v(RefType.v("java.lang.String"), 1));
     jBody.getLocals().add(arg);
     //Assign locals the method parameters
