@@ -21,19 +21,12 @@ import edu.syr.bytecast.amd64.api.constants.InstructionType;
 import java.util.List;
 
 public interface IInstruction {
-    
-    
-    public List<IOperand> getOperands();
-    
-    public String getOpCode();
-    
-    public void addOperand(IOperand op);
-    
-    public void setOpCode(String opcode);
-    
-    public InstructionType getInstructiontype();
-    
-  
-    
-}
 
+  public List<IOperand> getOperands();
+
+  public String getOpCode();
+
+  public InstructionType getInstructiontype();
+
+  public long getInstructionMemoryAddress();
+}

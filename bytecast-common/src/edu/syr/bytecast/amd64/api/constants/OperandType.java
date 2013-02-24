@@ -18,11 +18,25 @@
 package edu.syr.bytecast.amd64.api.constants;
 
 public enum OperandType {
-    
-    REGISTER,
-    CONSTANT,
-    NUMBER,
-    MEMORY_ADDRESS,
-    
-    SECTION_NAME,
+
+  REGISTER,
+  CONSTANT,
+  NUMBER,
+  /**
+   * refer to Section 1.1.1 in AMD64 Volume 2
+   */
+  MEMORY_LOGICAL_ADDRESS,
+  /**
+   * refer to Section 1.1.1 in AMD64 Volume 2
+   */
+  MEMORY_EFFECITVE_ADDRESS,
+  /**
+   * refer to Section 1.1.1 in AMD64 Volume 2
+   */
+  MEMORY_LINEAR_ADDRESS,
+  /**
+   * refer to Section 1.1.1 in AMD64 Volume 2
+   */
+  MEMORY_PHYSICAL_ADDRESS,
+  SECTION_NAME
 }
