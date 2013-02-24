@@ -19,7 +19,9 @@
 package edu.syr.bytecast.test.mockups;
 
 import edu.syr.bytecast.interfaces.fsys.ExeObj;
+import edu.syr.bytecast.interfaces.fsys.ExeObjIOUtils;
 import edu.syr.bytecast.interfaces.fsys.IBytecastFsys;
+import edu.syr.bytecast.util.Paths;
 
 public class MockBytecastFsys implements IBytecastFsys {
 
@@ -37,10 +39,8 @@ public class MockBytecastFsys implements IBytecastFsys {
 
   @Override
   public ExeObj parse() throws Exception {
-    ExeObj ret = new ExeObj();
-    ret.setEntryPointIndex(0);
-    ret.setSegments(null);
+    String path = Paths.v().getFsysMock1Path();
+    ExeObj ret = ExeObjIOUtils.readFromFile(path);
     return ret;
-  }
-  
+  }  
 }
