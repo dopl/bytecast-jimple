@@ -20,11 +20,9 @@ package edu.syr.bytecast.jimple.impl;
 
 import edu.syr.bytecast.amd64.api.constants.InstructionType;
 import edu.syr.bytecast.amd64.api.instruction.IInstruction;
-import edu.syr.bytecast.jimple.api.AbstractFilter;
-import edu.syr.bytecast.jimple.api.IFilter;
 import java.util.List;
 
-public class IFFilter extends AbstractFilter implements IFilter{
+public class IfFilter extends Filter{
     private int begin_if;
     private int end_if;
     private boolean hasElse;
