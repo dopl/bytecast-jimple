@@ -5,13 +5,14 @@
 package edu.syr.bytecast.jimple.impl;
 
 import edu.syr.bytecast.amd64.api.instruction.IInstruction;
+import edu.syr.bytecast.jimple.beans.jimpleBean.ParsedInstructionsSet;
 import java.util.List;
 
 /**
  *
- * @author nick
+ * @author Fei Qi
  */
 public abstract class Filter {
-    abstract boolean doTest(List<IInstruction> instList, int index);
+    abstract boolean doTest(List<IInstruction> inst_list, ParsedInstructionsSet parsed_set);
     
 }

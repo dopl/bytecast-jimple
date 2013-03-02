@@ -23,6 +23,7 @@ import edu.syr.bytecast.amd64.api.constants.OperandType;
 import edu.syr.bytecast.amd64.api.instruction.IInstruction;
 import edu.syr.bytecast.jimple.api.AbstractFilter;
 import edu.syr.bytecast.jimple.api.IFilter;
+import edu.syr.bytecast.jimple.beans.ParsedInstructionsSet;
 import java.util.List;
 
 /**
@@ -30,7 +31,7 @@ import java.util.List;
  * @author Fei Qi
  */
 public class CallingFilter extends Filter{
-    public boolean doTest(List<IInstruction> instList, int index)
+    public boolean doTest(List<IInstruction> instList, ParsedInstructionsSet parsed_set)
     {
         //this is frame to define the calling section in future
         IInstruction ins = instList.get(index);

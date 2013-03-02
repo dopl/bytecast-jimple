@@ -5,7 +5,7 @@
 package edu.syr.bytecast.jimple.beans.jimpleBean;
 
 import edu.syr.bytecast.amd64.api.instruction.IInstruction;
-import edu.syr.bytecast.jimple.beans.JInstructionInfo;
+import edu.syr.bytecast.jimple.beans.jimpleBean.JInstructionInfo;
 import java.util.List;
 
 /**

@@ -20,6 +20,7 @@ package edu.syr.bytecast.jimple.impl;
 
 import edu.syr.bytecast.amd64.api.constants.InstructionType;
 import edu.syr.bytecast.amd64.api.instruction.IInstruction;
+import edu.syr.bytecast.jimple.beans.ParsedInstructionsSet;
 import java.util.List;
 
 public class IfFilter extends Filter{
@@ -30,7 +31,7 @@ public class IfFilter extends Filter{
     private int end_else;
     
     // constructor
-    IFFilter()
+    IfFilter()
     {
         begin_if = 0;
         end_if = 0;
@@ -70,7 +71,7 @@ public class IfFilter extends Filter{
     
 
   @Override
-  public boolean doTest(List<IInstruction> instList, int index) {
+  public boolean doTest(List<IInstruction> instList, ParsedInstructionsSet parsed_set) {
     // ray write code here
     IInstruction  instruction = instList.get(index); //get the instruction from insList depending on the index
     //<--------------Test <if> Statement(first instruction)-------------->
