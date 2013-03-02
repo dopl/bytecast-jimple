@@ -26,7 +26,5 @@ public class Jimple implements IJimple{
     @Override
     public void createJimple(IExecutableFile execfile) {
         throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-   
+    } 
 }
