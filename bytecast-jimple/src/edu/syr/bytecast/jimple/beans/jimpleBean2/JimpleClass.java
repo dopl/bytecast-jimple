@@ -5,6 +5,7 @@
 package edu.syr.bytecast.jimple.beans.jimpleBean2;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import soot.*;
 import soot.jimple.IntConstant;
@@ -62,6 +63,7 @@ public class JimpleClass extends AbstractJimpleClass {
         SootMethod myMethod = new SootMethod("main", Arrays.asList(new Type[]{ArrayType.v(RefType.v("java.lang.String"), 1)}), 
                 VoidType.v(), Modifier.PUBLIC | Modifier.STATIC);
 
+
         //Add Method
         mySootclass.addMethod(myMethod);
 
@@ -71,11 +73,13 @@ public class JimpleClass extends AbstractJimpleClass {
 
 
         units = jBody.getUnits();
+
         return true;
 
     }
 
-    public boolean createAssignment() {
+    public boolean outputJimpleFile() {
+
         return false;
     }
 
@@ -83,7 +87,5 @@ public class JimpleClass extends AbstractJimpleClass {
         return false;
     }
 
-    public boolean outputJimpleFile() {
-        return false;
-    }
+
 }
