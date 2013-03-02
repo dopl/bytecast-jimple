@@ -3,6 +3,7 @@ public class helloWorldClass extends java.lang.Object
 
     public static void main(java.lang.String[])
     {
+<<<<<<< HEAD
         java.lang.String $r0;
         java.lang.String[] l0;
         java.io.PrintStream local1;
@@ -12,5 +13,20 @@ public class helloWorldClass extends java.lang.Object
         local1 = <java.lang.System: java.io.PrintStream out>;
         virtualinvoke local1.<java.io.PrintStream: void println(java.lang.String)>("$r0");
         return;
+=======
+        java.lang.String[] l0;
+        int a;
+        java.io.PrintStream local1;
+
+        l0 := @parameter0: java.lang.String[];
+        a = 0;
+        if a >= 1 goto label0;
+
+     label0:
+        return;
+
+        local1 = <java.lang.System: java.io.PrintStream out>;
+        virtualinvoke local1.<java.io.PrintStream: void println(java.lang.String)>("Hello world!");
+>>>>>>> 5a9428a920ef14952713f941c43161228ff714d6
     }
 }
