@@ -22,39 +22,87 @@ public class JimpleClass  extends AbstractJimpleClass{
     
     String classname;
     String modifier;
-    SootClass sootclass;
-    SootMethod sootmethod;
+    String classReturnType;
+    //String isStatic;
+    SootClass mySootclass;
+    //SootMethod sootmethod;
     JimpleBody jBody;
     PatchingChain<Unit> units;
     
-    public JimpleClass(String className , String modifier)        
+    public JimpleClass(String className , String modifier , String classReturnType )        
     {
       this.classname = className;
       this.modifier = modifier;
+      this.classReturnType = classReturnType;
+      //this.isStatic = isStatic; 
     }
     
-    public void createMethod()
+    
+    
+    public boolean createJimpleClass()
     {
+    Scene.v().loadClassAndSupport("java.lang.Object");
+     Scene.v().loadClassAndSupport("java.lang.System");
+     
+     if(this.modifier =="public")
+     {
+     //Create SootClass
+    mySootclass= new SootClass(classname, Modifier.PUBLIC);
+   
+     }
+       if(this.modifier =="private")
+     {
+     //Create SootClass
+    mySootclass = new SootClass(classname, Modifier.PRIVATE);
+     }
+    
+        else
+       {
+          System.out.println("Please check your modifier");
+          return false;
+       }
+    
+    mySootclass.setSuperclass(Scene.v().getSootClass("java.lang.Object"));
+    //Add testClass to Scene object
+    Scene.v().addClass(mySootclass);
+       return true;
+        
+        
+    }
+   
+    public boolean createMethod()
+    {
+    SootMethod myMethod = new SootMethod("main", Arrays.asList(new Type[] {ArrayType.v(RefType.v("java.lang.String"), 1)}), VoidType.v(), Modifier.PUBLIC | Modifier.STATIC);
+    
+    //Add Method
+    mySootclass.addMethod(myMethod);
+    
+    //create jimple body
+     jBody = Jimple.v().newBody(myMethod);
+    myMethod.setActiveBody(jBody);
+    
+ 
+     units = jBody.getUnits();
     
     }
     
-      public void createAssignment()
+      public boolean createAssignment()
     {
     
     }
       
-        public void createCondition()
+        public boolean createCondition()
     {
     
     }
         
         
-          public void outputJimpleFile()
+          public boolean outputJimpleFile()
     {
     
     }
   
     
-    
-    
 }
+   
+   
