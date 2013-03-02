@@ -59,9 +59,11 @@ public class JimpleClass extends AbstractJimpleClass {
 
     }
 
-    public boolean createMethod() {
-        SootMethod myMethod = new SootMethod("main", Arrays.asList(new Type[]{ArrayType.v(RefType.v("java.lang.String"), 1)}), 
-                VoidType.v(), Modifier.PUBLIC | Modifier.STATIC);
+
+
+    public boolean createMethod(String methodName, String returnType, ArrayList<Object> modifier, ArrayList<Object> parameters) {
+
+        SootMethod myMethod = new SootMethod("main", Arrays.asList(new Type[]{ArrayType.v(RefType.v("java.lang.String"), 1)}), VoidType.v(), Modifier.PUBLIC | Modifier.STATIC);
 
 
         //Add Method
@@ -78,6 +80,10 @@ public class JimpleClass extends AbstractJimpleClass {
 
     }
 
+    public boolean createAssignment() {
+        return false;
+    }
+
     public boolean outputJimpleFile() {
 
         return false;
@@ -86,6 +92,5 @@ public class JimpleClass extends AbstractJimpleClass {
     public boolean createCondition() {
         return false;
     }
-
 
 }
