@@ -29,7 +29,7 @@ import java.util.List;
  *
  * @author Fei Qi
  */
-public class CallingFilter extends AbstractFilter implements IFilter{
+public class CallingFilter extends Filter{
     public boolean doTest(List<IInstruction> instList, int index)
     {
         //this is frame to define the calling section in future

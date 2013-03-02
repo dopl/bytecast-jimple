@@ -51,6 +51,19 @@ public abstract class AbstractFilter {
   
   public void scan(List<IInstruction> unparsed_inst_list, List<ParsedInstructionsSet> parsed_inst_list, IFilter filter){//, String type, int count) {
       int unparsed_list_size = unparsed_inst_list.size();
+      int index = 0;
+      int result = 0;
+      while( index < unparsed_list_size)
+      {
+          result = filter.doTest(unparsed_inst_list, index);
+          if( result != 0 )
+          {
+              index = result;
+              continue;
+          }
+          index++;
+      }
+      for(int i = 0; i< )
       int count = getInst_Count();
       String type = getFilter_Name();
       for(int j=0;j<unparsed_list_size;j++){
