@@ -16,17 +16,11 @@
  *
  */
 
-package edu.syr.bytecast.jimple.impl;
+package edu.syr.bytecast.jimple.api;
+
 
 import edu.syr.bytecast.amd64.api.output.IExecutableFile;
-import edu.syr.bytecast.jimple.api.IJimple;
 
-public class Jimple implements IJimple{
-
-    @Override
-    public void createJimple(IExecutableFile execfile) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-   
+public interface IJimple {
+  void createJimple(IExecutableFile execfile);
 }
