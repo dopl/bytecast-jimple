@@ -25,7 +25,7 @@ public class JimpleClass extends AbstractJimpleClass {
     //SootMethod sootmethod;
     JimpleBody jBody;
     PatchingChain<Unit> units;
-
+    
     public JimpleClass(String className, String modifier, String classReturnType) {
         this.classname = className;
         this.modifier = modifier;
@@ -59,7 +59,8 @@ public class JimpleClass extends AbstractJimpleClass {
     }
 
     public boolean createMethod() {
-        SootMethod myMethod = new SootMethod("main", Arrays.asList(new Type[]{ArrayType.v(RefType.v("java.lang.String"), 1)}), VoidType.v(), Modifier.PUBLIC | Modifier.STATIC);
+        SootMethod myMethod = new SootMethod("main", Arrays.asList(new Type[]{ArrayType.v(RefType.v("java.lang.String"), 1)}), 
+                VoidType.v(), Modifier.PUBLIC | Modifier.STATIC);
 
         //Add Method
         mySootclass.addMethod(myMethod);
