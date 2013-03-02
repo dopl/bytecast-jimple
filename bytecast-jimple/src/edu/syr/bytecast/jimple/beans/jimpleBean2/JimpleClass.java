@@ -7,6 +7,7 @@ package edu.syr.bytecast.jimple.beans.jimpleBean2;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import soot.*;
 import soot.jimple.IntConstant;
 import soot.jimple.JasminClass;
@@ -61,9 +62,12 @@ public class JimpleClass extends AbstractJimpleClass {
 
 
 
-    public boolean createMethod(String methodName, String returnType, ArrayList<Object> modifier, ArrayList<Object> parameters) {
-
-        SootMethod myMethod = new SootMethod("main", Arrays.asList(new Type[]{ArrayType.v(RefType.v("java.lang.String"), 1)}), VoidType.v(), Modifier.PUBLIC | Modifier.STATIC);
+    public boolean createMethod(String methodName, String returnType, ArrayList<Object> modifier, ArrayList<String> parameters_type) {
+        
+        List<Type> parameters = new ArrayList<Type>();
+        parameters.add(ArrayType.v(RefType.v("java.lang.String"), 1));
+        parameters.add(IntType.v());
+        SootMethod myMethod = new SootMethod("main", parameters, VoidType.v(), Modifier.PUBLIC | Modifier.STATIC);
 
 
         //Add Method
