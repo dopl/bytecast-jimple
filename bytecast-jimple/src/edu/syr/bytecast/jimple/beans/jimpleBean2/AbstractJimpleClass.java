@@ -15,7 +15,7 @@ public abstract class AbstractJimpleClass {
     public AbstractJimpleClass(){};
 
    public abstract boolean createJimpleClass();
-   public abstract boolean createMethod(String methodName, String returnType, ArrayList<Object> modifier,ArrayList<Object> parameters );
+   public abstract boolean createMethod(String methodName, String returnType, int modifier,ArrayList<String> parameters );
    public abstract boolean createAssignment();
    public abstract boolean createCondition();
    public abstract boolean outputJimpleFile();
