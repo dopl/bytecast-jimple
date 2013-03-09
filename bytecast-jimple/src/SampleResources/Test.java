@@ -50,7 +50,7 @@ public class Test {
     Scene.v().addClass(testClass);
     
     //Define Method
-    SootMethod mainMethod = new SootMethod("main", Arrays.asList(new Type[] {ArrayType.v(RefType.v("java.lang.String"), 1)}), VoidType.v(), Modifier.PUBLIC | Modifier.STATIC);
+    SootMethod mainMethod = new SootMethod("main", Arrays.asList(new Type[] {ArrayType.v(RefType.v("java.lang.String"), 1)}), VoidType.v(), 8);
     
     //Add Method
     testClass.addMethod(mainMethod);
@@ -67,10 +67,7 @@ public class Test {
     jBody.getLocals().add(paramLocal);
     soot.jimple.Stmt stmt = soot.jimple.Jimple.v().newIdentityStmt(paramLocal, paramRef);
     jBody.getUnits().add(stmt);
-
    
-
-    
     // * example on how to capture the thisref and parameters.
     RefType hello_world_type = RefType.v("helloWorldClass");
     Value this_ref = Jimple.v().newThisRef(hello_world_type);
