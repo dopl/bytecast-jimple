@@ -93,6 +93,13 @@ public class Test {
     
     Local tmpVar = Jimple.v().newLocal("a", IntType.v());
     Unit a_assign = Jimple.v().newAssignStmt(tmpVar, IntConstant.v(0));
+    
+    Value rhs = Jimple.v().newAddExpr(tmpVar, tmpVar);
+    Local add_lhs = Jimple.v().newLocal("add_lhs", IntType.v());
+    Unit b_assign = Jimple.v().newAssignStmt(add_lhs, rhs);
+    
+    
+    
     units.add(a_assign);
     
     Local tmpRef = Jimple.v().newLocal("local1", RefType.v("java.io.PrintStream"));
