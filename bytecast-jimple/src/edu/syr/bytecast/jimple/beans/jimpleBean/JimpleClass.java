@@ -72,7 +72,7 @@ public class JimpleClass {
     }
 
        // return a jimple class
-    public SootClass getJimpleClass(){
+    public SootClass getSClass(){
      
         return mySootClass;
     }

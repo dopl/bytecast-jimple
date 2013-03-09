@@ -20,7 +20,7 @@ public class UseArgumentFilter extends AbstractFilter implements IFilter{
     {
         IInstruction ins = instList.get(index);
         if( ins.getInstructiontype() == InstructionType.MOV
-                && ins.getOperands().get(0).getOperandType() == OperandType.MEMORY_ADDRESS // I'm not sure about this TYPE
+                //&& ins.getOperands().get(0).getOperandType() == OperandType.MEMORY_ADDRESS // I'm not sure about this TYPE
                 && ins.getOperands().get(0).getOperandValue().toString().contains("%rbp")
                 && ins.getOperands().get(1).getOperandType() == OperandType.REGISTER
                 && ins.getOperands().get(1).getOperandValue() == "%rax" )
@@ -33,7 +33,7 @@ public class UseArgumentFilter extends AbstractFilter implements IFilter{
             {
                 ins = instList.get(index + 1);
                 if(ins.getInstructiontype() == InstructionType.MOV
-                    && ins.getOperands().get(0).getOperandType() == OperandType.MEMORY_ADDRESS // I'm not sure about this TYPE
+                    //&& ins.getOperands().get(0).getOperandType() == OperandType.MEMORY_ADDRESS // I'm not sure about this TYPE
                     && ins.getOperands().get(0).getOperandValue().toString().contains("(%rax)")
                     && ins.getOperands().get(1).getOperandType() == OperandType.REGISTER
                     && ins.getOperands().get(1).getOperandValue() == "%rax" )

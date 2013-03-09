@@ -41,25 +41,25 @@ public class Jimple implements IJimple{
                 break;
             }
         }
-        List<IInstruction> obj_instruction = main.getAllInstructionObjects();
-        Filter fil = new PreMemoryProcessFilter();
-        
-        if( fil.doTest(obj_instruction, parsed_set))
-        {
-            parsed_list.add(parsed_set);
-        }
-        
-        fil = new IfFilter();
-        if( fil.doTest(obj_instruction, parsed_set))
-        {
-            parsed_list.add(parsed_set);
-        }
-        
-        fil = new CallingFilter();
-        if( fil.doTest(obj_instruction, parsed_set))
-        {
-            parsed_list.add(parsed_set);
-        }
+//        List<IInstruction> obj_instruction = main.getAllInstructionObjects();
+//        Filter fil = new PreMemoryProcessFilter();
+//        
+//        if( fil.doTest(obj_instruction, parsed_set))
+//        {
+//            parsed_list.add(parsed_set);
+//        }
+//        
+//        fil = new IfFilter();
+//        if( fil.doTest(obj_instruction, parsed_set))
+//        {
+//            parsed_list.add(parsed_set);
+//        }
+//        
+//        fil = new CallingFilter();
+//        if( fil.doTest(obj_instruction, parsed_set))
+//        {
+//            parsed_list.add(parsed_set);
+//        }
         
         
         

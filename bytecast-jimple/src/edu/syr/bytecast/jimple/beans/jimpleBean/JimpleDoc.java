@@ -30,7 +30,7 @@ public class JimpleDoc {
     }
     
     public void addClass(JimpleClass jclass) {
-        Scene.v().addClass(jclass.getSootClass());
+        Scene.v().addClass(jclass.getSClass());
     }
     
     public void printJimple(String filename) throws FileNotFoundException,IOException {

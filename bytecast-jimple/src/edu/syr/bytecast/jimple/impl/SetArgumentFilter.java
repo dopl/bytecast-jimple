@@ -24,14 +24,14 @@ public class SetArgumentFilter extends AbstractFilter implements IFilter{
         if( ins.getInstructiontype() == InstructionType.MOV
                 && ins.getOperands().get(0).getOperandType() == OperandType.REGISTER
                 && ins.getOperands().get(0).getOperandValue() == "%edi"
-                && ins.getOperands().get(1).getOperandType() == OperandType.MEMORY_ADDRESS
+                //&& ins.getOperands().get(1).getOperandType() == OperandType.MEMORY_ADDRESS
                 && ins.getOperands().get(1).getOperandValue().toString().contains("%rbp"))
         {
             ins = instList.get(index + 1);
             if( ins.getInstructiontype() == InstructionType.MOV
                     && ins.getOperands().get(0).getOperandType() == OperandType.REGISTER
                     && ins.getOperands().get(0).getOperandValue() == "%rsi"
-                    && ins.getOperands().get(1).getOperandType() == OperandType.MEMORY_ADDRESS
+                    //&& ins.getOperands().get(1).getOperandType() == OperandType.MEMORY_ADDRESS
                     && ins.getOperands().get(1).getOperandValue().toString().contains("%rbp")) //SectionName
             {
                 return true;
