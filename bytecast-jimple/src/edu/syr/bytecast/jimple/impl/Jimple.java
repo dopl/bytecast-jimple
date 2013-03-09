@@ -21,10 +21,12 @@ package edu.syr.bytecast.jimple.impl;
 import edu.syr.bytecast.amd64.api.output.IExecutableFile;
 import edu.syr.bytecast.amd64.api.output.ISection;
 import edu.syr.bytecast.amd64.api.instruction.IInstruction;
+import edu.syr.bytecast.jimple.api.IFilter;
 import edu.syr.bytecast.jimple.api.IJimple;
 import edu.syr.bytecast.jimple.beans.jimpleBean.ParsedInstructionsSet;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class Jimple implements IJimple{
 
@@ -33,7 +35,7 @@ public class Jimple implements IJimple{
         ISection main = all_section.get(0);
         List<ParsedInstructionsSet> parsed_list = new ArrayList<ParsedInstructionsSet>();
         ParsedInstructionsSet parsed_set = new ParsedInstructionsSet();
-        for(int i = 0; i < all_section.size(); i ++)
+        for(int i = 0; i < all_section.size(); i++)
         {
             if(all_section.get(i).getSectionName() == "main")
             {
@@ -41,21 +43,11 @@ public class Jimple implements IJimple{
                 break;
             }
         }
-//        List<IInstruction> obj_instruction = main.getAllInstructionObjects();
-//        Filter fil = new PreMemoryProcessFilter();
-//        
-//        if( fil.doTest(obj_instruction, parsed_set))
-//        {
-//            parsed_list.add(parsed_set);
-//        }
-//        
-//        fil = new IfFilter();
-//        if( fil.doTest(obj_instruction, parsed_set))
-//        {
-//            parsed_list.add(parsed_set);
-//        }
-//        
-//        fil = new CallingFilter();
+        Map<Long, IInstruction> obj_instruction = main.getAllInstructionObjects();
+        //IFilter fil = new PreMemoryProcessFilter();
+        
+        IFilter fil = new PreMemoryProcessFilter();
+        
 //        if( fil.doTest(obj_instruction, parsed_set))
 //        {
 //            parsed_list.add(parsed_set);

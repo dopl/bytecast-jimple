@@ -9,6 +9,7 @@ import edu.syr.bytecast.amd64.api.constants.OperandType;
 import edu.syr.bytecast.amd64.api.instruction.IInstruction;
 import edu.syr.bytecast.jimple.api.IFilter;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -17,7 +18,7 @@ import java.util.List;
 public class AddFilter implements IFilter{
 
     @Override
-    public boolean doTest(List<IInstruction> instList, int index) {
+    public boolean doTest(Map<Long, IInstruction> instList, int index) {
          IInstruction  inst = instList.get(index);        
          int op_index = 0;
          if(inst.getInstructiontype() == InstructionType.MOV) {
