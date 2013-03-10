@@ -30,7 +30,8 @@ public class JimpleAssign extends JimpleElement{
         
     }
     
-    //@Overload  JimpleAssin
+    //@Overload  JimpleAssins
+    
     public void JimpleAssign(JimpleVariable jVariable1 ,JimpleVariable jVariable2){ 
     
          a_assign = Jimple.v().newAssignStmt( jVariable1.getVariable() , jVariable2.getVariable());
