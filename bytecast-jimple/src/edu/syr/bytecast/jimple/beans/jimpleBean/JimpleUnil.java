@@ -36,4 +36,10 @@ class JimpleUtil {
         }
     }
     
+  
+    protected static int convertStringToInt(String tmpString){
+        
+         return  Integer.parseInt(tmpString);
+    }
+    
 }
