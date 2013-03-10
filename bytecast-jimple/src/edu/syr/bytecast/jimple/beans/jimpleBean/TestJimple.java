@@ -4,12 +4,10 @@
  */
 package edu.syr.bytecast.jimple.beans.jimpleBean;
 
-import soot.Unit;
-
 /**
  *
  * @author Peike Dai
  */
-public abstract class JimpleElement {
-    protected abstract Unit getElement();
+public class TestJimple {
+    
 }

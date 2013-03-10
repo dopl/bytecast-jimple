@@ -110,6 +110,6 @@ public class JimpleMethod {
     }
     
     public void addElement(JimpleElement jm) {
-        
+        units.add(jm.getElement());
     }
 }
