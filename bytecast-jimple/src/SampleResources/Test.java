@@ -91,17 +91,6 @@ public class Test {
     //Assign locals the method parameters
     //Unit u = new Units(java.util.Iterator())
     //List<Unit> units = new ArrayList<Unit>();// = getUnits(mainMethod.getActiveBody());
-<<<<<<< HEAD
-    
-    Local tmpRef = Jimple.v().newLocal("local1", RefType.v("java.io.PrintStream"));
-    jBody.getLocals().add(tmpRef);
-    
-    units.add(Jimple.v().newIdentityStmt(arg, Jimple.v().newParameterRef(ArrayType.v(RefType.v("java.lang.String"), 1), 0)));
-    units.add(Jimple.v().newAssignStmt(tmpRef, Jimple.v().newStaticFieldRef( Scene.v().getField("<java.lang.System: java.io.PrintStream out>").makeRef())));
-    
-    SootMethod toCall = Scene.v().getMethod("<java.io.PrintStream: void println(java.lang.String)>");
-    units.add(Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(tmpRef, toCall.makeRef(), StringConstant.v(paramLocal.getName()))));
-=======
     units.add(Jimple.v().newIdentityStmt(arg, Jimple.v().newParameterRef(ArrayType.v(RefType.v("java.lang.String"), 1), 0)));
     
     Local tmpVar = Jimple.v().newLocal("a", IntType.v());
@@ -140,8 +129,6 @@ public class Test {
   
    //the return unit must be at the end of the code 
     units.add(returnUnit);
->>>>>>> 5a9428a920ef14952713f941c43161228ff714d6
-    
     //soot.jimple.Jimple.v().newStaticInvokeExpr.
     //soot.jimple.Jimple.v().newAssignStmt(arg, arg)
     //soot.jimple.Jimple.v().newStaticInvokeExpr
