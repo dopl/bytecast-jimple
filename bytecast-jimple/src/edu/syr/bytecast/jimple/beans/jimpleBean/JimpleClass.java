@@ -101,14 +101,14 @@ public class JimpleClass {
         if (className == null || modifier <= 0 || classReturnType == null) {
             return false;
         }
-        Scene.v().loadClassAndSupport("java.lang.Object");
-        Scene.v().loadClassAndSupport("java.lang.System");
         mySootClass = new SootClass(classname, modifier);
         mySootClass.setSuperclass(Scene.v().getSootClass("java.lang.Object"));
-        Scene.v().addClass(mySootClass);
         return true;
     }
 
+    public void addMethod(JimpleMethod jm) {
+        mySootClass.addMethod(jm.getMethod());
+    }
     // return a jimple class
     protected SootClass getSClass() {
         return mySootClass;
