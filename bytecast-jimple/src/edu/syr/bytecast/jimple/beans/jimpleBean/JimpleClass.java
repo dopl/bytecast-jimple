@@ -45,15 +45,15 @@ public class JimpleClass {
             STATIC = 8;
      * @param classReturnType 
      */
-    public JimpleClass(String className, int modifier, String classReturnType) {
+    public JimpleClass(String className, int modifier) {
         // java.lang.Objects
-        if (className != null && modifier > 0 && classReturnType != null) {
+        if (className != null && modifier > 0 ) {
             
             this.classname = className;
             this.modifier = modifier;
-            this.classReturnType = classReturnType;
+           
             
-            this.createClass(className, modifier, classReturnType);
+            this.createClass(className, modifier);
             this.init();
         } else {
             System.out.println("Please check the function prameters. "
@@ -97,8 +97,8 @@ public class JimpleClass {
         ctorMethod.setActiveBody(ctBody);
     }
 
-    public boolean createClass(String className, int modifier, String classReturnType) {
-        if (className == null || modifier <= 0 || classReturnType == null) {
+    public boolean createClass(String className, int modifier) {
+        if (className == null || modifier <= 0 ) {
             return false;
         }
         mySootClass = new SootClass(classname, modifier);
