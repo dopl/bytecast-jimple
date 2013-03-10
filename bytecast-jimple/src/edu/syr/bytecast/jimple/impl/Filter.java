@@ -13,6 +13,6 @@ import java.util.List;
  * @author Fei Qi
  */
 public abstract class Filter {
-    abstract boolean doTest(List<IInstruction> inst_list, ParsedInstructionsSet parsed_set);
+    public abstract boolean doTest(List<IInstruction> inst_list, ParsedInstructionsSet parsed_set);
     
 }

@@ -50,7 +50,7 @@ public class Test {
     Scene.v().addClass(testClass);
     
     //Define Method
-    SootMethod mainMethod = new SootMethod("main", Arrays.asList(new Type[] {ArrayType.v(RefType.v("java.lang.String"), 1)}), VoidType.v(), Modifier.PUBLIC | Modifier.STATIC);
+    SootMethod mainMethod = new SootMethod("main", Arrays.asList(new Type[] {ArrayType.v(RefType.v("java.lang.String"), 1)}), VoidType.v(), 8);
     
     //Add Method
     testClass.addMethod(mainMethod);
@@ -67,10 +67,7 @@ public class Test {
     jBody.getLocals().add(paramLocal);
     soot.jimple.Stmt stmt = soot.jimple.Jimple.v().newIdentityStmt(paramLocal, paramRef);
     jBody.getUnits().add(stmt);
-
    
-
-    
     // * example on how to capture the thisref and parameters.
     RefType hello_world_type = RefType.v("helloWorldClass");
     Value this_ref = Jimple.v().newThisRef(hello_world_type);
@@ -91,10 +88,19 @@ public class Test {
     //Assign locals the method parameters
     //Unit u = new Units(java.util.Iterator())
     //List<Unit> units = new ArrayList<Unit>();// = getUnits(mainMethod.getActiveBody());
+
+
     units.add(Jimple.v().newIdentityStmt(arg, Jimple.v().newParameterRef(ArrayType.v(RefType.v("java.lang.String"), 1), 0)));
     
     Local tmpVar = Jimple.v().newLocal("a", IntType.v());
     Unit a_assign = Jimple.v().newAssignStmt(tmpVar, IntConstant.v(0));
+    
+    Value rhs = Jimple.v().newAddExpr(tmpVar, tmpVar);
+    Local add_lhs = Jimple.v().newLocal("add_lhs", IntType.v());
+    Unit b_assign = Jimple.v().newAssignStmt(add_lhs, rhs);
+    
+    
+    
     units.add(a_assign);
     
     Local tmpRef = Jimple.v().newLocal("local1", RefType.v("java.io.PrintStream"));
@@ -129,6 +135,7 @@ public class Test {
   
    //the return unit must be at the end of the code 
     units.add(returnUnit);
+
     //soot.jimple.Jimple.v().newStaticInvokeExpr.
     //soot.jimple.Jimple.v().newAssignStmt(arg, arg)
     //soot.jimple.Jimple.v().newStaticInvokeExpr

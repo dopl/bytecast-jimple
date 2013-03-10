@@ -10,17 +10,18 @@ import edu.syr.bytecast.amd64.api.instruction.IInstruction;
 import edu.syr.bytecast.jimple.api.AbstractFilter;
 import edu.syr.bytecast.jimple.api.IFilter;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
  * @author nick
  */
 public class UseArgumentFilter extends AbstractFilter implements IFilter{
-    public boolean doTest(List<IInstruction> instList, int index)
+    public boolean doTest(Map<Long, IInstruction> instList, int index)
     {
         IInstruction ins = instList.get(index);
         if( ins.getInstructiontype() == InstructionType.MOV
-                && ins.getOperands().get(0).getOperandType() == OperandType.MEMORY_ADDRESS // I'm not sure about this TYPE
+                //&& ins.getOperands().get(0).getOperandType() == OperandType.MEMORY_ADDRESS // I'm not sure about this TYPE
                 && ins.getOperands().get(0).getOperandValue().toString().contains("%rbp")
                 && ins.getOperands().get(1).getOperandType() == OperandType.REGISTER
                 && ins.getOperands().get(1).getOperandValue() == "%rax" )
@@ -33,7 +34,7 @@ public class UseArgumentFilter extends AbstractFilter implements IFilter{
             {
                 ins = instList.get(index + 1);
                 if(ins.getInstructiontype() == InstructionType.MOV
-                    && ins.getOperands().get(0).getOperandType() == OperandType.MEMORY_ADDRESS // I'm not sure about this TYPE
+                    //&& ins.getOperands().get(0).getOperandType() == OperandType.MEMORY_ADDRESS // I'm not sure about this TYPE
                     && ins.getOperands().get(0).getOperandValue().toString().contains("(%rax)")
                     && ins.getOperands().get(1).getOperandType() == OperandType.REGISTER
                     && ins.getOperands().get(1).getOperandValue() == "%rax" )

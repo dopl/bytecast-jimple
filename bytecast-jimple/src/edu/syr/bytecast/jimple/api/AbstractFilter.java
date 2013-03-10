@@ -53,36 +53,36 @@ public abstract class AbstractFilter {
       int unparsed_list_size = unparsed_inst_list.size();
       int index = 0;
       int result = 0;
-      while( index < unparsed_list_size)
-      {
-          result = filter.doTest(unparsed_inst_list, index);
-          if( result != 0 )
-          {
-              index = result;
-              continue;
-          }
-          index++;
-      }
-      for(int i = 0; i< )
-      int count = getInst_Count();
-      String type = getFilter_Name();
-      for(int j=0;j<unparsed_list_size;j++){
-        if(filter.doTest(unparsed_inst_list, j)){
-          ParsedInstructionsSet pis= new ParsedInstructionsSet();
-          List<IInstruction> inst_list = new ArrayList<IInstruction>();
-          for(int k = j; k < j+count; k++)
-            inst_list.add(unparsed_inst_list.get(k));
-          
-          JInstructionInfo jinfo = new  JInstructionInfo();
-          jinfo.setInstruction_Name(type);
-          jinfo.setInstructions_Count(count);
-          jinfo.setStart_Index(j);
-          pis.setInfo(jinfo);
-          pis.setInstructions_List(inst_list);
-          parsed_inst_list.add(pis);
-          j = j + count;
-          j--;
-        }
-      }
+//      while( index < unparsed_list_size)
+//      {
+//          result = filter.doTest(unparsed_inst_list, index);
+//          if( result != 0 )
+//          {
+//              index = result;
+//              continue;
+//          }
+//          index++;
+//      }
+//      for(int i = 0; i< )
+//      int count = getInst_Count();
+//      String type = getFilter_Name();
+//      for(int j=0;j<unparsed_list_size;j++){
+//        if(filter.doTest(unparsed_inst_list, j)){
+//          ParsedInstructionsSet pis= new ParsedInstructionsSet();
+//          List<IInstruction> inst_list = new ArrayList<IInstruction>();
+//          for(int k = j; k < j+count; k++)
+//            inst_list.add(unparsed_inst_list.get(k));
+//          
+//          JInstructionInfo jinfo = new  JInstructionInfo();
+//          jinfo.setInstruction_Name(type);
+//          jinfo.setInstructions_Count(count);
+//          jinfo.setStart_Index(j);
+//          pis.setInfo(jinfo);
+//          pis.setInstructions_List(inst_list);
+//          parsed_inst_list.add(pis);
+//          j = j + count;
+//          j--;
+//        }
+//      }
     }
 }

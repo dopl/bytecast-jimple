@@ -26,12 +26,12 @@ public class Main {
   
   public static void main(String[] args)
   {
-    IFFilter filter = new IFFilter();
-    filter.setFilter_Name("IF");
-    filter.setInst_Count(3);
-    List<IInstruction> uiList = null;//get the list from amd64
-    List<ParsedInstructionsSet> pList = null;//create new List
-    filter.scan(uiList, pList, filter);
+//    IfFilter filter = new IfFilter();
+//    filter.setFilter_Name("IF");
+//    filter.setInst_Count(3);
+//    List<IInstruction> uiList = null;//get the list from amd64
+//    List<ParsedInstructionsSet> pList = null;//create new List
+//    filter.scan(uiList, pList, filter);
   }
   
 }
