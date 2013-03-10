@@ -61,11 +61,11 @@ public class JimpleMethod {
 
         List<Type> parameters = new ArrayList<Type>();
         for (String tp : parameters_type) {
-            parameters.add(getTypeByString(tp));
+            parameters.add(JimpleUtil.getTypeByString(tp));
         }
 
         SootMethod myMethod = new SootMethod(methodName, parameters,
-                this.getTypeByString(returnType), modifier);
+                JimpleUtil.getTypeByString(returnType), modifier);
 
         //mySootclass.addMethod(myMethod);
 
@@ -75,28 +75,5 @@ public class JimpleMethod {
 
         units = jBody.getUnits();
 
-    }
-
-    public JimpleBody getJimpleBody() {
-        return jBody;
-    }
-
-    public PatchingChain<Unit> getJimpleUnits() {
-
-        return units;
-    }
-
-    private Type getTypeByString(String name) {
-        if (name.equals("String")) {
-            return RefType.v("java.lang.String");
-        } else if (name.equals("String[]")) {
-            return ArrayType.v(RefType.v("java.lang.String"), 1);
-        } else if (name.equals("int")) {
-            return IntType.v();
-        } else if (name.equals("")) {
-            return VoidType.v();
-        } else {
-            return RefType.v("java.lang.Object");
-        }
     }
 }

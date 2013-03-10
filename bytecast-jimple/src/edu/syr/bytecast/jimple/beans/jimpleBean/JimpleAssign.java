@@ -51,7 +51,7 @@ public class JimpleAssign extends JimpleElement{
     
     
     @Override
-    protected Switchable getElement() {
+    protected Unit getElement() {
         return a_assign;
     }
     

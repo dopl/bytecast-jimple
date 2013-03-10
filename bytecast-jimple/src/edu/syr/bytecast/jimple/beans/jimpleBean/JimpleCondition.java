@@ -10,7 +10,6 @@ import soot.Value;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.jimple.StringConstant;
-import soot.util.Switchable;
 
 /**
  *
@@ -76,27 +75,35 @@ public class JimpleCondition extends JimpleElement{
 //        
 //    }
     
-    public void setTarget(JimpleElement jelement) {
-        
-    }
+//    public void setTarget(JimpleElement jelement) {
+//        
+//    }
     
     public void setTargets(JimpleElement[] jelements) {
-        
+        for (JimpleElement je : jelements) {
+            targets.setUnit(je.getElement());
+        }
     }
     
+    /**
+     * if statement as default
+     * need to modify when considering
+     * other condition like switch
+     * @return 
+     */
     @Override
-    protected Switchable getElement() {
+    protected Unit getElement() {
         Value condition = null;
-        if (this.comparator == "<") {
+        if (this.comparator.equals("<")) {
             condition = Jimple.v().newLtExpr(this.leftV, this.rightV);
-        } else if (this.comparator == "<=") {
+        } else if (this.comparator.equals("<=")) {
             condition = Jimple.v().newLeExpr(this.leftV, this.rightV);
-        } else if (this.comparator == "==") {
+        } else if (this.comparator.equals("==")) {
             condition = Jimple.v().newEqExpr(this.leftV, this.rightV);
-        } else if (this.comparator == ">=") {
-            condition = Jimple.v().newLeExpr(this.leftV, this.rightV);
-        } else if (this.comparator == ">") {
-            condition = Jimple.v().newLtExpr(this.leftV, this.rightV);
+        } else if (this.comparator.equals(">=")) {
+            condition = Jimple.v().newGeExpr(this.leftV, this.rightV);
+        } else if (this.comparator.equals(">")) {
+            condition = Jimple.v().newGtExpr(this.leftV, this.rightV);
         } 
         
         Unit statement = Jimple.v().newIfStmt(condition, targets);

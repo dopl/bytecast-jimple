@@ -5,8 +5,9 @@
 package edu.syr.bytecast.jimple.beans.jimpleBean;
 
 import soot.Local;
+import soot.Unit;
+import soot.Value;
 import soot.jimple.Jimple;
-import soot.util.Switchable;
 
 /**
  *
@@ -24,7 +25,7 @@ public class JimpleVariable extends JimpleElement {
         this.asVariable = Jimple.v().newLocal(name, JimpleUtil.getTypeByString(type));
     }
     
-    public Local getVariable() {
+    protected Value getVariable() {
         if (asVariable != null) {
             return asVariable;
         } else {
@@ -33,7 +34,7 @@ public class JimpleVariable extends JimpleElement {
     }
     
     @Override
-    protected Switchable getElement() {
-        return asVariable;
+    protected Unit getElement() {
+        return null;
     }
 }

@@ -4,7 +4,7 @@
  */
 package edu.syr.bytecast.jimple.beans.jimpleBean;
 
-import soot.util.Switchable;
+import soot.Unit;
 
 /**
  *
@@ -13,7 +13,7 @@ import soot.util.Switchable;
 public abstract class JimpleElement {
     
     
-    protected abstract Switchable getElement();
+    protected abstract Unit getElement();
     
     
     

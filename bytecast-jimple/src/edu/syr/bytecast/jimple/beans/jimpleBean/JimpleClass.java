@@ -24,66 +24,93 @@ import soot.util.JasminOutputStream;
  * @author Peike Dai
  */
 public class JimpleClass {
-    
+
     private String classname;
-    private String modifier;
+    private int modifier;
     private String classReturnType;
     //String isStatic;
     private SootClass mySootClass;
-    
-     
-    public JimpleClass(){
-        this(null,null,null);
+
+    public JimpleClass() {
+        this(null, null, null);
     }
-    
-    
-    public JimpleClass(String className, String modifier, String classReturnType) {
+
+    /**
+     *     
+     * @param className
+     * @param modifier
+     *      PRIVATE = 2;
+            PROTECTED = 4;
+            PUBLIC = 1;
+            STATIC = 8;
+     * @param classReturnType 
+     */
+    public JimpleClass(String className, int modifier, String classReturnType) {
         // java.lang.Objects
-       if(className != null && modifier!=null && classReturnType != null){
-        
-        this.classname = className;
-        this.modifier = modifier;
-        this.classReturnType = classReturnType;
-       }
-       
-       else
-           System.out.println("Please check the function prameters. It should  be class name , modifier , returnType");
-          
+        if (className != null && modifier > 0 && classReturnType != null) {
+            
+            this.classname = className;
+            this.modifier = modifier;
+            this.classReturnType = classReturnType;
+            
+            this.createClass(className, modifier, classReturnType);
+            this.init();
+        } else {
+            System.out.println("Please check the function prameters. "
+                    + "It should  be class name , modifier , returnType");
+        }
+
         // java.lang.System
     }
-    public boolean createClass (String className, String modifier, String classReturnType) {
-        
-           if (this.modifier == "public") {
-            //Create SootClass
-            mySootClass = new SootClass(classname, Modifier.PUBLIC);
+    
+    private void init() {
+        /**
+         *  void <init>()
+         */
+        SootMethod ctorMethod = new SootMethod("<init>", new ArrayList(), VoidType.v());
+        ctorMethod.setDeclaringClass(mySootClass);
+        // must be before ctorMethod.makeRef());
+        mySootClass.addMethod(ctorMethod);
 
-        }
-        if (this.modifier == "private") {
-            //Create SootClass
-            mySootClass = new SootClass(classname, Modifier.PRIVATE);
-        } else {
-            System.out.println("Please check your modifier");
+        JimpleBody ctBody = Jimple.v().newBody(ctorMethod);
+        PatchingChain<Unit> ctunits = ctBody.getUnits();
+        Chain<Local> locals = ctBody.getLocals();
+
+        // newtest r0;
+        Local thisref = Jimple.v().newLocal("r0", mySootClass.getType());
+        locals.add(thisref);
+        // r0 := @this: newtest;
+        Value this_rhs = Jimple.v().newThisRef(mySootClass.getType());
+        IdentityStmt thistmt = Jimple.v().newIdentityStmt(thisref, this_rhs);
+        ctunits.add(thistmt);
+        // specialinvoke r0.<java.lang.Object: void <init>()>();
+        SootClass obj_class = Scene.v().getSootClass("java.lang.Object");
+        SootMethod obj_ctor = obj_class.getMethodByName("<init>");
+
+        Value callCtor = Jimple.v().newSpecialInvokeExpr(thisref, obj_ctor.makeRef());
+        Unit ctorUnit = Jimple.v().newInvokeStmt(callCtor);
+        ctunits.add(ctorUnit);
+        // return;
+        Unit retVoid = Jimple.v().newReturnVoidStmt();
+        ctunits.add(retVoid);
+
+        ctorMethod.setActiveBody(ctBody);
+    }
+
+    public boolean createClass(String className, int modifier, String classReturnType) {
+        if (className == null || modifier <= 0 || classReturnType == null) {
             return false;
         }
-
+        Scene.v().loadClassAndSupport("java.lang.Object");
+        Scene.v().loadClassAndSupport("java.lang.System");
+        mySootClass = new SootClass(classname, modifier);
         mySootClass.setSuperclass(Scene.v().getSootClass("java.lang.Object"));
-        
+        Scene.v().addClass(mySootClass);
         return true;
     }
 
-       // return a jimple class
-    public SootClass getSClass(){
-     
+    // return a jimple class
+    protected SootClass getSClass() {
         return mySootClass;
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 }
