@@ -8,6 +8,7 @@ import soot.Local;
 import soot.Unit;
 import soot.Value;
 import soot.jimple.Jimple;
+import soot.Type;
 
 /**
  *
@@ -28,6 +29,14 @@ public class JimpleVariable extends JimpleElement {
     protected Value getVariable() {
         if (asVariable != null) {
             return asVariable;
+        } else {
+            return null;
+        }
+    }
+    
+      protected Type getType() {
+        if (asVariable != null) {
+            return asVariable.getType();
         } else {
             return null;
         }

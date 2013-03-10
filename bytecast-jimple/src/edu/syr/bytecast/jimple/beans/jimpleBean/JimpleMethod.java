@@ -17,7 +17,6 @@ import soot.jimple.JimpleBody;
 import soot.jimple.StringConstant;
 import soot.options.Options;
 import soot.util.Chain;
-import soot.util.JasminOutputStream;
 
 /**
  *
@@ -28,9 +27,11 @@ public class JimpleMethod {
     private ArrayList<String> parameters_type;
     private String methodName;
     private String returnType;
+    private String className;
     private int modifier;
     private JimpleBody jBody;
     private PatchingChain<Unit> units;
+    private SootMethod myMethod;
 
     /**
      *
@@ -40,7 +41,7 @@ public class JimpleMethod {
      * (public+static) :value will be 9))
      * @param parameters_type
      */
-    public JimpleMethod(String methodName, String returnType,
+    public JimpleMethod(String methodName, String returnType, String className,
             int modifier, ArrayList<String> parameters_type) {
 
         this.methodName = methodName;
@@ -64,7 +65,7 @@ public class JimpleMethod {
             parameters.add(JimpleUtil.getTypeByString(tp));
         }
 
-        SootMethod myMethod = new SootMethod(methodName, parameters,
+        myMethod = new SootMethod(methodName, parameters,
                 JimpleUtil.getTypeByString(returnType), modifier);
 
         //mySootclass.addMethod(myMethod);
@@ -75,5 +76,11 @@ public class JimpleMethod {
 
         units = jBody.getUnits();
 
+    }
+    
+    
+    public SootMethod getMethod(){
+        
+        return myMethod;
     }
 }
