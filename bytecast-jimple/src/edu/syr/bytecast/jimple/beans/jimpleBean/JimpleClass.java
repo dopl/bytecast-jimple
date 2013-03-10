@@ -31,9 +31,9 @@ public class JimpleClass {
     //String isStatic;
     private SootClass mySootClass;
 
-    public JimpleClass() {
-        this(null, null, null);
-    }
+//    public JimpleClass() {
+//        this(null, null, null);
+//    }
 
     /**
      *     
