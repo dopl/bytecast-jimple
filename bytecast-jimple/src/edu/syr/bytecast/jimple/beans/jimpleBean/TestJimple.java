@@ -9,5 +9,7 @@ package edu.syr.bytecast.jimple.beans.jimpleBean;
  * @author Peike Dai
  */
 public class TestJimple {
+    JimpleDoc jd = new JimpleDoc();
     
+    JimpleClass jc = new JimpleClass("Test", 9);
 }
