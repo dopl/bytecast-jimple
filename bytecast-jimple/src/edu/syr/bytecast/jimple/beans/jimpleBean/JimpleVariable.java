@@ -26,7 +26,7 @@ public class JimpleVariable extends JimpleElement {
         this.asVariable = Jimple.v().newLocal(name, JimpleUtil.getTypeByString(type));
     }
     
-    protected Value getVariable() {
+    protected Local getVariable() {
         if (asVariable != null) {
             return asVariable;
         } else {
