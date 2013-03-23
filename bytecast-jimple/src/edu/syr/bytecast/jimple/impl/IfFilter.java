@@ -1,28 +1,58 @@
-///*
-// * This file is part of Bytecast.
-// *
-// * Bytecast is free software: you can redistribute it and/or modify
-// * it under the terms of the GNU General Public License as published by
-// * the Free Software Foundation, either version 3 of the License, or
-// * (at your option) any later version.
-// *
-// * Bytecast is distributed in the hope that it will be useful,
-// * but WITHOUT ANY WARRANTY; without even the implied warranty of
-// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// * GNU General Public License for more details.
-// *
-// * You should have received a copy of the GNU General Public License
-// * along with Bytecast.  If not, see <http://www.gnu.org/licenses/>.
-// *
-// */
-//
-//package edu.syr.bytecast.jimple.impl;
-//
-//import edu.syr.bytecast.amd64.api.constants.InstructionType;
-//import edu.syr.bytecast.amd64.api.instruction.IInstruction;
-//import edu.syr.bytecast.jimple.beans.ParsedInstructionsSet;
-//import java.util.List;
-//
+/*
+ * This file is part of Bytecast.
+ *
+ * Bytecast is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Bytecast is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Bytecast.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+package edu.syr.bytecast.jimple.impl;
+
+import edu.syr.bytecast.amd64.api.constants.InstructionType;
+import edu.syr.bytecast.amd64.api.constants.OperandType;
+import edu.syr.bytecast.amd64.api.output.IExecutableFile;
+import edu.syr.bytecast.amd64.api.output.ISection;
+import edu.syr.bytecast.amd64.api.instruction.IInstruction;
+import edu.syr.bytecast.jimple.beans.jimpleBean.JInstructionInfo;
+import edu.syr.bytecast.jimple.api.IFilter;
+import edu.syr.bytecast.jimple.api.IJimple;
+import edu.syr.bytecast.jimple.beans.jimpleBean.ParsedInstructionsSet;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+
+public class IfFilter implements IFilter{
+    public boolean doTest(Map<Long, IInstruction> instList, int index)
+    {
+        IInstruction ins = instList.get(index);
+        int count = 0;
+        if( ins.getInstructiontype() == InstructionType.CMPL
+                && ins.getOperands().get(0).getOperandType() == OperandType.CONSTANT
+                && ins.getOperands().get(1).getOperandType() == OperandType.MEMORY_EFFECITVE_ADDRESS )
+        {
+            count++;
+            ins = instList.get(index + count);
+            if( ins.getInstructiontype() == InstructionType.JNE
+                    && ins.getOperands().get(0).getOperandType() == OperandType.MEMORY_EFFECITVE_ADDRESS ) //SectionName
+            {
+                count++;
+                return true;
+                }
+            }
+        return false;
+    } 
+}
+
 //public class IfFilter extends Filter{
 //    private int begin_if;
 //    private int end_if;

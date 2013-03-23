@@ -28,24 +28,62 @@ import edu.syr.bytecast.jimple.beans.jimpleBean.ParsedInstructionsSet;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.HashMap;
+import java.util.Set;
 
 public class Jimple implements IJimple{
 
     public boolean createJimple(IExecutableFile exe_file) {
         List<ISection> all_section = exe_file.getAllSections();
-        ISection main = all_section.get(0);
-        List<ParsedInstructionsSet> parsed_list = new ArrayList<ParsedInstructionsSet>();
-        ParsedInstructionsSet parsed_set = new ParsedInstructionsSet();
+        ISection obj_sec = all_section.get(0);
+        Map<ISection, List<ParsedInstructionsSet>> result = new HashMap<ISection, List<ParsedInstructionsSet>>();
+        List<ParsedInstructionsSet> parsed_list_result = new ArrayList<ParsedInstructionsSet>();
+        Map<String, Boolean> name_function = new HashMap<String, Boolean>();
         for(int i = 0; i < all_section.size(); i++)
         {
             if(all_section.get(i).getSectionName() == "main")
             {
-                main = all_section.get(i);
+                obj_sec = all_section.get(i);
                 break;
             }
         }
-        Map<Long, IInstruction> obj_instruction = main.getAllInstructionObjects();
-        //IFilter fil = new PreMemoryProcessFilter();
+        parsed_list_result = analyze(obj_sec, name_function);
+        result.put(obj_sec, parsed_list_result);
+        
+        // analyze the subfunction
+        
+        while(true)
+        {
+            Set<String> names = name_function.keySet();
+            int judge = 0;
+            for (String str : names) {
+                if(name_function.get(str) == Boolean.FALSE){
+                    name_function.put(str, Boolean.TRUE);
+                    judge = 1;
+                    for(int i = 0; i < all_section.size(); i++)
+                    {
+                        if(all_section.get(i).getSectionName() == str)
+                        {
+                            obj_sec = all_section.get(i);
+                            break;
+                        }
+                    }
+                    parsed_list_result = analyze(obj_sec, name_function);
+                    result.put(obj_sec, parsed_list_result);
+                }
+            }
+            if( judge == 0)
+                break;
+        }
+     
+        return false;
+    } 
+    
+    
+    private List<ParsedInstructionsSet> analyze(ISection obj_section, Map<String, Boolean> name_function) {
+        List<ParsedInstructionsSet> parsed_list = new ArrayList<ParsedInstructionsSet>();
+        ParsedInstructionsSet parsed_set = new ParsedInstructionsSet();
+        Map<Long, IInstruction> obj_instruction = obj_section.getAllInstructionObjects();
         
         IFilter fil = new PreMemoryProcessFilter();
         for(int index = 0; index < obj_instruction.size(); index++)
@@ -53,7 +91,7 @@ public class Jimple implements IJimple{
             if(fil.doTest(obj_instruction, index))
             {
                 JInstructionInfo jinfo = new  JInstructionInfo();
-                jinfo.setInstruction_Name("if");
+                jinfo.setInstruction_Name("PreMemoryProcess");
                 jinfo.setInstructions_Count(3);
                 jinfo.setStart_Index(index);
                 parsed_set.setInfo(jinfo);
@@ -61,20 +99,57 @@ public class Jimple implements IJimple{
                 parsed_list.add(parsed_set);
             }
         }
+        
+        fil = new SetArgvAndArgcFilter();
+        for(int index = 0; index < obj_instruction.size(); index++)
+        {
+            if(fil.doTest(obj_instruction, index))
+            {
+                JInstructionInfo jinfo = new  JInstructionInfo();
+                jinfo.setInstruction_Name("SetArgvAndArgc");
+                jinfo.setInstructions_Count(2);
+                jinfo.setStart_Index(index);
+                parsed_set.setInfo(jinfo);
+                //parsed_set.setInstructions_List(obj_instruction);
+                parsed_list.add(parsed_set);
+            }
+        }
+        
+        fil = new IfFilter();
+        for(int index = 0; index < obj_instruction.size(); index++)
+        {
+            if(fil.doTest(obj_instruction, index))
+            {
+                JInstructionInfo jinfo = new  JInstructionInfo();
+                jinfo.setInstruction_Name("If");
+                jinfo.setInstructions_Count(2);
+                jinfo.setStart_Index(index);
+                parsed_set.setInfo(jinfo);
+                //parsed_set.setInstructions_List(obj_instruction);
+                parsed_list.add(parsed_set);
+            }
+        }
+        // for each function getting from the callingFilter function, it need to store into a list
         fil = new CallingFilter();
         for(int index = 0; index < obj_instruction.size(); index++)
         {
             if(fil.doTest(obj_instruction, index))
             {
                 JInstructionInfo jinfo = new  JInstructionInfo();
-                jinfo.setInstruction_Name("calling");
-                jinfo.setInstructions_Count(3);
+                jinfo.setInstruction_Name("Calling");
+                jinfo.setInstructions_Count(1);
                 jinfo.setStart_Index(index);
                 parsed_set.setInfo(jinfo);
                 //parsed_set.setInstructions_List(obj_instruction);
+                // here to get the name of the function;
+                
+                String fun_name = " ";
+                if( name_function.get(fun_name) == null )
+                    name_function.put(fun_name, Boolean.FALSE);
                 parsed_list.add(parsed_set);
             }
         }
+        
         fil = new AddFilter();
         for(int index = 0; index < obj_instruction.size(); index++)
         {
@@ -90,16 +165,6 @@ public class Jimple implements IJimple{
             }
         }
         
-        
-//        if( fil.doTest(obj_instruction, parsed_set))
-//        {
-//            parsed_list.add(parsed_set);
-//        }
-        
-        
-        
-        
-        
-        return false;
-    } 
+        return parsed_list;
+    }
 }
