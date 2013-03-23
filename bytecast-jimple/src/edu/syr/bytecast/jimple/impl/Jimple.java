@@ -22,13 +22,13 @@ import edu.syr.bytecast.amd64.api.output.IExecutableFile;
 import edu.syr.bytecast.amd64.api.output.ISection;
 import edu.syr.bytecast.amd64.api.instruction.IInstruction;
 import edu.syr.bytecast.jimple.api.IJimple;
-import edu.syr.bytecast.jimple.beans.jimpleBean.ParsedInstructionsSet;
 import java.util.List;
 import java.util.ArrayList;
 
 public class Jimple implements IJimple{
 
     public boolean createJimple(IExecutableFile exe_file) {
+        /*
         List<ISection> all_section = exe_file.getAllSections();
         ISection main = all_section.get(0);
         List<ParsedInstructionsSet> parsed_list = new ArrayList<ParsedInstructionsSet>();
@@ -39,7 +39,7 @@ public class Jimple implements IJimple{
             {
                 main = all_section.get(i);
                 break;
-            }
+            }/home/pahuja/code/bytecast/bytecast-amd64
         }
         List<IInstruction> obj_instruction = main.getAllInstructionObjects();
         Filter fil = new PreMemoryProcessFilter();
@@ -60,8 +60,8 @@ public class Jimple implements IJimple{
         {
             parsed_list.add(parsed_set);
         }
-        
-        
+        /ho/home/pahuja/code/bytecast/bytecast-amd64me/pahuja/code/bytecast/bytecast-amd64
+        */
         
         
         
