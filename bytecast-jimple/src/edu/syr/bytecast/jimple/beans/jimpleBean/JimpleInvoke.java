@@ -21,29 +21,6 @@ public class JimpleInvoke extends JimpleElement {
     private Local baseObject;
     
     // need to be modified-statu
-    public JimpleInvoke(JimpleVariable baseobj, JimpleMethod method2Call, List<String> paraVal, 
-            JimpleVariable returnTo) {
-        System.out.println("abc");
-        
-        baseObject = baseobj.getVariable();
-        // Local to store return value
-        
-        Value invokeExpr;
-        if (paraVal == null) {
-          invokeExpr = Jimple.v().newVirtualInvokeExpr(baseObject, 
-                  method2Call.getMethod().makeRef());
-        } else {
-          invokeExpr = Jimple.v().newVirtualInvokeExpr(baseObject, 
-                  method2Call.getMethod().makeRef(), paraVal);
-        }
-        
-        if (!method2Call.getReturnType().equals("void")) {
-          this.invokestmt = Jimple.v().newAssignStmt(returnTo.getVariable(), invokeExpr);
-        } else {
-          this.invokestmt = Jimple.v().newInvokeStmt(invokeExpr);
-        }
-    }
-    
     public JimpleInvoke(JimpleVariable baseobj, JimpleMethod method2Call, List<JimpleVariable> paraVal, 
             JimpleVariable returnTo) {
         System.out.println("abc");
@@ -59,6 +36,7 @@ public class JimpleInvoke extends JimpleElement {
           invokeExpr = Jimple.v().newVirtualInvokeExpr(baseObject, 
                   method2Call.getMethod().makeRef(), paraVal);
         }
+        
         if (!method2Call.getReturnType().equals("void")) {
           this.invokestmt = Jimple.v().newAssignStmt(returnTo.getVariable(), invokeExpr);
         } else {

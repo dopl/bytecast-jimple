@@ -15,8 +15,8 @@ import soot.VoidType;
  *
  * @author col
  */
-class JimpleUtil {
-    protected static Type getTypeByString(String name) {
+public class JimpleUtil {
+    public static Type getTypeByString(String name) {
         if (name.equals("String")) {
             return RefType.v("java.lang.String");
         } else if (name.equals("String[]")) {

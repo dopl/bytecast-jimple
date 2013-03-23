@@ -53,7 +53,7 @@ public class JimpleMethod {
         createMethod();
     }
 
-    public void createMethod() {
+    private void createMethod() {
 
         List<Type> parameters = new ArrayList<Type>();
         if (parameters_type != null) {
@@ -77,6 +77,8 @@ public class JimpleMethod {
     }
     
     private void initMethod() {
+        
+        if(!methodName.equals("main")){
         // Class r0;
         Local thisref = Jimple.v().newLocal("r0", declaringClass.getType());
         locals.add(thisref);
@@ -85,6 +87,8 @@ public class JimpleMethod {
         Value this_rhs = Jimple.v().newThisRef(declaringClass.getType());
         IdentityStmt thistmt = Jimple.v().newIdentityStmt(thisref, this_rhs);
         units.add(thistmt);
+        
+        }
         
         // if has parameters, init them
         if (this.parameters_type != null) {
