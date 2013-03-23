@@ -75,92 +75,11 @@ public class Jimple implements IJimple{
             if( judge == 0)
                 break;
         }
-        
-//        Map<Long, IInstruction> obj_instruction = main.getAllInstructionObjects();
-//        
-//        IFilter fil = new PreMemoryProcessFilter();
-//        for(int index = 0; index < obj_instruction.size(); index++)
-//        {
-//            if(fil.doTest(obj_instruction, index))
-//            {
-//                JInstructionInfo jinfo = new  JInstructionInfo();
-//                jinfo.setInstruction_Name("PreMemoryProcess");
-//                jinfo.setInstructions_Count(3);
-//                jinfo.setStart_Index(index);
-//                parsed_set.setInfo(jinfo);
-//                //parsed_set.setInstructions_List(obj_instruction);
-//                parsed_list.add(parsed_set);
-//            }
-//        }
-//        
-//        fil = new SetArgvAndArgcFilter();
-//        for(int index = 0; index < obj_instruction.size(); index++)
-//        {
-//            if(fil.doTest(obj_instruction, index))
-//            {
-//                JInstructionInfo jinfo = new  JInstructionInfo();
-//                jinfo.setInstruction_Name("SetArgvAndArgc");
-//                jinfo.setInstructions_Count(2);
-//                jinfo.setStart_Index(index);
-//                parsed_set.setInfo(jinfo);
-//                //parsed_set.setInstructions_List(obj_instruction);
-//                parsed_list.add(parsed_set);
-//            }
-//        }
-//        
-//        fil = new IfFilter();
-//        for(int index = 0; index < obj_instruction.size(); index++)
-//        {
-//            if(fil.doTest(obj_instruction, index))
-//            {
-//                JInstructionInfo jinfo = new  JInstructionInfo();
-//                jinfo.setInstruction_Name("If");
-//                jinfo.setInstructions_Count(2);
-//                jinfo.setStart_Index(index);
-//                parsed_set.setInfo(jinfo);
-//                //parsed_set.setInstructions_List(obj_instruction);
-//                parsed_list.add(parsed_set);
-//            }
-//        }
-//        // for each function getting from the callingFilter function, it need to store into a list
-//        fil = new CallingFilter();
-//        for(int index = 0; index < obj_instruction.size(); index++)
-//        {
-//            if(fil.doTest(obj_instruction, index))
-//            {
-//                JInstructionInfo jinfo = new  JInstructionInfo();
-//                jinfo.setInstruction_Name("Calling");
-//                jinfo.setInstructions_Count(1);
-//                jinfo.setStart_Index(index);
-//                parsed_set.setInfo(jinfo);
-//                //parsed_set.setInstructions_List(obj_instruction);
-//                // here to get the name of the function;
-//                
-//                String fun_name = " ";
-//                if( name_function.get(fun_name) == null )
-//                    name_function.put(fun_name, Boolean.FALSE);
-//                parsed_list.add(parsed_set);
-//            }
-//        }
-//        
-//        fil = new AddFilter();
-//        for(int index = 0; index < obj_instruction.size(); index++)
-//        {
-//            if(fil.doTest(obj_instruction, index))
-//            {
-//                JInstructionInfo jinfo = new  JInstructionInfo();
-//                jinfo.setInstruction_Name("calling");
-//                jinfo.setInstructions_Count(3);
-//                jinfo.setStart_Index(index);
-//                parsed_set.setInfo(jinfo);
-//                //parsed_set.setInstructions_List(obj_instruction);
-//                parsed_list.add(parsed_set);
-//            }
-//        }
-        // analyze the subfunction
      
         return false;
     } 
+    
+    
     private List<ParsedInstructionsSet> analyze(ISection obj_section, Map<String, Boolean> name_function) {
         List<ParsedInstructionsSet> parsed_list = new ArrayList<ParsedInstructionsSet>();
         ParsedInstructionsSet parsed_set = new ParsedInstructionsSet();
