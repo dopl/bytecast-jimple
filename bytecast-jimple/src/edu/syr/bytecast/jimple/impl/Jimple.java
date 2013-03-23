@@ -21,6 +21,7 @@ package edu.syr.bytecast.jimple.impl;
 import edu.syr.bytecast.amd64.api.output.IExecutableFile;
 import edu.syr.bytecast.amd64.api.output.ISection;
 import edu.syr.bytecast.amd64.api.instruction.IInstruction;
+import edu.syr.bytecast.jimple.beans.jimpleBean.JInstructionInfo;
 import edu.syr.bytecast.jimple.api.IFilter;
 import edu.syr.bytecast.jimple.api.IJimple;
 import edu.syr.bytecast.jimple.beans.jimpleBean.ParsedInstructionsSet;
@@ -47,6 +48,48 @@ public class Jimple implements IJimple{
         //IFilter fil = new PreMemoryProcessFilter();
         
         IFilter fil = new PreMemoryProcessFilter();
+        for(int index = 0; index < obj_instruction.size(); index++)
+        {
+            if(fil.doTest(obj_instruction, index))
+            {
+                JInstructionInfo jinfo = new  JInstructionInfo();
+                jinfo.setInstruction_Name("if");
+                jinfo.setInstructions_Count(3);
+                jinfo.setStart_Index(index);
+                parsed_set.setInfo(jinfo);
+                //parsed_set.setInstructions_List(obj_instruction);
+                parsed_list.add(parsed_set);
+            }
+        }
+        fil = new CallingFilter();
+        for(int index = 0; index < obj_instruction.size(); index++)
+        {
+            if(fil.doTest(obj_instruction, index))
+            {
+                JInstructionInfo jinfo = new  JInstructionInfo();
+                jinfo.setInstruction_Name("calling");
+                jinfo.setInstructions_Count(3);
+                jinfo.setStart_Index(index);
+                parsed_set.setInfo(jinfo);
+                //parsed_set.setInstructions_List(obj_instruction);
+                parsed_list.add(parsed_set);
+            }
+        }
+        fil = new AddFilter();
+        for(int index = 0; index < obj_instruction.size(); index++)
+        {
+            if(fil.doTest(obj_instruction, index))
+            {
+                JInstructionInfo jinfo = new  JInstructionInfo();
+                jinfo.setInstruction_Name("calling");
+                jinfo.setInstructions_Count(3);
+                jinfo.setStart_Index(index);
+                parsed_set.setInfo(jinfo);
+                //parsed_set.setInstructions_List(obj_instruction);
+                parsed_list.add(parsed_set);
+            }
+        }
+        
         
 //        if( fil.doTest(obj_instruction, parsed_set))
 //        {
