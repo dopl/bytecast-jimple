@@ -33,7 +33,7 @@ public class JimpleDoc {
         Scene.v().addClass(jclass.getSClass());
     }
     
-    public void printJimple(String filename) throws FileNotFoundException,IOException {
+    public void printJimple() throws FileNotFoundException,IOException {
         String fileName = SourceLocator.v().getFileNameFor(Scene.v().getMainClass(), Options.output_format_jimple);
         OutputStream streamOut = new FileOutputStream(fileName);
         System.out.println("File Name = "+fileName);

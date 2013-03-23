@@ -45,6 +45,8 @@ public class JimpleClass {
             STATIC = 8;
      * @param classReturnType 
      */
+    
+  
     public JimpleClass(String className, int modifier) {
         // java.lang.Objects
         if (className != null && modifier > 0 ) {
@@ -97,7 +99,7 @@ public class JimpleClass {
         ctorMethod.setActiveBody(ctBody);
     }
 
-    public boolean createClass(String className, int modifier) {
+    private boolean createClass(String className, int modifier) {
         if (className == null || modifier <= 0 ) {
             return false;
         }

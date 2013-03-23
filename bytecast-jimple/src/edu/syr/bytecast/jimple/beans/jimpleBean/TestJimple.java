@@ -23,27 +23,53 @@ import soot.options.Options;
 import soot.util.Chain;
 
 public class TestJimple {
-    
-    void doTest(){
-          //create a class          
-          //declare function
-          //declare variable
-          //assign variable
-          //
-        JimpleDoc  jDoc = new JimpleDoc();
+
+    void doTest() {
+        //create a class          
+        //declare function
+        //declare variable
+        //assign variable
+        //
+        JimpleDoc jDoc = new JimpleDoc();
+
+        JimpleClass jClass = new JimpleClass("test", 1);
+        jDoc.addClass(jClass);
+
+        ArrayList<String> parameter_list = new ArrayList<String>();
+        parameter_list.add("String[]");
+
+
+        JimpleMethod jMethod = new JimpleMethod("main", "void", jClass, 9, parameter_list);
+
+//        JimpleVariable jVar1 = new JimpleVariable("r0" , "String[]");;
+//        
+//        
+//        
+//        jMethod.addElement(jVar1);
+//        
+//        JimpleVariable jVar2 = new JimpleVariable("r1" , "String[]");
+
+        jClass.addMethod(jMethod);
+
         
-        JimpleClass jClass = new JimpleClass("test", 1); 
-        jClass.createClass("test", 1);
-        
-        ArrayList<String>  parameter_list = new  ArrayList<String>();
-        parameter_list.add("int");
-        parameter_list.add("int");
-        
-        JimpleMethod jMethod = new JimpleMethod("sum", "int", jClass, 1,parameter_list);
-        jMethod.createMethod();
-        
-        
+
+        try {
+            jDoc.printJimple();
+
+        } catch (FileNotFoundException e) {
+            System.out.println("file exception");
+        } catch (IOException e) {
+            System.out.println("IO exception");
+        }
+
+
     }
-    
-    
+
+    public static void main(String[] args) {
+        TestJimple tJimple = new TestJimple();
+
+        tJimple.doTest();
+
+
+    }
 }
