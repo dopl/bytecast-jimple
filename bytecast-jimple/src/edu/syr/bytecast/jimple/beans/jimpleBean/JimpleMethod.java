@@ -84,22 +84,32 @@ public class JimpleMethod {
         }
         
         // if has parameters, init them
+//        if (this.parameters_type != null) {
+//            int paranum = 0;
+//            for (String typestr : this.parameters_type) {
+//                // int r0, r1,...
+//                Type paratype = JimpleUtil.getTypeByString(typestr);
+//                Value prmtref = Jimple.v().newParameterRef(paratype, paranum);
+//                Local paraLocal = Jimple.v().newLocal("l"+ String.valueOf(paranum), paratype);
+//                //locals.add(paraLocal);
+////                this.parameters.add(new JimpleVariable("l"));
+//                // i0 := @parameter0: int/String;
+//                Unit identitystmt = Jimple.v().newIdentityStmt(paraLocal, prmtref);
+//                units.add(identitystmt);
+//                
+//                paranum++;
+//            }
+//        }
+    }
+    
+    public List<String> getParameterTypes() {
         if (this.parameters_type != null) {
-            int paranum = 0;
-            for (String typestr : this.parameters_type) {
-                // int r0, r1,...
-                Type paratype = JimpleUtil.getTypeByString(typestr);
-                Value prmtref = Jimple.v().newParameterRef(paratype, 0);
-                Local paraLocal = Jimple.v().newLocal("r"+ String.valueOf(paranum), paratype);
-                locals.add(paraLocal);
-                
-                // i0 := @parameter0: int/String;
-                Unit identitystmt = Jimple.v().newIdentityStmt(paraLocal, prmtref);
-                units.add(identitystmt);
-                
-                paranum++;
-            }
+            return this.parameters_type;
+            
+        } else {
+            return null;
         }
+        
     }
     protected SootMethod getMethod(){
         

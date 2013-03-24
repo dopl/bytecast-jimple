@@ -67,7 +67,7 @@ public class TestJimple {
         JimpleElement[] paras = { ji1 };
        
         jc1.setTargets(paras);
-        jMainMethod.addElement(ji1);
+        
 //        jMainMethod.addElement(jc1);
 //        jMainMethod.addElement(ji1);
         
@@ -81,6 +81,29 @@ public class TestJimple {
         //create sum method    
         JimpleMethod sumMethod = new JimpleMethod("sum", "int", jClass, 1, parameter_type_sum);
         jClass.addMethod(sumMethod);
+        List<JimpleVariable> summethod_parameters = new ArrayList<JimpleVariable>();
+        List<String> paratypes = sumMethod.getParameterTypes();
+        for (int i=0; i<paratypes.size(); ++i) {          
+            JimpleVariable newjv = new JimpleVariable("l"+Integer.toString(i), paratypes.get(i),sumMethod);
+            JimpleAssign ja = new JimpleAssign();
+            ja.JimpleParameterAssign(newjv, paratypes.get(i), i, sumMethod);
+            summethod_parameters.add(newjv);
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        // finish creating sum method
          // create variable int $r2;
         JimpleVariable r2 = new JimpleVariable("$r2" , "int", jMainMethod);
          
@@ -114,7 +137,7 @@ public class TestJimple {
         
        
           
-        
+        jMainMethod.addElement(ji1);
 
         try {
             jDoc.printJimple(jClass.getJClassName());
