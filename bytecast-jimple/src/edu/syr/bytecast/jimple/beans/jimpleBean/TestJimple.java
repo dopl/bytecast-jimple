@@ -34,34 +34,86 @@ public class TestJimple {
 
         JimpleClass jClass = new JimpleClass("test", 1);
         jDoc.addClass(jClass);
-
-        ArrayList<String> parameter_list = new ArrayList<String>();
-        parameter_list.add("String[]");
-
-
-        JimpleMethod jMethod = new JimpleMethod("main", "void", jClass, 9, parameter_list);
-
+      
+        //create parameterList of main method 
+        ArrayList<String> parameter_list_main = new ArrayList<String>();
+        parameter_list_main.add("String[]");
+        
+   
+      //create main method
+        JimpleMethod jMainMethod = new JimpleMethod("main", "void", jClass, 9, parameter_list_main);
+        jClass.addMethod(jMainMethod);
 //        
-        // int a;
-        JimpleVariable r1 = new JimpleVariable("$r1" , "int");
-        // a = 0;
+        // create variable int a;
+        JimpleVariable r1 = new JimpleVariable("$r1" , "int" ,jMainMethod) ;
+        
+        
+        
+        
+        // assign variable a = 0;
         JimpleAssign ja1 = new JimpleAssign();
-        ja1.JimpleAssign(r1, 0);
-        jMethod.addElement(ja1);
-        // if (a < 1)
-        JimpleCondition jc1 = new JimpleCondition("<", r1, 1);
-        // set target (must be added to method after condition been added
-        ArrayList<String> toPrint = new ArrayList<String>();
-        toPrint.add("hello");
-        JimpleInvoke ji1 = new JimpleInvoke("println", toPrint, null);
-        JimpleElement[] paras = {ji1};
+        ja1.JimpleDirectAssign(r1, 0,jMainMethod);
+//        jMainMethod.addElement(ja1);
+        
+        //create condition statement if (a < 1)
+        JimpleCondition jc1 = new JimpleCondition("<", r1, 1, jMainMethod);
+        
+        // set target (if else)(must be added to method after condition been added
+        ArrayList<String> parameter_print = new ArrayList<String>();
+        parameter_print.add("hello");
+        
+        //use system call
+        JimpleInvoke ji1 = new JimpleInvoke("println", parameter_print, null);
+        JimpleElement[] paras = { ji1 };
+       
         jc1.setTargets(paras);
+        jMainMethod.addElement(ji1);
+//        jMainMethod.addElement(jc1);
+//        jMainMethod.addElement(ji1);
         
-        jMethod.addElement(jc1);
-        jMethod.addElement(ji1);
-        
-        jClass.addMethod(jMethod);
+      
 
+     //parameter_type for sum method 
+        ArrayList<String>  parameter_type_sum = new ArrayList<String>();
+        parameter_type_sum.add("int");
+        parameter_type_sum.add("int");
+
+        //create sum method    
+        JimpleMethod sumMethod = new JimpleMethod("sum", "int", jClass, 1, parameter_type_sum);
+        jClass.addMethod(sumMethod);
+         // create variable int $r2;
+        JimpleVariable r2 = new JimpleVariable("$r2" , "int", jMainMethod);
+         
+        // create variable int $r3;
+        JimpleVariable r3 = new JimpleVariable("$r3" , "int", jMainMethod);
+        
+        JimpleVariable rsum = new JimpleVariable("$rsum" , "int", jMainMethod);
+        
+        
+        JimpleAssign ja2 = new JimpleAssign();
+        ja2.JimpleDirectAssign(r2, 1, jMainMethod);
+//        jMainMethod.addElement(ja2);
+        
+         JimpleAssign ja3 = new JimpleAssign();
+        ja3.JimpleDirectAssign(r3, 2, jMainMethod);
+//        jMainMethod.addElement(ja3);
+        
+        
+//        ArrayList<Integer>  parameter_value_sum = new ArrayList<Integer>();
+//        parameter_value_sum.add(1);
+//        parameter_value_sum.add(2);
+        
+        ArrayList<JimpleVariable>  parameter_value_sum = new ArrayList<JimpleVariable>();
+        parameter_value_sum.add(r2);
+        parameter_value_sum.add(r3);
+        
+        JimpleVariable sumClassObj = new JimpleVariable("sumBase" , jClass.getJClassName(), jMainMethod);
+        JimpleInvoke ji2 = new JimpleInvoke(sumClassObj, sumMethod, parameter_value_sum, rsum, jMainMethod); 
+        
+//        jMainMethod.addElement(ji2);
+        
+       
+          
         
 
         try {

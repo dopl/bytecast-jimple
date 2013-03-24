@@ -32,19 +32,20 @@ public class JimpleAssign extends JimpleElement {
   }
 
   //@Overload  JimpleAssins
-  public void JimpleAssign(JimpleVariable jVariable1, JimpleVariable jVariable2) {
+  public void JimpleDirectAssign(JimpleVariable jVariable1, JimpleVariable jVariable2) {
     add_lhs = jVariable1.getVariable();
     a_assign = Jimple.v().newAssignStmt(jVariable1.getVariable(), jVariable2.getVariable());
 
   }
 
-  public void JimpleAssign(JimpleVariable jVariable1, int jVariable2) {
+  public void JimpleDirectAssign(JimpleVariable jVariable1, int jVariable2, JimpleMethod baseMethod) {
     add_lhs = jVariable1.getVariable();
     a_assign = Jimple.v().newAssignStmt(jVariable1.getVariable(), IntConstant.v(jVariable2));
-
+//    baseMethod.getMethod().getActiveBody().getLocals().add(add_lhs);
+    baseMethod.getMethod().getActiveBody().getUnits().add(a_assign);
   }
 
-  public void JimpleAssign(JimpleVariable jVariable1, String jVariable2) {
+  public void JimpleDirectAssign(JimpleVariable jVariable1, String jVariable2) {
     add_lhs = jVariable1.getVariable();
     a_assign = Jimple.v().newAssignStmt(jVariable1.getVariable(), StringConstant.v(jVariable2));
 

@@ -37,7 +37,7 @@ public class JimpleUtil {
     } else if (name.equals("println")) {
       return RefType.v("java.io.PrintStream");
     } else {
-      return RefType.v("java.lang.Object");
+      return RefType.v(name);
     }
   }
 

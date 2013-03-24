@@ -110,7 +110,9 @@ public class JimpleMethod {
       if (jm.getVariable() != null) {
         myMethod.getActiveBody().getLocals().add(jm.getVariable());
       }
-      units.add(jm.getElement());
+      if (jm.getElement() != null) {
+        units.add(jm.getElement());
+      }
     }
     
     public String getReturnType() {
