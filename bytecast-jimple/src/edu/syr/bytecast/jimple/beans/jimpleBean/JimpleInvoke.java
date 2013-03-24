@@ -50,6 +50,7 @@ public class JimpleInvoke extends JimpleElement {
   // specificly for "println"
   public JimpleInvoke(String nativemethod, ArrayList<String> paraVal, JimpleVariable returnTo) {
     SootMethod toCall = null;
+    
     if (nativemethod.equals("println")) {
       baseObject = Jimple.v().newLocal("print_line",
               JimpleUtil.getTypeByString("println"));
@@ -77,6 +78,11 @@ public class JimpleInvoke extends JimpleElement {
   public void userInvoke(JimpleVariable usrobj, JimpleMethod method2Call, ArrayList<String> paraVal) {
   }
 
+  @Override
+  protected Local getVariable() {
+    return this.baseObject;
+  }
+  
   @Override
   protected Unit getElement() {
     return invokestmt;

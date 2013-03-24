@@ -4,6 +4,7 @@
  */
 package edu.syr.bytecast.jimple.beans.jimpleBean;
 
+import soot.Local;
 import soot.Unit;
 import soot.UnitBox;
 import soot.Value;
@@ -78,11 +79,12 @@ public class JimpleCondition extends JimpleElement{
 //        
 //    }
     
+    // initialize and set UnitBox targets
     public void setTargets(JimpleElement[] jelements) {
       targets = Jimple.v().newStmtBox(jelements[0].getElement());
-        for (JimpleElement je : jelements) {
-            targets.setUnit(je.getElement());
-        }
+      for (int i=1; i<jelements.length; ++i) {
+        targets.setUnit(jelements[i].getElement());
+      }
     }
     
     /**
@@ -91,6 +93,11 @@ public class JimpleCondition extends JimpleElement{
      * other condition like switch
      * @return 
      */
+    
+    @Override
+    protected Local getVariable() {
+      return null;
+    }
     @Override
     protected Unit getElement() {
         Value condition = null;

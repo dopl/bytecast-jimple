@@ -4,18 +4,12 @@
  */
 package edu.syr.bytecast.jimple.beans.jimpleBean;
 
-import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import soot.*;
 import soot.jimple.IdentityStmt;
-import soot.jimple.IntConstant;
-import soot.jimple.JasminClass;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
-import soot.jimple.StringConstant;
-import soot.options.Options;
 import soot.util.Chain;
 
 /**
@@ -65,7 +59,7 @@ public class JimpleMethod {
         myMethod = new SootMethod(methodName, parameters,
                 JimpleUtil.getTypeByString(returnType), modifier);
         //mySootclass.addMethod(myMethod);
-
+        
         //create jimple body
         jBody = Jimple.v().newBody(myMethod);
         myMethod.setActiveBody(jBody);
@@ -113,7 +107,10 @@ public class JimpleMethod {
     }
     
     public void addElement(JimpleElement jm) {
-        units.add(jm.getElement());
+      if (jm.getVariable() != null) {
+        myMethod.getActiveBody().getLocals().add(jm.getVariable());
+      }
+      units.add(jm.getElement());
     }
     
     public String getReturnType() {
