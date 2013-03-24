@@ -7,6 +7,7 @@ package edu.syr.bytecast.jimple.impl;
 import edu.syr.bytecast.amd64.api.constants.InstructionType;
 import edu.syr.bytecast.amd64.api.constants.OperandType;
 import edu.syr.bytecast.amd64.api.instruction.IInstruction;
+import edu.syr.bytecast.amd64.api.output.MemoryInstructionPair;
 import edu.syr.bytecast.jimple.beans.jimpleBean.ParsedInstructionsSet;
 import edu.syr.bytecast.jimple.beans.jimpleBean.JInstructionInfo;
 import edu.syr.bytecast.jimple.api.IFilter;
@@ -22,16 +23,16 @@ import java.util.Map;
 //this file is used to filter the pre-memory process part
 
 public class PreMemoryProcessFilter implements IFilter{
-    public boolean doTest(Map<Long, IInstruction> instList, int index)
+    public boolean doTest(List<MemoryInstructionPair> instList, int index)
     {
-        IInstruction ins = instList.get(index);
+        IInstruction ins = instList.get(index).getInstruction();
         int count = 0;
         if( ins.getInstructiontype() == InstructionType.PUSH
             && ins.getOperands().get(0).getOperandType() == OperandType.REGISTER
             && ins.getOperands().get(0).getOperandValue() == "%rbp" )
         {
             count++;
-            ins = instList.get(index + count);
+            ins = instList.get(index + count).getInstruction();
             if( ins.getInstructiontype() == InstructionType.MOV
                 && ins.getOperands().get(0).getOperandType() == OperandType.REGISTER
                 && ins.getOperands().get(0).getOperandValue() == "%rsp"
@@ -39,7 +40,7 @@ public class PreMemoryProcessFilter implements IFilter{
                 && ins.getOperands().get(1).getOperandValue() == "%rbp") //SectionName
             {
                 count++;
-                ins = instList.get(index + count);
+                ins = instList.get(index + count).getInstruction();
                 if( ins.getInstructiontype() == InstructionType.SUB
                     && ins.getOperands().get(0).getOperandType() == OperandType.CONSTANT
                     && ins.getOperands().get(1).getOperandType() == OperandType.REGISTER

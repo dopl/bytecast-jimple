@@ -23,6 +23,7 @@ import edu.syr.bytecast.amd64.api.constants.OperandType;
 import edu.syr.bytecast.amd64.api.output.IExecutableFile;
 import edu.syr.bytecast.amd64.api.output.ISection;
 import edu.syr.bytecast.amd64.api.instruction.IInstruction;
+import edu.syr.bytecast.amd64.api.output.MemoryInstructionPair;
 import edu.syr.bytecast.jimple.beans.jimpleBean.JInstructionInfo;
 import edu.syr.bytecast.jimple.api.IFilter;
 import edu.syr.bytecast.jimple.api.IJimple;
@@ -32,16 +33,16 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class IfFilter implements IFilter{
-    public boolean doTest(Map<Long, IInstruction> instList, int index)
+    public boolean doTest(List<MemoryInstructionPair> instList, int index)
     {
-        IInstruction ins = instList.get(index);
+        IInstruction ins = instList.get(index).getInstruction();
         int count = 0;
         if( ins.getInstructiontype() == InstructionType.CMPL
                 && ins.getOperands().get(0).getOperandType() == OperandType.CONSTANT
                 && ins.getOperands().get(1).getOperandType() == OperandType.MEMORY_EFFECITVE_ADDRESS )
         {
             count++;
-            ins = instList.get(index + count);
+            ins = instList.get(index + count).getInstruction();
             if( ins.getInstructiontype() == InstructionType.JNE
                     && ins.getOperands().get(0).getOperandType() == OperandType.MEMORY_EFFECITVE_ADDRESS ) //SectionName
             {

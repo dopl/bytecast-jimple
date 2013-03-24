@@ -18,9 +18,12 @@
 
 package edu.syr.bytecast.jimple.impl;
 
+import edu.syr.bytecast.amd64.api.constants.InstructionType;
+import edu.syr.bytecast.amd64.api.constants.OperandType;
 import edu.syr.bytecast.amd64.api.output.IExecutableFile;
 import edu.syr.bytecast.amd64.api.output.ISection;
 import edu.syr.bytecast.amd64.api.instruction.IInstruction;
+import edu.syr.bytecast.amd64.api.output.MemoryInstructionPair;
 import edu.syr.bytecast.jimple.beans.jimpleBean.JInstructionInfo;
 import edu.syr.bytecast.jimple.api.IFilter;
 import edu.syr.bytecast.jimple.api.IJimple;
@@ -34,7 +37,7 @@ import java.util.Set;
 public class Jimple implements IJimple{
 
     public boolean createJimple(IExecutableFile exe_file) {
-        List<ISection> all_section = exe_file.getAllSections();
+        List<ISection> all_section = exe_file.getSectionsWithInstructions();
         ISection obj_sec = all_section.get(0);
         Map<ISection, List<ParsedInstructionsSet>> result = new HashMap<ISection, List<ParsedInstructionsSet>>();
         List<ParsedInstructionsSet> parsed_list_result = new ArrayList<ParsedInstructionsSet>();
@@ -83,8 +86,7 @@ public class Jimple implements IJimple{
     private List<ParsedInstructionsSet> analyze(ISection obj_section, Map<String, Boolean> name_function) {
         List<ParsedInstructionsSet> parsed_list = new ArrayList<ParsedInstructionsSet>();
         ParsedInstructionsSet parsed_set = new ParsedInstructionsSet();
-        Map<Long, IInstruction> obj_instruction = obj_section.getAllInstructionObjects();
-        
+        List<MemoryInstructionPair> obj_instruction = obj_section.getAllInstructionObjects();
         IFilter fil = new PreMemoryProcessFilter();
         for(int index = 0; index < obj_instruction.size(); index++)
         {
@@ -95,7 +97,10 @@ public class Jimple implements IJimple{
                 jinfo.setInstructions_Count(3);
                 jinfo.setStart_Index(index);
                 parsed_set.setInfo(jinfo);
-                //parsed_set.setInstructions_List(obj_instruction);
+                List<MemoryInstructionPair> temp_instruction = new ArrayList<MemoryInstructionPair>();
+                for( int i = 0; i < 3; i++)
+                    temp_instruction.add(obj_instruction.get(index + i));
+                parsed_set.setInstructions_List(temp_instruction);
                 parsed_list.add(parsed_set);
             }
         }
@@ -110,7 +115,10 @@ public class Jimple implements IJimple{
                 jinfo.setInstructions_Count(2);
                 jinfo.setStart_Index(index);
                 parsed_set.setInfo(jinfo);
-                //parsed_set.setInstructions_List(obj_instruction);
+                List<MemoryInstructionPair> temp_instruction = new ArrayList<MemoryInstructionPair>();
+                for( int i = 0; i < 2; i++)
+                    temp_instruction.add(obj_instruction.get(index + i));
+                parsed_set.setInstructions_List(temp_instruction);
                 parsed_list.add(parsed_set);
             }
         }
@@ -125,7 +133,10 @@ public class Jimple implements IJimple{
                 jinfo.setInstructions_Count(2);
                 jinfo.setStart_Index(index);
                 parsed_set.setInfo(jinfo);
-                //parsed_set.setInstructions_List(obj_instruction);
+                List<MemoryInstructionPair> temp_instruction = new ArrayList<MemoryInstructionPair>();
+                for( int i = 0; i < 2; i++)
+                    temp_instruction.add(obj_instruction.get(index + i));
+                parsed_set.setInstructions_List(temp_instruction);
                 parsed_list.add(parsed_set);
             }
         }
@@ -135,12 +146,29 @@ public class Jimple implements IJimple{
         {
             if(fil.doTest(obj_instruction, index))
             {
+                int count = 0;
+                while(true)
+                {
+                    IInstruction ins = obj_instruction.get(index - count).getInstruction();
+                    if( ins.getInstructiontype() == InstructionType.MOV
+                            && ins.getOperands().get(0).getOperandType() == OperandType.REGISTER
+                            && ins.getOperands().get(1).getOperandType() == OperandType.REGISTER
+                            && ( ins.getOperands().get(1).getOperandValue().toString() == "%edi" || ins.getOperands().get(1).getOperandValue().toString() == "%esi"))
+                    {
+                        count ++;
+                    }
+                    else
+                        break;
+                }
                 JInstructionInfo jinfo = new  JInstructionInfo();
                 jinfo.setInstruction_Name("Calling");
-                jinfo.setInstructions_Count(1);
+                jinfo.setInstructions_Count(count + 1);
                 jinfo.setStart_Index(index);
                 parsed_set.setInfo(jinfo);
-                //parsed_set.setInstructions_List(obj_instruction);
+                List<MemoryInstructionPair> temp_instruction = new ArrayList<MemoryInstructionPair>();
+                for( int i = count; i >= 0; i--)
+                    temp_instruction.add(obj_instruction.get(index - count));
+                parsed_set.setInstructions_List(temp_instruction);
                 // here to get the name of the function;
                 
                 String fun_name = " ";
@@ -160,7 +188,10 @@ public class Jimple implements IJimple{
                 jinfo.setInstructions_Count(3);
                 jinfo.setStart_Index(index);
                 parsed_set.setInfo(jinfo);
-                //parsed_set.setInstructions_List(obj_instruction);
+                List<MemoryInstructionPair> temp_instruction = new ArrayList<MemoryInstructionPair>();
+                for( int i = 0; i < 3; i++)
+                    temp_instruction.add(obj_instruction.get(index + i));
+                parsed_set.setInstructions_List(temp_instruction);
                 parsed_list.add(parsed_set);
             }
         }

@@ -21,6 +21,7 @@ package edu.syr.bytecast.jimple.impl;
 import edu.syr.bytecast.amd64.api.constants.InstructionType;
 import edu.syr.bytecast.amd64.api.constants.OperandType;
 import edu.syr.bytecast.amd64.api.instruction.IInstruction;
+import edu.syr.bytecast.amd64.api.output.MemoryInstructionPair;
 import edu.syr.bytecast.jimple.beans.jimpleBean.ParsedInstructionsSet;
 import edu.syr.bytecast.jimple.beans.jimpleBean.JInstructionInfo;
 import edu.syr.bytecast.jimple.api.IFilter;
@@ -33,9 +34,9 @@ import java.util.Map;
  * @author Fei Qi
  */
 public class CallingFilter implements IFilter{
-    public boolean doTest(Map<Long, IInstruction> instList, int index)
+    public boolean doTest(List<MemoryInstructionPair> instList, int index)
     {
-        IInstruction ins = instList.get(index);
+        IInstruction ins = instList.get(index).getInstruction();
         if( ins.getInstructiontype() == InstructionType.CALLQ 
                 && ins.getOperands().get(0).getOperandType() == OperandType.MEMORY_PHYSICAL_ADDRESS )
                 //the value of the second operand should be the SectionName, it hasn't been set up in AMD64 api
