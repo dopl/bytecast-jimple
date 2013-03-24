@@ -41,20 +41,30 @@ public class TestJimple {
 
         JimpleMethod jMethod = new JimpleMethod("main", "void", jClass, 9, parameter_list);
 
-//        JimpleVariable jVar1 = new JimpleVariable("r0" , "String[]");;
 //        
-//        
-//        
-//        jMethod.addElement(jVar1);
-//        
-//        JimpleVariable jVar2 = new JimpleVariable("r1" , "String[]");
-
+        // int a;
+        JimpleVariable r1= new JimpleVariable("$r1" , "int");
+        // a = 0;
+        JimpleAssign ja1 = new JimpleAssign();
+        ja1.JimpleAssign(r1, 0);
+        jMethod.addElement(ja1);
+        // if (a < 1)
+        JimpleCondition jc1 = new JimpleCondition("<", r1, 1);
+        // set target
+        ArrayList<String> toPrint = new ArrayList<String>();
+        toPrint.add("hello");
+        JimpleInvoke ji1 = new JimpleInvoke("println", toPrint, null);
+        JimpleElement[] paras = {ji1};
+        jc1.setTargets(paras);
+        jMethod.addElement(ji1);
+        
+        
         jClass.addMethod(jMethod);
 
         
 
         try {
-            jDoc.printJimple();
+            jDoc.printJimple(jClass.getJClassName());
 
         } catch (FileNotFoundException e) {
             System.out.println("file exception");

@@ -52,10 +52,10 @@ public class JimpleClass {
         if (className != null && modifier > 0 ) {
             
             this.classname = className;
-            this.modifier = modifier;
-           
+            this.modifier = Modifier.PUBLIC;
             
-            this.createClass(className, modifier);
+            
+            this.createClass();
             this.init();
         } else {
             System.out.println("Please check the function prameters. "
@@ -99,13 +99,9 @@ public class JimpleClass {
         ctorMethod.setActiveBody(ctBody);
     }
 
-    private boolean createClass(String className, int modifier) {
-        if (className == null || modifier <= 0 ) {
-            return false;
-        }
+    private void createClass() {
         mySootClass = new SootClass(classname, modifier);
         mySootClass.setSuperclass(Scene.v().getSootClass("java.lang.Object"));
-        return true;
     }
 
     public void addMethod(JimpleMethod jm) {
@@ -114,5 +110,9 @@ public class JimpleClass {
     // return a jimple class
     protected SootClass getSClass() {
         return mySootClass;
+    }
+    
+    public String getJClassName() {
+      return this.classname;
     }
 }

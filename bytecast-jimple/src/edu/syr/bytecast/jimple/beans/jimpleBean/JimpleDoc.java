@@ -33,12 +33,12 @@ public class JimpleDoc {
         Scene.v().addClass(jclass.getSClass());
     }
     
-    public void printJimple() throws FileNotFoundException,IOException {
-        String fileName = SourceLocator.v().getFileNameFor(Scene.v().getMainClass(), Options.output_format_jimple);
+    public void printJimple(String classname) throws FileNotFoundException,IOException {
+        String fileName = SourceLocator.v().getFileNameFor(Scene.v().getSootClass(classname), Options.output_format_jimple);
         OutputStream streamOut = new FileOutputStream(fileName);
         System.out.println("File Name = "+fileName);
         PrintWriter writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
-        Printer.v().printTo(Scene.v().getMainClass(), writerOut);
+        Printer.v().printTo(Scene.v().getSootClass(classname), writerOut);
         writerOut.flush();
         streamOut.close();
     }

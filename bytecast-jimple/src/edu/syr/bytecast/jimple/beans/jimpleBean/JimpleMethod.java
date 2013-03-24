@@ -64,7 +64,6 @@ public class JimpleMethod {
 
         myMethod = new SootMethod(methodName, parameters,
                 JimpleUtil.getTypeByString(returnType), modifier);
-        
         //mySootclass.addMethod(myMethod);
 
         //create jimple body

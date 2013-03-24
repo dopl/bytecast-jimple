@@ -57,7 +57,6 @@ public class JimpleCondition extends JimpleElement{
     
     private void init(String type, String comprt, Value leftv, Value rightv){
         this.type = type;
-        
         this.comparator = comprt != null ? comprt : null;
         this.leftV = leftv;
         this.rightV = rightv;
@@ -80,6 +79,7 @@ public class JimpleCondition extends JimpleElement{
 //    }
     
     public void setTargets(JimpleElement[] jelements) {
+      targets = Jimple.v().newStmtBox(jelements[0].getElement());
         for (JimpleElement je : jelements) {
             targets.setUnit(je.getElement());
         }
