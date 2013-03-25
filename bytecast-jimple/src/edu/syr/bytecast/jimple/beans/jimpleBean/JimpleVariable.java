@@ -1,6 +1,12 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * 03/25/2013 - 1.0
+ * 
+ * this class writes jimple codes like:
+ * int $r0;
+ * java.io.PrintStream print_line; 
+ * 
+ * could pass in object of base JimpleMethod this variable
+ * belongs to, which will do the job of addElement(). can't use both
  */
 package edu.syr.bytecast.jimple.beans.jimpleBean;
 
@@ -11,7 +17,7 @@ import soot.Unit;
 
 /**
  *
- * @author col
+ * @author Peike Dai
  */
 public class JimpleVariable extends JimpleElement {
 
@@ -28,9 +34,6 @@ public class JimpleVariable extends JimpleElement {
         }
     }
 
-//    public void setVariable(String name, String type) {
-//        this.asVariable = Jimple.v().newLocal(name, JimpleUtil.getTypeByString(type));
-//    }
     @Override
     protected Local getVariable() {
         if (asVariable != null) {

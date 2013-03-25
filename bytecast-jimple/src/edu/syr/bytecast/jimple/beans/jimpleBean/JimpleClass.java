@@ -1,23 +1,20 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * 03/25/2013 - 1.0
+ * 
+ * this class provides a JimpleClass which can contain several JimpleMethods.
+ * any JimpleClass object should be added to JimpleDoc.
+ * 
+ * default constructor of class in Jimple (<init> method) will be added automatically,
+ * 
  */
 package edu.syr.bytecast.jimple.beans.jimpleBean;
 
-import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import soot.*;
 import soot.jimple.IdentityStmt;
-import soot.jimple.IntConstant;
-import soot.jimple.JasminClass;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
-import soot.jimple.StringConstant;
-import soot.options.Options;
 import soot.util.Chain;
-import soot.util.JasminOutputStream;
 
 /**
  *
@@ -25,94 +22,82 @@ import soot.util.JasminOutputStream;
  */
 public class JimpleClass {
 
-    private String classname;
-    private int modifier;
-    private String classReturnType;
-    //String isStatic;
-    private SootClass mySootClass;
+  private String classname;
+  private int modifier;
+  private SootClass mySootClass;
 
-//    public JimpleClass() {
-//        this(null, null, null);
-//    }
+  /**
+   *
+   * @param className
+   * @param modifier PRIVATE = 2; PROTECTED = 4; PUBLIC = 1; STATIC = 8;
+   * @param classReturnType
+   */
+  public JimpleClass(String className, int modifier) {
+    // java.lang.Objects
+    if (className != null && modifier > 0) {
 
+      this.classname = className;
+      this.modifier = Modifier.PUBLIC;
+
+
+      this.createClass();
+      this.init();
+    } else {
+      System.out.println("Please check the function prameters. "
+              + "It should  be class name , modifier , returnType");
+    }
+
+  }
+
+  private void init() {
     /**
-     *     
-     * @param className
-     * @param modifier
-     *      PRIVATE = 2;
-            PROTECTED = 4;
-            PUBLIC = 1;
-            STATIC = 8;
-     * @param classReturnType 
+     * void <init>()
      */
-    
-  
-    public JimpleClass(String className, int modifier) {
-        // java.lang.Objects
-        if (className != null && modifier > 0 ) {
-            
-            this.classname = className;
-            this.modifier = Modifier.PUBLIC;
-            
-            
-            this.createClass();
-            this.init();
-        } else {
-            System.out.println("Please check the function prameters. "
-                    + "It should  be class name , modifier , returnType");
-        }
+    SootMethod ctorMethod = new SootMethod("<init>", new ArrayList(), VoidType.v());
+    ctorMethod.setDeclaringClass(mySootClass);
+    // must be before ctorMethod.makeRef());
+    mySootClass.addMethod(ctorMethod);
 
-        // java.lang.System
-    }
-    
-    private void init() {
-        /**
-         *  void <init>()
-         */
-        SootMethod ctorMethod = new SootMethod("<init>", new ArrayList(), VoidType.v());
-        ctorMethod.setDeclaringClass(mySootClass);
-        // must be before ctorMethod.makeRef());
-        mySootClass.addMethod(ctorMethod);
+    JimpleBody ctBody = Jimple.v().newBody(ctorMethod);
+    PatchingChain<Unit> ctunits = ctBody.getUnits();
+    Chain<Local> locals = ctBody.getLocals();
 
-        JimpleBody ctBody = Jimple.v().newBody(ctorMethod);
-        PatchingChain<Unit> ctunits = ctBody.getUnits();
-        Chain<Local> locals = ctBody.getLocals();
+    // newtest r0;
+    Local thisref = Jimple.v().newLocal("r0", mySootClass.getType());
+    locals.add(thisref);
+    // r0 := @this: newtest;
+    Value this_rhs = Jimple.v().newThisRef(mySootClass.getType());
+    IdentityStmt thistmt = Jimple.v().newIdentityStmt(thisref, this_rhs);
+    ctunits.add(thistmt);
+    // specialinvoke r0.<java.lang.Object: void <init>()>();
+    SootClass obj_class = Scene.v().getSootClass("java.lang.Object");
+    SootMethod obj_ctor = obj_class.getMethodByName("<init>");
 
-        // newtest r0;
-        Local thisref = Jimple.v().newLocal("r0", mySootClass.getType());
-        locals.add(thisref);
-        // r0 := @this: newtest;
-        Value this_rhs = Jimple.v().newThisRef(mySootClass.getType());
-        IdentityStmt thistmt = Jimple.v().newIdentityStmt(thisref, this_rhs);
-        ctunits.add(thistmt);
-        // specialinvoke r0.<java.lang.Object: void <init>()>();
-        SootClass obj_class = Scene.v().getSootClass("java.lang.Object");
-        SootMethod obj_ctor = obj_class.getMethodByName("<init>");
+    Value callCtor = Jimple.v().newSpecialInvokeExpr(thisref, obj_ctor.makeRef());
+    Unit ctorUnit = Jimple.v().newInvokeStmt(callCtor);
+    ctunits.add(ctorUnit);
+    // return;
+    Unit retVoid = Jimple.v().newReturnVoidStmt();
+    ctunits.add(retVoid);
 
-        Value callCtor = Jimple.v().newSpecialInvokeExpr(thisref, obj_ctor.makeRef());
-        Unit ctorUnit = Jimple.v().newInvokeStmt(callCtor);
-        ctunits.add(ctorUnit);
-        // return;
-        Unit retVoid = Jimple.v().newReturnVoidStmt();
-        ctunits.add(retVoid);
+    ctorMethod.setActiveBody(ctBody);
+  }
 
-        ctorMethod.setActiveBody(ctBody);
-    }
+  private void createClass() {
+    mySootClass = new SootClass(classname, modifier);
+    mySootClass.setSuperclass(Scene.v().getSootClass("java.lang.Object"));
+  }
 
-    private void createClass() {
-        mySootClass = new SootClass(classname, modifier);
-        mySootClass.setSuperclass(Scene.v().getSootClass("java.lang.Object"));
-    }
+  public void addMethod(JimpleMethod jm) {
+    mySootClass.addMethod(jm.getMethod());
+  }
+  // return a jimple class
 
-    public void addMethod(JimpleMethod jm) {
-        mySootClass.addMethod(jm.getMethod());
-    }
-    // return a jimple class
-    protected SootClass getSClass() {
-        return mySootClass;
-    }
-    
-    public String getJClassName() {
-      return this.classname;
-    }
+  protected SootClass getSClass() {
+    return mySootClass;
+  }
+
+  public String getJClassName() {
+    return this.classname;
+  }
 }

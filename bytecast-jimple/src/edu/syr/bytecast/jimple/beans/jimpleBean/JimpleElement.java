@@ -1,6 +1,13 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * 03/25/2013 - 1.0
+ * 
+ * superclass for:
+ * JimpleInvoke
+ * JimpleCondition
+ * JimpleVariable
+ * JimpleAssign
+ * 
+ * 
  */
 package edu.syr.bytecast.jimple.beans.jimpleBean;
 

@@ -1,6 +1,15 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * 03/25/2013 - 1.0
+ * 
+ * two kinds of method could be invoked:
+ * 1. user defined method
+ *    $rsum = virtualinvoke sumBase.<test: int sum(int,int)>($r2, $r3);
+ * 2. Java native method
+ *    System.out.println:
+ *        virtualinvoke print_line.<java.io.PrintStream: 
+ *                 void println(java.lang.String)>("hello");
+ *    [].length (to be developed)
+ *    String.charAt()   (to be developed)
  */
 package edu.syr.bytecast.jimple.beans.jimpleBean;
 
@@ -24,7 +33,7 @@ public class JimpleInvoke extends JimpleElement {
 
   private Stmt invokestmt;
   private Local baseObject;
-  // need to be modified-statu
+
   public JimpleInvoke(JimpleVariable baseobj, JimpleMethod method2Call, List paraVal,
           JimpleVariable returnTo, JimpleMethod basemethod) {
     // Local to store return value
@@ -34,24 +43,24 @@ public class JimpleInvoke extends JimpleElement {
       invokeExpr = Jimple.v().newVirtualInvokeExpr(baseobj.getVariable(),
               method2Call.getMethod().makeRef());
     } else {
-        // cast any parameter type to soot.Value
-        List<Value> paraForJimple = new ArrayList<Value>();
-        if (paraVal.get(0) instanceof JimpleVariable) {
-            for (JimpleVariable jv : (List<JimpleVariable>) paraVal) {
-                paraForJimple.add(jv.getVariable());
-            }
-        } else if (paraVal.get(0) instanceof String) {
-            for (String str : (List<String>) paraVal) {
-                paraForJimple.add(StringConstant.v(str));
-            }
-        } else if (paraVal.get(0) instanceof Integer) {
-            for (int i : (List<Integer>) paraVal) {
-                paraForJimple.add(IntConstant.v(i));
-            }
+      // cast any parameter type to soot.Value
+      List<Value> paraForJimple = new ArrayList<Value>();
+      if (paraVal.get(0) instanceof JimpleVariable) {
+        for (JimpleVariable jv : (List<JimpleVariable>) paraVal) {
+          paraForJimple.add(jv.getVariable());
         }
-        invokeExpr = Jimple.v().newVirtualInvokeExpr(baseobj.getVariable(),
+      } else if (paraVal.get(0) instanceof String) {
+        for (String str : (List<String>) paraVal) {
+          paraForJimple.add(StringConstant.v(str));
+        }
+      } else if (paraVal.get(0) instanceof Integer) {
+        for (int i : (List<Integer>) paraVal) {
+          paraForJimple.add(IntConstant.v(i));
+        }
+      }
+      invokeExpr = Jimple.v().newVirtualInvokeExpr(baseobj.getVariable(),
               method2Call.getMethod().makeRef(), paraForJimple);
-      
+
     }
 
     if (!method2Call.getReturnType().equals("void")) {
@@ -66,15 +75,16 @@ public class JimpleInvoke extends JimpleElement {
     basemethod.getMethod().getActiveBody().getUnits().add(invokestmt);
   }
 
-  public JimpleInvoke(String nativemethod, ArrayList<String> paraVal, 
+  public JimpleInvoke(String nativemethod, ArrayList<String> paraVal,
           JimpleVariable returnTo) {
-      this(nativemethod,paraVal,returnTo,null);
+    this(nativemethod, paraVal, returnTo, null);
   }
   // specificly for "println"
-  public JimpleInvoke(String nativemethod, ArrayList<String> paraVal, 
+
+  public JimpleInvoke(String nativemethod, ArrayList<String> paraVal,
           JimpleVariable returnTo, JimpleMethod basemethod) {
     SootMethod toCall = null;
-    
+
     if (nativemethod.equals("println")) {
       baseObject = Jimple.v().newLocal("print_line",
               JimpleUtil.getTypeByString("println"));
@@ -83,7 +93,7 @@ public class JimpleInvoke extends JimpleElement {
         basemethod.getMethod().getActiveBody().getLocals().add(baseObject);
       }
     }
-    
+
     // Local to store return value
 
     // 
@@ -101,19 +111,15 @@ public class JimpleInvoke extends JimpleElement {
       this.invokestmt = Jimple.v().newInvokeStmt(invokeExpr);
     }
     if (basemethod != null) {
-        basemethod.getMethod().getActiveBody().getUnits().add(invokestmt);
+      basemethod.getMethod().getActiveBody().getUnits().add(invokestmt);
     }
-  }
-
-  // need to be modified
-  public void userInvoke(JimpleVariable usrobj, JimpleMethod method2Call, ArrayList<String> paraVal) {
   }
 
   @Override
   protected Local getVariable() {
     return this.baseObject;
   }
-  
+
   @Override
   protected Unit getElement() {
     return invokestmt;

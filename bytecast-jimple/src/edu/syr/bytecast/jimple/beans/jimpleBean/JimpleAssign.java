@@ -1,27 +1,25 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * 03/25/2013 - 1.0
+ * 
+ * this class writes lines of Jimple like:
+ * a = 5;
+ * b = 3;
+ * c = a+b;
+ * 
+ * could pass object of base JimpleMethod this assign stmt 
+ * belongs to, which will do the job of addElement(). can't use both
+ * 
  */
 package edu.syr.bytecast.jimple.beans.jimpleBean;
 
-import java.util.List;
 import soot.*;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.jimple.StringConstant;
-;
-import soot.util.Switchable;
-import soot.util.Switchable;
-import soot.util.Switchable;
-import soot.util.Switchable;
-import soot.util.Switchable;
-import soot.util.Switchable;
-import soot.util.Switchable;
-import soot.util.Switchable;
-import soot.util.Switchable;
+
 
 /**
- *
+ * 
  * @author Xirui Wang
  */
 

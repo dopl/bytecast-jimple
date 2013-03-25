@@ -1,6 +1,16 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * 03/25/2013 - 1.0
+ * 
+ * this class writes jimple like:
+ * if $r0 < 3 goto label0;
+ * 
+ * only support "if" currently
+ * 
+ * 
+ * "targets" is where program will jump if condition is true
+ * targets must be added to JimpleMethod by addElement() method
+ * could be added to anywhere, but normally added at the last of
+ * current method definition
  */
 package edu.syr.bytecast.jimple.beans.jimpleBean;
 

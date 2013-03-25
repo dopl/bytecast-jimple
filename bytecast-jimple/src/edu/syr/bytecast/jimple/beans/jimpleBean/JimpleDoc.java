@@ -1,5 +1,7 @@
 /*
+ * 03/25/2013 - 1.0
  * 
+ * accept a JimpleClass and print to a jimple file
  * 
  * @author Peike Dai
  * 
