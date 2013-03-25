@@ -128,5 +128,10 @@ public class JimpleMethod {
     public String getReturnType() {
       return this.returnType;
     }
+    
+    public void setReturn(JimpleVariable returnvariable) {
+      Unit returnstmt = Jimple.v().newReturnStmt(returnvariable.getVariable());
+      units.add(returnstmt);
+    }
 }
 
