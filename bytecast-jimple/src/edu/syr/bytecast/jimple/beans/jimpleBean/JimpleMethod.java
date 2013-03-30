@@ -30,7 +30,6 @@ public class JimpleMethod {
   private PatchingChain<Unit> units;
   private Chain<Local> locals;
   private SootMethod myMethod;
-
   /**
    *
    * @param methodName
@@ -39,15 +38,14 @@ public class JimpleMethod {
    * (public+static) :value will be 9))
    * @param parameters_type
    */
-  public JimpleMethod(String methodName, String returnType,
-          JimpleClass declaringClass, int modifier, ArrayList<String> parameters_type) {
+  public JimpleMethod(int modifier, String returnType,
+          String methodName, ArrayList<String> parameters_type, JimpleClass declaringClass) {
 
     this.methodName = methodName;
     this.modifier = modifier;
     this.returnType = returnType;
     this.parameters_type = parameters_type;
     this.declaringClass = declaringClass.getSClass();
-
     createMethod();
   }
 
@@ -74,8 +72,10 @@ public class JimpleMethod {
   }
 
   private void initMethod() {
-
-    if (!methodName.equals("main")) {
+    if (methodName.equals("main")) {
+      // java.lang.String[] p0
+      Local para0 = Jimple.v().newLocal("p0", JimpleUtil.getTypeByString("String[]"));
+    } else {
       // Class r0;
       Local thisref = Jimple.v().newLocal("r0", declaringClass.getType());
       locals.add(thisref);
@@ -86,6 +86,11 @@ public class JimpleMethod {
       units.add(thistmt);
 
     }
+    declaringClass.addMethod(myMethod);
+  }
+  
+  public void initMain() {
+      
   }
 
   public List<String> getParameterTypes() {

@@ -57,7 +57,7 @@ public class TestJimple {
     parameter_type_sum.add("int");
    
     JimpleMethod sumMethod = new JimpleMethod("sum", "int", jClass, 1, parameter_type_sum);
-    jClass.addMethod(sumMethod);
+//    jClass.addMethod(sumMethod);
     // assign pass-in value to local variable
     // like l0 := @parameter0 int
     List<JimpleVariable> summethod_parameters = new ArrayList<JimpleVariable>();
