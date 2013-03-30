@@ -78,10 +78,139 @@ public class Jimple implements IJimple{
             if( judge == 0)
                 break;
         }
+        Set<ISection> sections = result.keySet();
+        for(ISection section : sections)
+        {
+            if(section.getSectionName() == "main")
+            {
+                List<ParsedInstructionsSet> analyzing_set = result.get(section);
+                List<ParsedInstructionsSet> ordered_set = new ArrayList<ParsedInstructionsSet>();
+                int index = 1;
+                boolean judge = false;
+                while(true)
+                {
+                    for(ParsedInstructionsSet parsed_set : analyzing_set)
+                    {
+                        JInstructionInfo info = parsed_set.getInfo();
+                        if(info.getStart_Index() == index)
+                        {
+                            ordered_set.add(parsed_set);
+                            index = index + info.getInstructions_Count();
+                            if(info.getInstruction_Name() == "Leave")
+                                judge = true;
+                            break;
+                        }
+                    }
+                    if(judge == true)
+                        break;
+                
+                }
+                Map<String, String> parameter = new HashMap<String, String>();
+                for(ParsedInstructionsSet parsed_set : ordered_set)
+                {
+                    jimpleCreator(parsed_set, parameter);
+                }
+            }
+        }
      
         return false;
     } 
     
+    private void jimpleCreator(ParsedInstructionsSet ins_set, Map<String, String> parameter){
+        // initialize the jimple file
+        JInstructionInfo info = ins_set.getInfo();
+        List<MemoryInstructionPair> pair_list = ins_set.getInstructions_List();
+        String name = info.getInstruction_Name();
+        if(name == "PreMemoryProcess")
+        {
+            // write the Jimple premeory process statement
+        }
+        else if(name == "SetArgvAndArgc")
+        {
+            String argc = 
+                    pair_list.get(0).getInstruction().getOperands().get(1).getOperandValue().toString();
+            String argv = 
+                    pair_list.get(1).getInstruction().getOperands().get(1).getOperandValue().toString();
+            parameter.put(argc, "argc");
+            parameter.put(argv, "argv");
+            // write the Jimple set argc and argv statement
+        }
+        else if(name == "If")
+        {
+            OperandType left_operand_type =
+                    pair_list.get(0).getInstruction().getOperands().get(0).getOperandType();
+            OperandType right_operand_type =
+                    pair_list.get(0).getInstruction().getOperands().get(1).getOperandType();
+            String left_operand = 
+                    pair_list.get(0).getInstruction().getOperands().get(0).getOperandValue().toString();
+            String right_operand =
+                    pair_list.get(0).getInstruction().getOperands().get(1).getOperandValue().toString();
+            
+            transferParameter(left_operand_type, left_operand, parameter);
+            transferParameter(right_operand_type, right_operand, parameter);
+            InstructionType ins_type = pair_list.get(1).getInstruction().getInstructiontype();
+            String symbol = judgeSymbolOfIfStatement(ins_type);
+                
+            // write the Jimple if statement
+        }
+        else if(name == "Add")
+        {
+            // write the Jimple Add statement
+        }
+        else if(name == "Calling")
+        {
+            int num_para = 0;
+            for(MemoryInstructionPair pair : pair_list)
+            {
+                if( pair.getInstruction().getInstructiontype() != InstructionType.CALLQ)
+                {
+                    num_para ++;
+                }
+            }
+            List<String> parameterForFunction = new ArrayList<String>();
+            for(int i = 0; i < num_para; i ++)
+            {
+                OperandType operand_type =
+                    pair_list.get(i).getInstruction().getOperands().get(0).getOperandType();
+                String operand_value = 
+                    pair_list.get(i).getInstruction().getOperands().get(0).getOperandValue().toString();
+                transferParameter(operand_type, operand_value, parameter);
+                parameter.put(pair_list.get(i).getInstruction().getOperands().get(1).getOperandValue().toString(), operand_value);
+                parameterForFunction.add(operand_value);
+            }
+            String function_name = pair_list.get(num_para).getInstruction().getOperands().get(1).getOperandValue().toString();
+            // write the Jimple Calling statement
+        }
+        else if(name == "Leave")
+        {
+            // write the Jimple Leave statement
+        }
+    }
+    
+    private void transferParameter(OperandType type, String value, Map<String, String> parameter)
+    {
+        if( type == OperandType.CONSTANT)
+        {
+            value = value.substring(3);
+            int temp = Integer.parseInt(value);
+            value = Integer.toOctalString(temp);
+        }
+        else if( type == OperandType.MEMORY_EFFECITVE_ADDRESS)
+        {
+            value = parameter.get(value);
+        }
+    }
+    
+    private String judgeSymbolOfIfStatement(InstructionType ins_type)
+    {
+        String symbol = "";
+        if(ins_type == InstructionType.JNE)
+                symbol = "equal to";
+        else if(ins_type == InstructionType.JGE)
+                symbol = "greater";
+            // there are a lot of other situation, u can add "else if" statement to handle other situation
+        return symbol;
+    }
     
     private List<ParsedInstructionsSet> analyze(ISection obj_section, Map<String, Boolean> name_function) {
         List<ParsedInstructionsSet> parsed_list = new ArrayList<ParsedInstructionsSet>();
@@ -174,6 +303,24 @@ public class Jimple implements IJimple{
                 String fun_name = " ";
                 if( name_function.get(fun_name) == null )
                     name_function.put(fun_name, Boolean.FALSE);
+                parsed_list.add(parsed_set);
+            }
+        }
+        
+        fil = new LeaveFilter();
+        for(int index = 0; index < obj_instruction.size(); index++)
+        {
+            if(fil.doTest(obj_instruction, index))
+            {
+                JInstructionInfo jinfo = new  JInstructionInfo();
+                jinfo.setInstruction_Name("Leave");
+                jinfo.setInstructions_Count(2);
+                jinfo.setStart_Index(index);
+                parsed_set.setInfo(jinfo);
+                List<MemoryInstructionPair> temp_instruction = new ArrayList<MemoryInstructionPair>();
+                for( int i = 0; i < 2; i++)
+                    temp_instruction.add(obj_instruction.get(index + i));
+                parsed_set.setInstructions_List(temp_instruction);
                 parsed_list.add(parsed_set);
             }
         }
