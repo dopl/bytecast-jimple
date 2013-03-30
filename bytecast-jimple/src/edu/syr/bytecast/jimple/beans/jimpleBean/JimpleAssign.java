@@ -170,11 +170,25 @@ public class JimpleAssign extends JimpleElement {
 
   public void JimpleDiv(int jVariable1, int jVariable2) {
 
-    Value rhs = Jimple.v().newDivExpr(IntConstant.v(jVariable1), IntConstant.v(jVariable2));
+    Value rhs = Jimple.v().newDivExpr(IntConstant.v(jVariable1), 
+            IntConstant.v(jVariable2));
     add_lhs = Jimple.v().newLocal("add_lhs", IntType.v());
     a_assign = Jimple.v().newAssignStmt(add_lhs, rhs);
   }
 
+  public void JimpleNew(JimpleVariable jv, JimpleClass jClass, 
+          JimpleMethod callFromMethod) {
+    // jv = new type;
+    Value rhs = Jimple.v().newNewExpr(jClass.getSClass().getType());
+    a_assign = Jimple.v().newAssignStmt(jv.getVariable(), rhs);
+    callFromMethod.getMethod().getActiveBody().getUnits().add(a_assign);
+    
+    // specialinvoke sumBase.<test: void <init>()>();
+    Value ctorexpr = Jimple.v().newSpecialInvokeExpr(jv.getVariable(), 
+            jClass.getSClass().getMethodByName("<init>").makeRef());
+    Unit ctorinvoke = Jimple.v().newInvokeStmt(ctorexpr);
+    callFromMethod.getMethod().getActiveBody().getUnits().add(ctorinvoke);
+  }
   @Override
   protected Local getVariable() {
     return this.add_lhs;

@@ -88,9 +88,9 @@ public class JimpleClass {
     mySootClass.setSuperclass(Scene.v().getSootClass("java.lang.Object"));
   }
 
-  public void addMethod(JimpleMethod jm) {
-    mySootClass.addMethod(jm.getMethod());
-  }
+//  public void addMethod(JimpleMethod jm) {
+//    mySootClass.addMethod(jm.getMethod());
+//  }
   // return a jimple class
 
   protected SootClass getSClass() {
