@@ -27,7 +27,6 @@ import edu.syr.bytecast.amd64.api.output.MemoryInstructionPair;
 import edu.syr.bytecast.jimple.beans.jimpleBean.JInstructionInfo;
 import edu.syr.bytecast.jimple.api.IFilter;
 import edu.syr.bytecast.jimple.api.IJimple;
-import edu.syr.bytecast.jimple.beans.jimpleBean.ParsedInstructionsSet;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -37,18 +36,27 @@ import java.util.Set;
 public class Jimple implements IJimple{
 
     public boolean createJimple(IExecutableFile exe_file) {
+
+        /*
+        List<ISection> all_section = exe_file.getAllSections();
+        ISection main = all_section.get(0);
+        List<ParsedInstructionsSet> parsed_list = new ArrayList<ParsedInstructionsSet>();
+        ParsedInstructionsSet parsed_set = new ParsedInstructionsSet();
+        for(int i = 0; i < all_section.size(); i ++)
+=======
         List<ISection> all_section = exe_file.getSectionsWithInstructions();
         ISection obj_sec = all_section.get(0);
         Map<ISection, List<ParsedInstructionsSet>> result = new HashMap<ISection, List<ParsedInstructionsSet>>();
         List<ParsedInstructionsSet> parsed_list_result = new ArrayList<ParsedInstructionsSet>();
         Map<String, Boolean> name_function = new HashMap<String, Boolean>();
         for(int i = 0; i < all_section.size(); i++)
+>>>>>>> efa19faf60db1c4a12cf023baaa812bb7700812b
         {
             if(all_section.get(i).getSectionName() == "main")
             {
                 obj_sec = all_section.get(i);
                 break;
-            }
+            }/home/pahuja/code/bytecast/bytecast-amd64
         }
         parsed_list_result = analyze(obj_sec, name_function);
         result.put(obj_sec, parsed_list_result);
@@ -306,6 +314,10 @@ public class Jimple implements IJimple{
                 parsed_list.add(parsed_set);
             }
         }
+<<<<<<< HEAD
+        /ho/home/pahuja/code/bytecast/bytecast-amd64me/pahuja/code/bytecast/bytecast-amd64
+        
+
         
         fil = new LeaveFilter();
         for(int index = 0; index < obj_instruction.size(); index++)
@@ -342,7 +354,10 @@ public class Jimple implements IJimple{
                 parsed_list.add(parsed_set);
             }
         }
+>>>>>>> efa19faf60db1c4a12cf023baaa812bb7700812b
         
         return parsed_list;
+        * */
+        return true;
     }
 }
