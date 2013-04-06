@@ -7,6 +7,7 @@ package edu.syr.bytecast.jimple.impl;
 import edu.syr.bytecast.amd64.api.constants.InstructionType;
 import edu.syr.bytecast.amd64.api.constants.OperandType;
 import edu.syr.bytecast.amd64.api.instruction.IInstruction;
+import edu.syr.bytecast.amd64.api.output.MemoryInstructionPair;
 import edu.syr.bytecast.jimple.api.IFilter;
 import java.util.List;
 import java.util.Map;
@@ -19,19 +20,27 @@ public class DivBy2NFilter implements IFilter {
     //Divide by 2^n filter
 
     @Override
-    public boolean doTest(Map<Long, IInstruction> instList, int index) {
-        IInstruction inst = instList.get(index);
+    public boolean doTest(List<MemoryInstructionPair> instList, int index) {
+        MemoryInstructionPair mip = instList.get(index);
+        IInstruction inst = mip.getInstruction();
+        //IInstruction inst = instList.get(index);
         int op_index = 0;
         if (inst.getInstructiontype() == InstructionType.MOV) {
             if (inst.getOperands().get(op_index).getOperandType() == OperandType.MEMORY_EFFECITVE_ADDRESS
                     && inst.getOperands().get(++op_index).getOperandType() == OperandType.REGISTER) {
-                inst = instList.get(index + 1);
+                mip = instList.get(index+1);
+                inst = mip.getInstruction();
+                //inst = instList.get(index + 1);
                 op_index = 0;
                 if (inst.getOperands().get(op_index).getOperandType() == OperandType.REGISTER
                         && inst.getOperands().get(++op_index).getOperandType() == OperandType.REGISTER) {
-                    inst = instList.get(index + 2);
+                    mip = instList.get(index+2);
+                    inst = mip.getInstruction();
+                    //inst = instList.get(index + 2);
                     if (inst.getInstructiontype() == InstructionType.SHR) {
-                        inst = instList.get(index + 3);
+                        mip = instList.get(index+3);
+                        inst = mip.getInstruction();
+                        //inst = instList.get(index + 3);
                         if (inst.getInstructiontype() == InstructionType.LEA) {
                             return true;
                         }

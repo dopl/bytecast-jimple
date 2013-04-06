@@ -59,10 +59,15 @@ public class JimpleCondition extends JimpleElement{
         init2("if", comprt, leftv.getVariable(), IntConstant.v(rightv), basemethod.getMethod());
     }
     
-    public JimpleCondition(String comprt, JimpleVariable leftv,
-            String rightv) {
-        this("if", comprt, leftv.getVariable(), StringConstant.v(rightv));
+    public JimpleCondition(String comprt, JimpleVariable leftv, 
+            JimpleVariable rightv, JimpleMethod basemethod) {
+      init2("if", comprt, leftv.getVariable(), rightv.getVariable(), basemethod.getMethod());
     }
+    
+//    public JimpleCondition(String comprt, JimpleVariable leftv,
+//            String rightv) {
+//        this("if", comprt, leftv.getVariable(), StringConstant.v(rightv));
+//    }
     
     public JimpleCondition(String type, String comprt, 
             JimpleVariable leftv, JimpleVariable rightv) {
