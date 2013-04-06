@@ -11,6 +11,7 @@ import edu.syr.bytecast.amd64.api.output.MemoryInstructionPair;
 import edu.syr.bytecast.jimple.api.IFilter;
 import edu.syr.bytecast.jimple.api.ParameterInfo;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -18,7 +19,6 @@ import java.util.List;
  */
 public class ParamInitFilter implements IFilter{
     //Function Parameter initialization filter
-    @Override
     public boolean doTest(List<MemoryInstructionPair> instList, int index) {
         MemoryInstructionPair mip = instList.get(index);
         IInstruction inst = mip.getInstruction(); 

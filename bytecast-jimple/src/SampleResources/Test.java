@@ -89,10 +89,18 @@ public class Test {
     //Unit u = new Units(java.util.Iterator())
     //List<Unit> units = new ArrayList<Unit>();// = getUnits(mainMethod.getActiveBody());
 
+
     units.add(Jimple.v().newIdentityStmt(arg, Jimple.v().newParameterRef(ArrayType.v(RefType.v("java.lang.String"), 1), 0)));
     
     Local tmpVar = Jimple.v().newLocal("a", IntType.v());
     Unit a_assign = Jimple.v().newAssignStmt(tmpVar, IntConstant.v(0));
+    
+    Value rhs = Jimple.v().newAddExpr(tmpVar, tmpVar);
+    Local add_lhs = Jimple.v().newLocal("add_lhs", IntType.v());
+    Unit b_assign = Jimple.v().newAssignStmt(add_lhs, rhs);
+    
+    
+    
     units.add(a_assign);
     
     Local tmpRef = Jimple.v().newLocal("local1", RefType.v("java.io.PrintStream"));
@@ -127,7 +135,7 @@ public class Test {
   
    //the return unit must be at the end of the code 
     units.add(returnUnit);
-    
+
     //soot.jimple.Jimple.v().newStaticInvokeExpr.
     //soot.jimple.Jimple.v().newAssignStmt(arg, arg)
     //soot.jimple.Jimple.v().newStaticInvokeExpr

@@ -1,0 +1,49 @@
+public class test extends java.lang.Object
+{
+
+    void <init>()
+    {
+        test r0;
+
+        r0 := @this: test;
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+        return;
+    }
+
+    public static void main(java.lang.String[])
+    {
+        java.lang.String[] r0;   //add
+        int $r1, $r2, $r3, $rsum;
+        test sumBase;
+        java.io.PrintStream print_line;
+        
+        r0 := @parameter0: java.lang.String[];  //add
+        $r1 = new test; //add
+        specialinvoke $r1.<test: void <init>()>(); //add
+        $r1 = 0;
+        if $r1 < 1 goto label0;
+
+           print_line = <java.lang.System: java.io.PrintStream out>;  //add
+       virtualinvoke print_line.<java.io.PrintStream: void println(java.lang.String)>("hello");
+   
+
+        
+        
+     label0:
+           $r2 = 1;
+        $r3 = 2;
+        $rsum = virtualinvoke sumBase.<test: int sum(int,int)>($r2, $r3);
+    }
+
+    public int sum(int, int)
+    {
+        test r0;
+        int l0, l1, sum;
+
+        r0 := @this: test;
+        l0 := @parameter0: int;
+        l1 := @parameter1: int;
+        sum = l0 + l1;
+        return sum;
+    }
+}
