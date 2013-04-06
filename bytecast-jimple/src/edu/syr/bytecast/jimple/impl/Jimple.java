@@ -28,6 +28,7 @@ import edu.syr.bytecast.jimple.beans.jimpleBean.JInstructionInfo;
 import edu.syr.bytecast.jimple.api.IFilter;
 import edu.syr.bytecast.jimple.api.IJimple;
 import edu.syr.bytecast.jimple.beans.jimpleBean.ParsedInstructionsSet;
+import edu.syr.bytecast.jimple.beans.jimpleBean.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -35,21 +36,26 @@ import java.util.HashMap;
 import java.util.Set;
 
 public class Jimple implements IJimple{
+    private JimpleDoc jDoc;
+    private JimpleMethod jMainMethod;
 
     public boolean createJimple(IExecutableFile exe_file) {
         List<ISection> all_section = exe_file.getSectionsWithInstructions();
         ISection obj_sec = all_section.get(0);
         Map<ISection, List<ParsedInstructionsSet>> result = new HashMap<ISection, List<ParsedInstructionsSet>>();
         List<ParsedInstructionsSet> parsed_list_result = new ArrayList<ParsedInstructionsSet>();
+        // used to judge whether the function is analyzed
         Map<String, Boolean> name_function = new HashMap<String, Boolean>();
+        // find the main function
         for(int i = 0; i < all_section.size(); i++)
         {
-            if(all_section.get(i).getSectionName() == "main")
+            if(all_section.get(i).getSectionName().equals("main"))
             {
                 obj_sec = all_section.get(i);
                 break;
             }
         }
+        // 
         parsed_list_result = analyze(obj_sec, name_function);
         result.put(obj_sec, parsed_list_result);
         
@@ -65,7 +71,7 @@ public class Jimple implements IJimple{
                     judge = 1;
                     for(int i = 0; i < all_section.size(); i++)
                     {
-                        if(all_section.get(i).getSectionName() == str)
+                        if(all_section.get(i).getSectionName().equals(str))
                         {
                             obj_sec = all_section.get(i);
                             break;
@@ -78,10 +84,11 @@ public class Jimple implements IJimple{
             if( judge == 0)
                 break;
         }
+        // sort the order of the set in section
         Set<ISection> sections = result.keySet();
         for(ISection section : sections)
         {
-            if(section.getSectionName() == "main")
+            if(section.getSectionName().equals("main"))
             {
                 List<ParsedInstructionsSet> analyzing_set = result.get(section);
                 List<ParsedInstructionsSet> ordered_set = new ArrayList<ParsedInstructionsSet>();
@@ -96,7 +103,7 @@ public class Jimple implements IJimple{
                         {
                             ordered_set.add(parsed_set);
                             index = index + info.getInstructions_Count();
-                            if(info.getInstruction_Name() == "Leave")
+                            if(info.getInstruction_Name().equals("Leave"))
                                 judge = true;
                             break;
                         }
@@ -105,6 +112,7 @@ public class Jimple implements IJimple{
                         break;
                 
                 }
+                // used to store the parameter in the assembly language
                 Map<String, String> parameter = new HashMap<String, String>();
                 for(ParsedInstructionsSet parsed_set : ordered_set)
                 {
@@ -121,11 +129,18 @@ public class Jimple implements IJimple{
         JInstructionInfo info = ins_set.getInfo();
         List<MemoryInstructionPair> pair_list = ins_set.getInstructions_List();
         String name = info.getInstruction_Name();
-        if(name == "PreMemoryProcess")
+        jDoc = new JimpleDoc();
+        JimpleClass jClass = new JimpleClass("Test", 1);
+        jDoc.addClass(jClass);
+        if(name.equals("PreMemoryProcess"))
         {
-            // write the Jimple premeory process statement
+            ArrayList<String> parameter_list_main = new ArrayList<String>();
+            parameter_list_main.add("String[]");
+
+            //create main method add initiate first few lines of main
+            jMainMethod = new JimpleMethod(9, "void","main", parameter_list_main, jClass);
         }
-        else if(name == "SetArgvAndArgc")
+        else if(name.equals("SetArgvAndArgc"))
         {
             String argc = 
                     pair_list.get(0).getInstruction().getOperands().get(1).getOperandValue().toString();
@@ -133,9 +148,8 @@ public class Jimple implements IJimple{
                     pair_list.get(1).getInstruction().getOperands().get(1).getOperandValue().toString();
             parameter.put(argc, "argc");
             parameter.put(argv, "argv");
-            // write the Jimple set argc and argv statement
         }
-        else if(name == "If")
+        else if(name.equals("If"))
         {
             OperandType left_operand_type =
                     pair_list.get(0).getInstruction().getOperands().get(0).getOperandType();
@@ -150,14 +164,28 @@ public class Jimple implements IJimple{
             transferParameter(right_operand_type, right_operand, parameter);
             InstructionType ins_type = pair_list.get(1).getInstruction().getInstructiontype();
             String symbol = judgeSymbolOfIfStatement(ins_type);
+            JimpleCondition jcl;
+            if(left_operand_type == OperandType.CONSTANT && right_operand_type == OperandType.MEMORY_EFFECITVE_ADDRESS)
+            {
+                JimpleVariable right_variable = new JimpleVariable(right_operand, "int", jMainMethod);
+                jcl = new JimpleCondition(symbol, right_variable, Integer.parseInt(left_operand), jMainMethod);
+            }
+            else
+            {
+                JimpleVariable left_variable = new JimpleVariable(left_operand, "int", jMainMethod);
+                JimpleVariable right_variable = new JimpleVariable(right_operand, "int", jMainMethod);
+                jcl = new JimpleCondition(symbol, right_variable, left_variable, jMainMethod);
+            }
+            JimpleVariable right_variable = new JimpleVariable(right_operand, "int", jMainMethod);
+            
                 
             // write the Jimple if statement
         }
-        else if(name == "Add")
+        else if(name.equals("Add"))
         {
             // write the Jimple Add statement
         }
-        else if(name == "Calling")
+        else if(name.equals("Calling"))
         {
             int num_para = 0;
             for(MemoryInstructionPair pair : pair_list)
@@ -181,7 +209,7 @@ public class Jimple implements IJimple{
             String function_name = pair_list.get(num_para).getInstruction().getOperands().get(1).getOperandValue().toString();
             // write the Jimple Calling statement
         }
-        else if(name == "Leave")
+        else if(name.equals("Leave"))
         {
             // write the Jimple Leave statement
         }
@@ -205,9 +233,17 @@ public class Jimple implements IJimple{
     {
         String symbol = "";
         if(ins_type == InstructionType.JNE)
-                symbol = "equal to";
+                symbol = "!=";
+        else if(ins_type == InstructionType.JE)
+                symbol = "==";
+        else if(ins_type == InstructionType.JLE)
+                symbol = "<=";
         else if(ins_type == InstructionType.JGE)
-                symbol = "greater";
+                symbol = ">=";
+        else if(ins_type == InstructionType.JL)
+                symbol = "<";
+        else if(ins_type == InstructionType.JG)
+                symbol = ">";
             // there are a lot of other situation, u can add "else if" statement to handle other situation
         return symbol;
     }
