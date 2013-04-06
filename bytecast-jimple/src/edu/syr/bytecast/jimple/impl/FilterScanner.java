@@ -5,6 +5,7 @@
 package edu.syr.bytecast.jimple.impl;
 
 import edu.syr.bytecast.amd64.api.instruction.IInstruction;
+import edu.syr.bytecast.amd64.api.output.MemoryInstructionPair;
 import edu.syr.bytecast.jimple.api.IFilter;
 import edu.syr.bytecast.jimple.beans.FilterInfo;
 import edu.syr.bytecast.jimple.beans.JInstructionInfo;
@@ -18,14 +19,14 @@ import java.util.List;
  */
 public class FilterScanner {
     
-    public void scan(List<IInstruction> unparsed_inst_list, List<ParsedInstructionsSet> parsed_inst_list, IFilter filter, FilterInfo filter_info){//, String type, int count) {
+    public void scan(List<MemoryInstructionPair> unparsed_inst_list, List<ParsedInstructionsSet> parsed_inst_list, IFilter filter, FilterInfo filter_info){//, String type, int count) {
       int unparsed_list_size = unparsed_inst_list.size();
       int count = filter_info.getInst_Count();
       String type = filter_info.getFilter_Name();
       for(int j=0;j<unparsed_list_size;j++){
         if(filter.doTest(unparsed_inst_list, j)){
           ParsedInstructionsSet pis= new ParsedInstructionsSet();
-          List<IInstruction> inst_list = new ArrayList<IInstruction>();
+          List<MemoryInstructionPair> inst_list = new ArrayList<MemoryInstructionPair>();
           for(int k = j; k < j+count; k++){
             inst_list.add(unparsed_inst_list.get(k));
           }
