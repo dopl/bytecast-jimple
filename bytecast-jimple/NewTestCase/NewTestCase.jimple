@@ -1,0 +1,77 @@
+public class NewTestCase extends java.lang.Object
+{
+
+    public void <init>()
+    {
+        NewTestCase r0;
+
+        r0 := @this: NewTestCase;
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+        return;
+    }
+
+    static int sum(int, int)
+    {
+        int i0, i1, $i2;
+
+        i0 := @parameter0: int;
+        i1 := @parameter1: int;
+        $i2 = i0 + i1;
+        return $i2;
+    }
+
+    static int halve(int)
+    {
+        int i0, $i1;
+
+        i0 := @parameter0: int;
+        $i1 = i0 / 2;
+        return $i1;
+    }
+
+    static int dotstuff(int, int)
+    {
+        int i0, i1, $i2, $i3;
+
+        i0 := @parameter0: int;
+        i1 := @parameter1: int;
+        if i0 >= i1 goto label0;
+
+        $i2 = staticinvoke <NewTestCase: int sum(int,int)>(i0, i1);
+        return $i2;
+
+     label0:
+        $i3 = staticinvoke <NewTestCase: int halve(int)>(i0);
+        return $i3;
+    }
+
+    static int c_main(java.lang.String[])
+    {
+        java.lang.String[] r0;
+        int $i0, $i1, $i2, $i3;
+        java.lang.String $r1, $r2;
+
+        r0 := @parameter0: java.lang.String[];
+        $i0 = lengthof r0;
+        if $i0 != 2 goto label0;
+
+        $r1 = r0[0];
+        $i1 = staticinvoke <java.lang.Integer: int parseInt(java.lang.String)>($r1);
+        $r2 = r0[1];
+        $i2 = staticinvoke <java.lang.Integer: int parseInt(java.lang.String)>($r2);
+        $i3 = staticinvoke <NewTestCase: int dotstuff(int,int)>($i1, $i2);
+        return $i3;
+
+     label0:
+        return -1;
+    }
+
+    public static void main(java.lang.String[])
+    {
+        java.lang.String[] r0;
+
+        r0 := @parameter0: java.lang.String[];
+        staticinvoke <NewTestCase: int c_main(java.lang.String[])>(r0);
+        return;
+    }
+}
