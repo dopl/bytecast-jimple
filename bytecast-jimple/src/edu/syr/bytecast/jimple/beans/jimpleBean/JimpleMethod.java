@@ -114,6 +114,11 @@ public class JimpleMethod {
     return myMethod;
   }
 
+  protected String getMethodName(){
+      
+      return methodName;
+  }
+  
   public void addElement(JimpleElement jm) {
     if (jm.getVariable() != null) {
       myMethod.getActiveBody().getLocals().add(jm.getVariable());
