@@ -114,7 +114,7 @@ public class JimpleMethod {
     return myMethod;
   }
 
-  protected String getMethodName(){
+  public String getMethodName(){
       
       return methodName;
   }
