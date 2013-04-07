@@ -7,6 +7,7 @@ package edu.syr.bytecast.jimple.impl;
 import edu.syr.bytecast.amd64.api.constants.InstructionType;
 import edu.syr.bytecast.amd64.api.constants.OperandType;
 import edu.syr.bytecast.amd64.api.instruction.IInstruction;
+import edu.syr.bytecast.amd64.api.output.MemoryInstructionPair;
 import edu.syr.bytecast.jimple.api.AbstractFilter;
 import edu.syr.bytecast.jimple.api.IFilter;
 import java.util.List;
@@ -17,6 +18,12 @@ import java.util.Map;
  * @author nick
  */
 public class UseArgumentFilter extends AbstractFilter implements IFilter{
+
+    @Override
+    public boolean doTest(List<MemoryInstructionPair> instList, int index) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    /*
     public boolean doTest(Map<Long, IInstruction> instList, int index)
     {
         IInstruction ins = instList.get(index);
@@ -44,6 +51,6 @@ public class UseArgumentFilter extends AbstractFilter implements IFilter{
             }
         }
         return false;
-    } 
+    } */
     
 }
