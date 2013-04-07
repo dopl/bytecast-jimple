@@ -20,17 +20,10 @@ package edu.syr.bytecast.jimple.impl;
 
 import edu.syr.bytecast.amd64.api.constants.InstructionType;
 import edu.syr.bytecast.amd64.api.constants.OperandType;
-import edu.syr.bytecast.amd64.api.output.IExecutableFile;
-import edu.syr.bytecast.amd64.api.output.ISection;
 import edu.syr.bytecast.amd64.api.instruction.IInstruction;
 import edu.syr.bytecast.amd64.api.output.MemoryInstructionPair;
-import edu.syr.bytecast.jimple.beans.jimpleBean.JInstructionInfo;
 import edu.syr.bytecast.jimple.api.IFilter;
-import edu.syr.bytecast.jimple.api.IJimple;
-import edu.syr.bytecast.jimple.beans.jimpleBean.ParsedInstructionsSet;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
 
 public class IfFilter implements IFilter{
     public boolean doTest(List<MemoryInstructionPair> instList, int index)

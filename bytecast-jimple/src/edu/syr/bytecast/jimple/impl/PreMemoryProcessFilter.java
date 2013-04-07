@@ -8,12 +8,8 @@ import edu.syr.bytecast.amd64.api.constants.InstructionType;
 import edu.syr.bytecast.amd64.api.constants.OperandType;
 import edu.syr.bytecast.amd64.api.instruction.IInstruction;
 import edu.syr.bytecast.amd64.api.output.MemoryInstructionPair;
-import edu.syr.bytecast.jimple.beans.jimpleBean.ParsedInstructionsSet;
-import edu.syr.bytecast.jimple.beans.jimpleBean.JInstructionInfo;
 import edu.syr.bytecast.jimple.api.IFilter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
