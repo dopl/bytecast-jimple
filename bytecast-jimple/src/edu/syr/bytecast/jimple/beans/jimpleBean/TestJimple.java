@@ -11,6 +11,7 @@ package edu.syr.bytecast.jimple.beans.jimpleBean;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import soot.jimple.internal.JAssignStmt;
 
 public class TestJimple {
 
@@ -79,7 +80,7 @@ public class TestJimple {
     // specialinvoke sumBase.<test: void <init>()>();
     jim_ass.JimpleNew(sumClassObj, jClass, jMainMethod);
     
-    // if (a < 1)
+    // if (a < 1)JAssignStmt
     JimpleCondition jc1 = new JimpleCondition("<", r1, 1, jMainMethod);
 
     // set target (if else)(must be added to method after condition been added
@@ -109,6 +110,14 @@ public class TestJimple {
     parameter_value_sum.add(r2);
     parameter_value_sum.add(r3);
     jim_inv.invokeUserDefined(sumClassObj, sumMethod, parameter_value_sum, rsum, jMainMethod);
+    
+    // FOR TEST ONLY
+    // int $r4;
+    JimpleVariable r4 = new JimpleVariable("$r4", "int", jMainMethod);
+    // String[] r5;
+    JimpleVariable r5 = new JimpleVariable("$r5", "String[]", jMainMethod);
+    // r4 = lengthof r5;
+    jim_ass.JimpleLengthOf(r4, r5, jMainMethod);
     
     // add lable0
     jMainMethod.addElement(forif);

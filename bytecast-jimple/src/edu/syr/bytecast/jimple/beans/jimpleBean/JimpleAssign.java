@@ -189,6 +189,13 @@ public class JimpleAssign extends JimpleElement {
     Unit ctorinvoke = Jimple.v().newInvokeStmt(ctorexpr);
     callFromMethod.getMethod().getActiveBody().getUnits().add(ctorinvoke);
   }
+  
+  public void JimpleLengthOf(JimpleVariable jv, JimpleVariable arr, 
+          JimpleMethod basemethod) {
+    Value rhs = Jimple.v().newLengthExpr(arr.getVariable());
+    a_assign = Jimple.v().newAssignStmt(jv.getVariable(), rhs);
+    basemethod.getMethod().getActiveBody().getUnits().add(a_assign);
+  }
   @Override
   protected Local getVariable() {
     return this.add_lhs;
