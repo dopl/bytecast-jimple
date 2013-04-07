@@ -24,11 +24,9 @@ import edu.syr.bytecast.amd64.api.output.IExecutableFile;
 import edu.syr.bytecast.amd64.api.output.ISection;
 import edu.syr.bytecast.amd64.api.instruction.IInstruction;
 import edu.syr.bytecast.amd64.api.output.MemoryInstructionPair;
-import edu.syr.bytecast.jimple.beans.jimpleBean.JInstructionInfo;
 import edu.syr.bytecast.jimple.api.IFilter;
 import edu.syr.bytecast.jimple.api.IJimple;
-import edu.syr.bytecast.jimple.beans.jimpleBean.ParsedInstructionsSet;
-import edu.syr.bytecast.jimple.beans.jimpleBean.*;
+import edu.syr.bytecast.jimple.beans.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -45,7 +43,7 @@ public class Jimple implements IJimple{
         //call the PatternSeperator to filter all the section
         PatternSeperator patt_Seperator = new PatternSeperator();
         filter_result = patt_Seperator.doFilter(all_section);
-        //call the JimpleFileGenerator to creathe the jimple file
+        //call the JimpleFileGenerator to creathe the jimple file 
         JimpleFileGenerator jim_Generator = new JimpleFileGenerator();
         jim_Generator.doJimpleCreate(filter_result);
         return false;

@@ -8,13 +8,12 @@ import edu.syr.bytecast.amd64.api.constants.InstructionType;
 import edu.syr.bytecast.amd64.api.constants.OperandType;
 import edu.syr.bytecast.amd64.api.output.ISection;
 import edu.syr.bytecast.amd64.api.output.MemoryInstructionPair;
-import edu.syr.bytecast.jimple.beans.jimpleBean.JInstructionInfo;
+import edu.syr.bytecast.jimple.beans.*;
 import edu.syr.bytecast.jimple.beans.jimpleBean.JimpleClass;
 import edu.syr.bytecast.jimple.beans.jimpleBean.JimpleCondition;
 import edu.syr.bytecast.jimple.beans.jimpleBean.JimpleDoc;
 import edu.syr.bytecast.jimple.beans.jimpleBean.JimpleMethod;
 import edu.syr.bytecast.jimple.beans.jimpleBean.JimpleVariable;
-import edu.syr.bytecast.jimple.beans.jimpleBean.ParsedInstructionsSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -32,8 +31,14 @@ public class JimpleFileGenerator {
     // declare the JimpleDocument 
     private JimpleDoc jDoc;
     
-    // declare the JimpleDocument 
-    private JimpleMethod jMainMethod;
+    // declare the JimpleClass
+    private JimpleClass jClass;
+    
+    // declare List of JimpleMethod
+    private List<JimpleMethod> method_list;
+    
+    // declare the index to get the Jimple Method
+    private int _index;
     
     // used to store the parameter in the assembly language
     private Map<String, String> parameter;
@@ -44,18 +49,31 @@ public class JimpleFileGenerator {
         sortSetInISection(filter_result);
         // used to store the parameter in the assembly language
         parameter = new HashMap<String, String>();
+        
+        _index = 0;
         // create the object of jimple file
         // implement the Jimple Document
         jDoc = new JimpleDoc();
+        // implement the Jimple Class
+        jClass = new JimpleClass("Test", 1);
+        // add class to document
+        jDoc.addClass(jClass);
+        ArrayList<String> parameter_list_main = new ArrayList<String>();
+            parameter_list_main.add("String[]");
+        // create the Jimple method for main function
+        JimpleMethod jMethod = new JimpleMethod(9, "void","main", parameter_list_main, jClass);
+        method_list.add(jMethod);
+        
+        
         Set<ISection> sections = filter_result.keySet();
-        for(ISection section : sections)
+        while(_index < method_list.size())
         {
-            
-            List<ParsedInstructionsSet> temp_set_list = filter_result.get(section);
+            List<ParsedInstructionsSet> temp_set_list = filter_result.get(method_list.get(_index).getMethodName());
             for(ParsedInstructionsSet parsed_set : temp_set_list)
             {
                 createJimpleFile(parsed_set);
             }
+            _index ++;
         }
     }
     
@@ -93,15 +111,14 @@ public class JimpleFileGenerator {
         List<MemoryInstructionPair> pair_list = ins_set.getInstructions_List();
         String name = info.getInstruction_Name();
         
-        JimpleClass jClass = new JimpleClass("Test", 1);
-        jDoc.addClass(jClass);
+        
         if(name.equals("PreMemoryProcess"))
         {
             ArrayList<String> parameter_list_main = new ArrayList<String>();
             parameter_list_main.add("String[]");
 
             //create main method add initiate first few lines of main
-            jMainMethod = new JimpleMethod(9, "void","main", parameter_list_main, jClass);
+            
         }
         else if(name.equals("SetArgvAndArgc"))
         {
@@ -132,14 +149,14 @@ public class JimpleFileGenerator {
             JimpleCondition jcl;
             if(left_operand_type == OperandType.CONSTANT && right_operand_type == OperandType.MEMORY_EFFECITVE_ADDRESS)
             {
-                JimpleVariable right_variable = new JimpleVariable(right_operand, "int", jMainMethod);
-                jcl = new JimpleCondition(symbol, right_variable, Integer.parseInt(left_operand), jMainMethod);
+                JimpleVariable right_variable = new JimpleVariable(right_operand, "int", method_list.get(_index));
+                jcl = new JimpleCondition(symbol, right_variable, Integer.parseInt(left_operand), method_list.get(_index));
             }
             else
             {
-                JimpleVariable left_variable = new JimpleVariable(left_operand, "int", jMainMethod);
-                JimpleVariable right_variable = new JimpleVariable(right_operand, "int", jMainMethod);
-                jcl = new JimpleCondition(symbol, right_variable, left_variable, jMainMethod);
+                JimpleVariable left_variable = new JimpleVariable(left_operand, "int", method_list.get(_index));
+                JimpleVariable right_variable = new JimpleVariable(right_operand, "int", method_list.get(_index));
+                jcl = new JimpleCondition(symbol, right_variable, left_variable, method_list.get(_index));
             }
             
         }
@@ -157,7 +174,7 @@ public class JimpleFileGenerator {
                     num_para ++;
                 }
             }
-            List<String> parameterForFunction = new ArrayList<String>();
+            ArrayList<String> parameterForFunction = new ArrayList<String>();
             for(int i = 0; i < num_para; i ++)
             {
                 OperandType operand_type =
@@ -170,6 +187,20 @@ public class JimpleFileGenerator {
             }
             String function_name = pair_list.get(num_para).getInstruction().getOperands().get(1).getOperandValue().toString();
             // write the Jimple Calling statement
+            boolean judge = false;
+            for(JimpleMethod j_method : method_list)
+            {
+                if(j_method.getMethodName().equals(function_name))
+                {
+                    judge = true;
+                    break;
+                }
+            }
+            if( judge == false)
+            {
+                JimpleMethod jMethod = new JimpleMethod(1, "int",function_name, parameterForFunction, jClass);
+                method_list.add(jMethod);
+            }
         }
         else if(name.equals("Leave"))
         {
