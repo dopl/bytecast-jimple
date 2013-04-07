@@ -30,7 +30,6 @@ public class FilterScanner {
           for(int k = j; k < j+count; k++){
             inst_list.add(unparsed_inst_list.get(k));
           }
-          
           JInstructionInfo jinfo = new  JInstructionInfo();
           jinfo.setInstruction_Name(type);
           jinfo.setInstructions_Count(count);

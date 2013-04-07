@@ -4,6 +4,7 @@
  */
 package edu.syr.bytecast.jimple.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,10 +13,15 @@ import java.util.List;
  */
 public class MethodInfo {
     
-    public List<ParameterInfo> parameters;
+    public List<ParameterInfo> parameters = new ArrayList<ParameterInfo>();
     private String method_name;
     private long startMemAddress;
     private long endMemAddress;
+    
+    public MethodInfo()
+    {
+        method_name = "DEFAULT";
+    }
     
     public int getParameterCount()
     {
