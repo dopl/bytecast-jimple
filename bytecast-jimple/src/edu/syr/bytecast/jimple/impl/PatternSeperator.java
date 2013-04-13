@@ -84,61 +84,65 @@ public class PatternSeperator {
     // filter the section
     private List<ParsedInstructionsSet> analyze(ISection obj_section) {
         List<ParsedInstructionsSet> parsed_list = new ArrayList<ParsedInstructionsSet>();
-        ParsedInstructionsSet parsed_set = new ParsedInstructionsSet();
         List<MemoryInstructionPair> obj_instruction = obj_section.getAllInstructionObjects();
-        IFilter fil = new PreMemoryProcessFilter();
-        for(int index = 0; index < obj_instruction.size(); index++)
-        {
-            if(fil.doTest(obj_instruction, index))
-            {
-                JInstructionInfo jinfo = new  JInstructionInfo();
-                jinfo.setInstruction_Name("PreMemoryProcess");
-                jinfo.setInstructions_Count(3);
-                jinfo.setStart_Index(index);
-                parsed_set.setInfo(jinfo);
-                List<MemoryInstructionPair> temp_instruction = new ArrayList<MemoryInstructionPair>();
-                for( int i = 0; i < 3; i++)
-                    temp_instruction.add(obj_instruction.get(index + i));
-                parsed_set.setInstructions_List(temp_instruction);
-                parsed_list.add(parsed_set);
-            }
-        }
         
+        FilterScanner fs = new FilterScanner();
+        //filter begins
+        //PreMemoryProcess
+        IFilter fil = new PreMemoryProcessFilter();
+        FilterInfo finfo = new FilterInfo();
+        finfo.setFilter_Name("PreMemoryProcess");
+        finfo.setInst_Count(3);
+        fs.scan(obj_instruction, parsed_list, fil, finfo);
+        
+        //SetArgvAndArgcFilter
         fil = new SetArgvAndArgcFilter();
-        for(int index = 0; index < obj_instruction.size(); index++)
-        {
-            if(fil.doTest(obj_instruction, index))
-            {
-                JInstructionInfo jinfo = new  JInstructionInfo();
-                jinfo.setInstruction_Name("SetArgvAndArgc");
-                jinfo.setInstructions_Count(2);
-                jinfo.setStart_Index(index);
-                parsed_set.setInfo(jinfo);
-                List<MemoryInstructionPair> temp_instruction = new ArrayList<MemoryInstructionPair>();
-                for( int i = 0; i < 2; i++)
-                    temp_instruction.add(obj_instruction.get(index + i));
-                parsed_set.setInstructions_List(temp_instruction);
-                parsed_list.add(parsed_set);
-            }
-        }
+        finfo = new FilterInfo();
+        finfo.setFilter_Name("SetArgvAndArgc");
+        finfo.setInst_Count(2);
+        fs.scan(obj_instruction, parsed_list, fil, finfo);
+        
+//        for(int index = 0; index < obj_instruction.size(); index++)
+//        {
+//            if(fil.doTest(obj_instruction, index))
+//            {
+//                JInstructionInfo jinfo = new  JInstructionInfo();
+//                jinfo.setInstruction_Name("SetArgvAndArgc");
+//                jinfo.setInstructions_Count(2);
+//                jinfo.setStart_Index(index);
+//                parsed_set.setInfo(jinfo);
+//                List<MemoryInstructionPair> temp_instruction = new ArrayList<MemoryInstructionPair>();
+//                for( int i = 0; i < 2; i++)
+//                    temp_instruction.add(obj_instruction.get(index + i));
+//                parsed_set.setInstructions_List(temp_instruction);
+//                parsed_list.add(parsed_set);
+//            }
+//        }
         
         fil = new IfFilter();
-        for(int index = 0; index < obj_instruction.size(); index++)
-        {
-            if(fil.doTest(obj_instruction, index))
-            {
-                JInstructionInfo jinfo = new  JInstructionInfo();
-                jinfo.setInstruction_Name("If");
-                jinfo.setInstructions_Count(2);
-                jinfo.setStart_Index(index);
-                parsed_set.setInfo(jinfo);
-                List<MemoryInstructionPair> temp_instruction = new ArrayList<MemoryInstructionPair>();
-                for( int i = 0; i < 2; i++)
-                    temp_instruction.add(obj_instruction.get(index + i));
-                parsed_set.setInstructions_List(temp_instruction);
-                parsed_list.add(parsed_set);
-            }
-        }
+        finfo = new FilterInfo();
+        finfo.setFilter_Name("If");
+        finfo.setInst_Count(2);
+        fs.scan(obj_instruction, parsed_list, fil, finfo);
+        
+        
+        
+//        for(int index = 0; index < obj_instruction.size(); index++)
+//        {
+//            if(fil.doTest(obj_instruction, index))
+//            {
+//                JInstructionInfo jinfo = new  JInstructionInfo();
+//                jinfo.setInstruction_Name("If");
+//                jinfo.setInstructions_Count(2);
+//                jinfo.setStart_Index(index);
+//                parsed_set.setInfo(jinfo);
+//                List<MemoryInstructionPair> temp_instruction = new ArrayList<MemoryInstructionPair>();
+//                for( int i = 0; i < 2; i++)
+//                    temp_instruction.add(obj_instruction.get(index + i));
+//                parsed_set.setInstructions_List(temp_instruction);
+//                parsed_list.add(parsed_set);
+//            }
+//        }
         // for each function getting from the callingFilter function, it need to store into a list
         fil = new CallingFilter();
         for(int index = 0; index < obj_instruction.size(); index++)

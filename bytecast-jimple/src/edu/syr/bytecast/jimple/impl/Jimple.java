@@ -40,6 +40,7 @@ public class Jimple implements IJimple{
         Map<ISection, List<ParsedInstructionsSet>> filter_result = new HashMap<ISection, List<ParsedInstructionsSet>>();
         // get all the sections from the IExecutableFile
         List<ISection> all_section = exe_file.getSectionsWithInstructions();
+        
         //call the PatternSeperator to filter all the section
         PatternSeperator patt_Seperator = new PatternSeperator();
         filter_result = patt_Seperator.doFilter(all_section);
