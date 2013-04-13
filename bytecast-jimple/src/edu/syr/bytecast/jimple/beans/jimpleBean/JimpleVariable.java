@@ -27,7 +27,7 @@ public class JimpleVariable extends JimpleElement {
         this(name, type, null);
     }
 
-    public JimpleVariable(String name, String type, JimpleMethod baseMethod) {
+        public JimpleVariable(String name, String type, JimpleMethod baseMethod) {
         this.asVariable = Jimple.v().newLocal(name, JimpleUtil.getTypeByString(type));
         if (baseMethod != null) {
             baseMethod.getMethod().getActiveBody().getLocals().add(asVariable);

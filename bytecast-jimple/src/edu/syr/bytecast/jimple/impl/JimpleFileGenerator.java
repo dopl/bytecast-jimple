@@ -60,11 +60,11 @@ public class JimpleFileGenerator {
         jDoc.addClass(jClass);
         ArrayList<String> parameter_list_main = new ArrayList<String>();
             parameter_list_main.add("String[]");
-        // create the Jimple method for main function
+        
+        //create main method  for jimple 
         JimpleMethod jMethod = new JimpleMethod(9, "void","main", parameter_list_main, jClass);
         method_list.add(jMethod);
-        
-        
+                
         Set<ISection> sections = filter_result.keySet();
         while(_index < method_list.size())
         {
@@ -114,8 +114,8 @@ public class JimpleFileGenerator {
         
         if(name.equals("PreMemoryProcess"))
         {
-            ArrayList<String> parameter_list_main = new ArrayList<String>();
-            parameter_list_main.add("String[]");
+            //ArrayList<String> parameter_list_main = new ArrayList<String>();
+            //parameter_list_main.add("String[]");
 
             //create main method add initiate first few lines of main
             
@@ -162,6 +162,9 @@ public class JimpleFileGenerator {
         }
         else if(name.equals("Add"))
         {
+            //in this test case  only sum method contains add assignment
+            
+            
             // write the Jimple Add statement
         }
         else if(name.equals("Calling"))
@@ -174,7 +177,9 @@ public class JimpleFileGenerator {
                     num_para ++;
                 }
             }
-            ArrayList<String> parameterForFunction = new ArrayList<String>();
+            ArrayList<String> parameter_list_jmethod = new ArrayList<String>();
+         
+            // 0-num_para is used to find parameter list(type and value)
             for(int i = 0; i < num_para; i ++)
             {
                 OperandType operand_type =
@@ -183,10 +188,14 @@ public class JimpleFileGenerator {
                     pair_list.get(i).getInstruction().getOperands().get(0).getOperandValue().toString();
                 transferParameter(operand_type, operand_value, parameter);
                 parameter.put(pair_list.get(i).getInstruction().getOperands().get(1).getOperandValue().toString(), operand_value);
-                parameterForFunction.add(operand_value);
+                parameter_list_jmethod.add(operand_value);
             }
+            //num_para is callq with function name that will jump into
             String function_name = pair_list.get(num_para).getInstruction().getOperands().get(1).getOperandValue().toString();
             // write the Jimple Calling statement
+            
+            
+            //check whether this function name is existed in the jmethod list
             boolean judge = false;
             for(JimpleMethod j_method : method_list)
             {
@@ -198,7 +207,7 @@ public class JimpleFileGenerator {
             }
             if( judge == false)
             {
-                JimpleMethod jMethod = new JimpleMethod(1, "int",function_name, parameterForFunction, jClass);
+                JimpleMethod jMethod = new JimpleMethod(1, "int",function_name, parameter_list_jmethod, jClass);
                 method_list.add(jMethod);
             }
         }
