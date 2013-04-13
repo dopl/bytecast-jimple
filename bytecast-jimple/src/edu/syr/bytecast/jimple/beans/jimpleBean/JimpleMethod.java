@@ -132,8 +132,17 @@ public class JimpleMethod {
     return this.returnType;
   }
 
+  /**
+   * 
+   * @param returnvariable create void return statment if null
+   */
   public void setReturn(JimpleVariable returnvariable) {
-    Unit returnstmt = Jimple.v().newReturnStmt(returnvariable.getVariable());
-    units.add(returnstmt);
+    if (returnvariable == null) {
+      Unit returnstmt = Jimple.v().newReturnVoidStmt();
+      units.add(returnstmt);
+    } else {
+      Unit returnstmt = Jimple.v().newReturnStmt(returnvariable.getVariable());
+      units.add(returnstmt);
+    }
   }
 }
