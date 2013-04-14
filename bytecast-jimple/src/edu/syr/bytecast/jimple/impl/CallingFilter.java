@@ -34,7 +34,7 @@ public class CallingFilter implements IFilter{
     {
         IInstruction ins = instList.get(index).getInstruction();
         if( ins.getInstructiontype() == InstructionType.CALLQ 
-                && ins.getOperands().get(0).getOperandType() == OperandType.MEMORY_PHYSICAL_ADDRESS )
+                && ins.getOperands().get(0).getOperandType() == OperandType.MEMORY_EFFECITVE_ADDRESS)//OperandType.MEMORY_PHYSICAL_ADDRESS )
                 //the value of the second operand should be the SectionName, it hasn't been set up in AMD64 api
         {
             return true;

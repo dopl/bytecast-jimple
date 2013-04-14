@@ -14,6 +14,7 @@ import edu.syr.bytecast.jimple.api.Methods;
 import edu.syr.bytecast.jimple.api.ParameterInfo;
 import edu.syr.bytecast.jimple.beans.ParsedInstructionsSet;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -24,6 +25,7 @@ public class ParameterScanner {
     
     public void getParameters(List<MemoryInstructionPair> mipList)//, List<ParsedInstructionsSet> pis_list, MethodInfo m_info)
     {
+        HashSet registerSet = new HashSet(); 
         ArrayList<MethodInfo> methods = Methods.methods;
         int k=0;
         
@@ -35,18 +37,24 @@ public class ParameterScanner {
             IInstruction inst = mip.getInstruction();
             while(method_Info.getStartMemeAddress() <= memaddress && method_Info.getEndMemeAddress() > memaddress)
             {
-                
-                
                 int op_index = 0;
                 if(inst.getInstructiontype() == InstructionType.MOV) {
                 if(inst.getOperands().get(op_index).getOperandType() == OperandType.REGISTER &&
                      inst.getOperands().get(++op_index).getOperandType() == OperandType.MEMORY_EFFECITVE_ADDRESS){
                         if(inst.getOperands().get(--op_index).getOperandValue() != RegisterType.EAX){
                             ParameterInfo para_Info = new ParameterInfo(inst.getOperands().get(0).getOperandValue().toString());
+                            para_Info.setValue(inst.getOperands().get(1).getOperandValue());
                             method_Info.parameters.add(para_Info);
                         }
                     }
                 }
+                /*
+                if(inst.getInstructiontype() == InstructionType.MOV){
+                    if(inst.getOperands().get(0).getOperandType() == OperandType.REGISTER){
+                        registerSet.add(inst.getOperands().get(0).getOperandValue());
+                    }
+                }
+                */
                 i++;
                 mip = mipList.get(i);
                 memaddress = mip.getmInstructionAddress();

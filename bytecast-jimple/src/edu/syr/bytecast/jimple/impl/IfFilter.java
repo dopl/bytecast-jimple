@@ -36,7 +36,12 @@ public class IfFilter implements IFilter{
         {
             count++;
             ins = instList.get(index + count).getInstruction();
-            if( ins.getInstructiontype() == InstructionType.JNE
+            if( (ins.getInstructiontype() == InstructionType.JNE
+                    || ins.getInstructiontype() == InstructionType.JE
+                    || ins.getInstructiontype() == InstructionType.JLE
+                    || ins.getInstructiontype() == InstructionType.JGE
+                    || ins.getInstructiontype() == InstructionType.JL
+                    || ins.getInstructiontype() == InstructionType.JG)
                     && ins.getOperands().get(0).getOperandType() == OperandType.MEMORY_EFFECITVE_ADDRESS ) //SectionName
             {
                 count++;

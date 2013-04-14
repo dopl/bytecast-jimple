@@ -10,8 +10,6 @@ import edu.syr.bytecast.amd64.api.instruction.IInstruction;
 import edu.syr.bytecast.amd64.api.output.MemoryInstructionPair;
 import edu.syr.bytecast.jimple.api.IFilter;
 import java.util.List;
-import java.util.Map;
-
 /**
  *
  * @author QSA
@@ -37,12 +35,16 @@ public class DivBy2NFilter implements IFilter {
                     mip = instList.get(index+2);
                     inst = mip.getInstruction();
                     //inst = instList.get(index + 2);
-                    if (inst.getInstructiontype() == InstructionType.SHR) {
+                    if (inst.getInstructiontype() == InstructionType.SHR) {//for checking sign
                         mip = instList.get(index+3);
                         inst = mip.getInstruction();
                         //inst = instList.get(index + 3);
                         if (inst.getInstructiontype() == InstructionType.LEA) {
-                            return true;
+                            mip = instList.get(index+4);
+                            inst = mip.getInstruction();
+                            if(inst.getInstructiontype() == InstructionType.SAR){
+                                return true;    
+                            }
                         }
                     }
                 }
