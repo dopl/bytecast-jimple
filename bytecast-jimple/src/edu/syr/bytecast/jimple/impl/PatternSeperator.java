@@ -30,7 +30,7 @@ public class PatternSeperator {
     //private Map<String, Boolean> name_of_section;
     
     // seperate the whole sectin into different method
-    private List<Method> divideMethod(ISection wholeSection) {
+    public List<Method> divideMethod(ISection wholeSection) {
       List<MemoryInstructionPair> mip = wholeSection.getAllInstructionObjects();
       List<Method> l_method = new ArrayList<Method>();
       for(MethodInfo m_info : l_method_info)
