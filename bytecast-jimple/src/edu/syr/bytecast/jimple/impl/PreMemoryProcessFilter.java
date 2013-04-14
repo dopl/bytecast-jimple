@@ -25,34 +25,24 @@ public class PreMemoryProcessFilter implements IFilter{
         int count = 0;
         if( ins.getInstructiontype() == InstructionType.PUSH
             && ins.getOperands().get(0).getOperandType() == OperandType.REGISTER
-            && ins.getOperands().get(0).getOperandValue() == "%rbp" )
+            && ins.getOperands().get(0).getOperandValue().toString().equals("%rbp") )
         {
             count++;
             ins = instList.get(index + count).getInstruction();
             if( ins.getInstructiontype() == InstructionType.MOV
                 && ins.getOperands().get(0).getOperandType() == OperandType.REGISTER
-                && ins.getOperands().get(0).getOperandValue() == "%rsp"
+                && ins.getOperands().get(0).getOperandValue().equals("%rsp")
                 && ins.getOperands().get(1).getOperandType() == OperandType.REGISTER
-                && ins.getOperands().get(1).getOperandValue() == "%rbp") //SectionName
+                && ins.getOperands().get(1).getOperandValue().equals("%rbp")) //SectionName
             {
                 count++;
                 ins = instList.get(index + count).getInstruction();
                 if( ins.getInstructiontype() == InstructionType.SUB
                     && ins.getOperands().get(0).getOperandType() == OperandType.CONSTANT
                     && ins.getOperands().get(1).getOperandType() == OperandType.REGISTER
-                    && ins.getOperands().get(1).getOperandValue() == "%rsp")
+                    && ins.getOperands().get(1).getOperandValue().equals("%rsp"))
                 {
                         count++;
-//                        JInstructionInfo info = new JInstructionInfo();
-//                        info.setInstruction_Name("PreMemoryProcess");
-//                        info.setInstructions_Count(count);
-//                        info.setStart_Index(index);
-//                        parsed_set.setInfo(info);
-//                        List<IInstruction> temp = new ArrayList<IInstruction>();
-//                        temp.add(instList.get(index));
-//                        temp.add(instList.get(index + 1));
-//                        temp.add(instList.get(index + 2));
-//                        parsed_set.setInstructions_List(temp);
                         return true;
                     }
                 }
