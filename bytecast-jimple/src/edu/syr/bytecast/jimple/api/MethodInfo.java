@@ -13,18 +13,44 @@ import java.util.List;
  */
 public class MethodInfo {
     
+    public enum ReturnType {INT, DOUBLE, LONG, STRING, VOID, OBJECT}
     public List<ParameterInfo> parameters = new ArrayList<ParameterInfo>();
     private String method_name;
     private long startMemAddress;
     private long endMemAddress;
+    private int startIndex;
+    private int endIndex;
+    public ReturnType returnType;
     
     public MethodInfo()
     {
         method_name = "DEFAULT";
+        returnType = ReturnType.INT;
     }
     
-    public int getParameterCount()
+    public int getStartIndex()
     {
+        return startIndex;
+    }
+    
+    public void setStartIndex(int index)
+    {
+        startIndex = index;
+    }
+    
+    public int getEndIndex()
+    {
+        return endIndex;
+    }
+    
+    public void setEndIndex(int index)
+    {
+        endIndex = index;
+    }
+
+    
+    public int getParameterCount()
+    {http://www.aljazeera.com/
         return parameters.size();
     }
     
