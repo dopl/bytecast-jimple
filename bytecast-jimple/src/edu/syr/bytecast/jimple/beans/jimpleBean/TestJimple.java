@@ -67,7 +67,7 @@ public class TestJimple {
     
     // println object for all println
     JimpleVariable jPrintObj = new JimpleVariable("print_line", 
-            "println", jMainMethod);
+            "println", jMainMethod);   
     // int &r1;
     JimpleVariable r1 = new JimpleVariable("$r1", "int", jMainMethod);
     // &r1 = 0;
