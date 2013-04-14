@@ -9,7 +9,7 @@ package edu.syr.bytecast.jimple.api;
  * @author QSA
  */
 public class ParameterInfo {
-    
+    public enum type {DEFAULT, INT, DOUBLE, FLOAT, LONG, SHORT, STRING}
     public ParameterInfo()
     {
     }
@@ -20,8 +20,18 @@ public class ParameterInfo {
     }
     
     private String p_name;
-    public enum type {DEFAULT, INT, DOUBLE, FLOAT, LONG, SHORT, STRING}
+    private Object value;
     private type t;
+    
+    public Object getValue()
+    {
+        return value;
+    }
+    
+    public void setValue(Object val)
+    {
+        value = val;
+    }
     
     public void setType(type t)
     {
