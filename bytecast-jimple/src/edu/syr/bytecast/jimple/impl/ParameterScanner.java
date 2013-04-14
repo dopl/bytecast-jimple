@@ -43,7 +43,7 @@ public class ParameterScanner {
                      inst.getOperands().get(++op_index).getOperandType() == OperandType.MEMORY_EFFECITVE_ADDRESS){
                         if(inst.getOperands().get(--op_index).getOperandValue() != RegisterType.EAX){
                             ParameterInfo para_Info = new ParameterInfo(inst.getOperands().get(0).getOperandValue().toString());
-                            para_Info.setValue(inst.getOperands().get(1).getOperandValue());
+                           // para_Info.setValue(inst.getOperands().get(1).getOperandValue());
                             method_Info.parameters.add(para_Info);
                         }
                     }

@@ -47,6 +47,13 @@ public class JimpleAssign extends JimpleElement {
 //    baseMethod.getMethod().getActiveBody().getLocals().add(add_lhs);
     baseMethod.getMethod().getActiveBody().getUnits().add(a_assign);
   }
+  
+  public void JimpleDirectAssign(JimpleVariable jVariable1, String stringConstant, JimpleMethod baseMethod) {
+    add_lhs = jVariable1.getVariable();
+    a_assign = Jimple.v().newAssignStmt(jVariable1.getVariable(), StringConstant.v(stringConstant));
+//    baseMethod.getMethod().getActiveBody().getLocals().add(add_lhs);
+    baseMethod.getMethod().getActiveBody().getUnits().add(a_assign);
+  }
 
   public void JimpleDirectAssign(JimpleVariable jVariable1, String jVariable2) {
     add_lhs = jVariable1.getVariable();

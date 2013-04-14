@@ -4,41 +4,36 @@
  */
 package edu.syr.bytecast.jimple.api;
 
+import edu.syr.bytecast.amd64.impl.instruction.operand.OperandMemoryEffectiveAddress;
+
 /**
  *
  * @author QSA
  */
 public class ParameterInfo {
-    public enum type {DEFAULT, INT, DOUBLE, FLOAT, LONG, SHORT, STRING}
+
+    private String p_name;
+    private JavaParameterType parametertype;
+    private JavaDataType t;
+    private OperandMemoryEffectiveAddress paramStackAddress;
+
+   
     public ParameterInfo()
     {
     }
     public ParameterInfo(String name)
     {
         p_name = name;
-        t = type.DEFAULT;
+        t = JavaDataType.INT;
     }
+   
     
-    private String p_name;
-    private Object value;
-    private type t;
-    
-    public Object getValue()
-    {
-        return value;
-    }
-    
-    public void setValue(Object val)
-    {
-        value = val;
-    }
-    
-    public void setType(type t)
+    public void setType(JavaDataType t)
     {
         this.t = t;
     }
     
-    public type getType()    
+    public JavaDataType getType()    
     {
         return t;
     }
@@ -52,5 +47,22 @@ public class ParameterInfo {
     {
         return p_name;
     }
+    
+     public JavaParameterType getParametertype() {
+        return parametertype;
+    }
+
+    public void setParametertype(JavaParameterType parametertype) {
+        this.parametertype = parametertype;
+    }
+
+    public OperandMemoryEffectiveAddress getParamStackAddress() {
+        return paramStackAddress;
+    }
+
+    public void setParamStackAddress(OperandMemoryEffectiveAddress paramStackAddress) {
+        this.paramStackAddress = paramStackAddress;
+    }
+    
     
 }

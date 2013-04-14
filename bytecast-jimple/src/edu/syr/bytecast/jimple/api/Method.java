@@ -11,21 +11,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author Fei Qi
  */
 
 // used to combine the method content and method info
 public class Method {
-    private MethodInfo m_info;
+    private MethodInfo methodInfo;
     private List<MemoryInstructionPair> l_instruction;
 
-    public MethodInfo getM_info() {
-        return m_info;
+    public MethodInfo getMethodInfo() {
+        return methodInfo;
     }
 
-    public void setM_info(MethodInfo m_info) {
-        this.m_info = m_info;
+    public void setMethodInfo(MethodInfo m_info) {
+        this.methodInfo = m_info;
     }
 
     public List<MemoryInstructionPair> getL_instruction() {
@@ -35,6 +34,5 @@ public class Method {
     public void setL_instruction(List<MemoryInstructionPair> l_instruction) {
         this.l_instruction = l_instruction;
     }
-    
-    
+
 }

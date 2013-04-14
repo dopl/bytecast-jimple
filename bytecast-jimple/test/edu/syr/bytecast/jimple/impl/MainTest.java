@@ -6,7 +6,7 @@ package edu.syr.bytecast.jimple.impl;
 
 import edu.syr.bytecast.amd64.api.constants.IBytecastAMD64;
 import edu.syr.bytecast.amd64.api.output.IExecutableFile;
-import edu.syr.bytecast.amd64.test.TestBytecastAmd64;
+import edu.syr.bytecast.amd64.test.DepcrecatedMock;
 import edu.syr.bytecast.jimple.api.IFilter;
 import edu.syr.bytecast.jimple.api.MethodInfo;
 import edu.syr.bytecast.jimple.beans.FilterInfo;
@@ -40,7 +40,7 @@ public class MainTest extends TestCase {
             System.out.println(e.getMessage());
         }
       List<MethodInfo> m_info = new ArrayList<MethodInfo>();
-      IBytecastAMD64 testdata = new TestBytecastAmd64();
+      IBytecastAMD64 testdata = new DepcrecatedMock();
       IExecutableFile exefile = testdata.buildInstructionObjects();
       List<ParsedInstructionsSet> pis_list = new ArrayList<ParsedInstructionsSet>();
       FilterScanner fs = new FilterScanner();

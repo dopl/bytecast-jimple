@@ -24,7 +24,7 @@ public class SetArgvAndArgcFilter implements IFilter{
         int count = 0;
         if( ins.getInstructiontype() == InstructionType.MOV
                 && ins.getOperands().get(0).getOperandType() == OperandType.REGISTER
-                && ins.getOperands().get(0).getOperandValue() == "%edi"
+                && ins.getOperands().get(0).getOperandValue().equals("%edi")
                 //&& ins.getOperands().get(1).getOperandType() == OperandType.MEMORY_ADDRESS
                 && ins.getOperands().get(1).getOperandValue().toString().contains("%rbp") )
         {
@@ -32,7 +32,7 @@ public class SetArgvAndArgcFilter implements IFilter{
             ins = instList.get(index + count).getInstruction();
             if( ins.getInstructiontype() == InstructionType.MOV
                     && ins.getOperands().get(0).getOperandType() == OperandType.REGISTER
-                    && ins.getOperands().get(0).getOperandValue() == "%rsi"
+                    && ins.getOperands().get(0).getOperandValue().equals("%rsi")
                     //&& ins.getOperands().get(1).getOperandType() == OperandType.MEMORY_ADDRESS
                     && ins.getOperands().get(1).getOperandValue().toString().contains("%rbp")) //SectionName
             {
