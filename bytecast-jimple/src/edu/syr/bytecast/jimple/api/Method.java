@@ -16,7 +16,7 @@ import java.util.List;
 
 // used to combine the method content and method info
 public class Method {
-    private MethodInfo m_info;
+    private MethodInfo methodInfo;
     private List<MemoryInstructionPair> l_instruction;
 
     public MethodInfo getM_info() {
