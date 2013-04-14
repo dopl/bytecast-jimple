@@ -39,11 +39,13 @@ public class Jimple implements IJimple{
         // the result that store the filtered section
         Map<ISection, List<ParsedInstructionsSet>> filter_result = new HashMap<ISection, List<ParsedInstructionsSet>>();
         // get all the sections from the IExecutableFile
-        List<ISection> all_section = exe_file.getSectionsWithInstructions();
+        
+//        List<ISection> all_section = exe_file.getSectionsWithInstructions();
+        ISection wholeSection = exe_file.getSectionsWithInstructions().get(0);
         
         //call the PatternSeperator to filter all the section
         PatternSeperator patt_Seperator = new PatternSeperator();
-        filter_result = patt_Seperator.doFilter(all_section);
+        filter_result = patt_Seperator.doFilter(wholeSection);
         //call the JimpleFileGenerator to creathe the jimple file 
         JimpleFileGenerator jim_Generator = new JimpleFileGenerator();
         jim_Generator.doJimpleCreate(filter_result);
