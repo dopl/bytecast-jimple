@@ -5,13 +5,13 @@
 package edu.syr.bytecast.jimple.beans.jimpleBean;
 
 /**
- *
+ * To test our jimple class ,  we rewrite the test case in java format 
+ * and then using self-defined class to create a corresponding class
  * @author xirui Wang
  */
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import soot.jimple.internal.JAssignStmt;
 
 public class TestJimple {
 
@@ -78,7 +78,7 @@ public class TestJimple {
     
     // sumBase = new test;
     // specialinvoke sumBase.<test: void <init>()>();
-    jim_ass.JimpleNew(sumClassObj, jClass, jMainMethod);
+    jim_ass.JimpleNewClass(sumClassObj, jClass, jMainMethod);
     
     // if (a < 1)JAssignStmt
     JimpleCondition jc1 = new JimpleCondition("<", r1, 1, jMainMethod);
@@ -101,6 +101,15 @@ public class TestJimple {
     JimpleVariable r3 = new JimpleVariable("$r3", "int", jMainMethod);
     // int $rsum
     JimpleVariable rsum = new JimpleVariable("$rsum", "int", jMainMethod);
+    
+    //test for byte[]
+    
+    JimpleVariable byteArray = new JimpleVariable("testByteArray" , "byte[]" , jMainMethod);
+    
+    
+    jim_ass.JimpleNewArray(byteArray, 5, jMainMethod);
+    
+    
     // $r2 = 1;
     jim_ass.JimpleDirectAssign(r2, 1, jMainMethod);
     // $r3 = 2;
@@ -125,6 +134,8 @@ public class TestJimple {
     jMainMethod.setReturn(null); 
     
 
+   //if u want to output as class file  indicate as class file   
+   // using jimple to create jimple file
     try {
       jDoc.printJimple(jClass.getJClassName() , "jimple");
 

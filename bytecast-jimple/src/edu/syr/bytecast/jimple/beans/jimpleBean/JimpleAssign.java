@@ -176,7 +176,8 @@ public class JimpleAssign extends JimpleElement {
     a_assign = Jimple.v().newAssignStmt(add_lhs, rhs);
   }
 
-  public void JimpleNew(JimpleVariable jv, JimpleClass jClass, 
+// create  class a = new class() in jimple format   
+  public void JimpleNewClass(JimpleVariable jv, JimpleClass jClass, 
           JimpleMethod callFromMethod) {
     // jv = new type;
     Value rhs = Jimple.v().newNewExpr(jClass.getSClass().getType());
@@ -189,6 +190,20 @@ public class JimpleAssign extends JimpleElement {
     Unit ctorinvoke = Jimple.v().newInvokeStmt(ctorexpr);
     callFromMethod.getMethod().getActiveBody().getUnits().add(ctorinvoke);
   }
+  
+  // new a array   array[]  =  new array[]()
+    public void JimpleNewArray(JimpleVariable jv, int arrayLength, 
+          JimpleMethod baseMethod) {
+    // jv = new type;
+    Value rhs = Jimple.v().newNewArrayExpr(jv.getType(), IntConstant.v(arrayLength));
+    a_assign = Jimple.v().newAssignStmt(jv.getVariable(), rhs);
+    baseMethod.getMethod().getActiveBody().getUnits().add(a_assign);
+    
+  }
+  
+  
+  
+  
   
   public void JimpleLengthOf(JimpleVariable jv, JimpleVariable arr, 
           JimpleMethod basemethod) {
