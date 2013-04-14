@@ -19,12 +19,12 @@ public class Method {
     private MethodInfo methodInfo;
     private List<MemoryInstructionPair> l_instruction;
 
-    public MethodInfo getM_info() {
-        return m_info;
+    public MethodInfo getMethodInfo() {
+        return methodInfo;
     }
 
-    public void setM_info(MethodInfo m_info) {
-        this.m_info = m_info;
+    public void setMethodInfo(MethodInfo m_info) {
+        this.methodInfo = m_info;
     }
 
     public List<MemoryInstructionPair> getL_instruction() {
