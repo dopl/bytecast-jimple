@@ -35,7 +35,7 @@ public class Main {
   {
      
       //FSysBasicTest test = new FSysBasicTest();
-        Paths.v().setRoot("/home/pahuja/code/bytecast");
+        Paths.v().setRoot("/home/peike/code/bytecast");
         try {
             Paths.v().parsePathsFile();
         } catch (Exception e) {
@@ -61,8 +61,31 @@ public class Main {
       List<MethodInfo> methods = Methods.methods;
       System.out.println(methods.size());
       System.out.println(methods.size());
+      IFilter AddFilter = new AddFilter();
+      finfo = new FilterInfo();
+      finfo.setFilter_Name("AddFilter");
+      finfo.setInst_Count(3);
+      fs.scan(exefile.getSectionsWithInstructions().get(0).getAllInstructionObjects(), pis_list, AddFilter, finfo);
       
+      IFilter IfFilter = new IfFilter();
+      finfo = new FilterInfo();
+      finfo.setFilter_Name("IfFilter");
+      finfo.setInst_Count(2);
+     // fs.scan(exefile.getSectionsWithInstructions().get(0).getAllInstructionObjects(), pis_list, IfFilter, finfo);
       
+      IFilter CallingFilter = new CallingFilter();
+      finfo = new FilterInfo();
+      finfo.setFilter_Name("CallingFilter");
+      finfo.setInst_Count(1);
+      fs.scan(exefile.getSectionsWithInstructions().get(0).getAllInstructionObjects(), pis_list, CallingFilter, finfo);
+      
+      IFilter DivFilter = new DivBy2NFilter();
+      finfo = new FilterInfo();
+      finfo.setFilter_Name("DivFilter");
+      finfo.setInst_Count(5);
+      fs.scan(exefile.getSectionsWithInstructions().get(0).getAllInstructionObjects(), pis_list, DivFilter, finfo);
+      
+      System.out.println(pis_list.size());
       
       /*
     
