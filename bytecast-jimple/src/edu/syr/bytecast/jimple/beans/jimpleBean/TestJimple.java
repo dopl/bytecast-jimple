@@ -126,7 +126,7 @@ public class TestJimple {
     
 
     try {
-      jDoc.printJimple(jClass.getJClassName() , "class");
+      jDoc.printJimple(jClass.getJClassName() , "jimple");
 
     } catch (FileNotFoundException e) {
       System.out.println("file exception");
