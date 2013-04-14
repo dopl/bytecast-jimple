@@ -8,6 +8,7 @@ package edu.syr.bytecast.jimple.beans.jimpleBean;
 
 import soot.ArrayType;
 import soot.BooleanType;
+import soot.ByteType;
 import soot.IntType;
 import soot.RefType;
 import soot.Type;
@@ -36,6 +37,8 @@ public class JimpleUtil {
       return VoidType.v();
     } else if (name.equals("println")) {
       return RefType.v("java.io.PrintStream");
+    } else if (name.equals("byte[]")) {
+      return ArrayType.v(ByteType.v(), 1);
     } else {
       return RefType.v(name);
     }

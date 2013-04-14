@@ -67,7 +67,7 @@ public class TestJimple {
     
     // println object for all println
     JimpleVariable jPrintObj = new JimpleVariable("print_line", 
-            "println", jMainMethod);
+            "println", jMainMethod);   
     // int &r1;
     JimpleVariable r1 = new JimpleVariable("$r1", "int", jMainMethod);
     // &r1 = 0;
@@ -113,17 +113,20 @@ public class TestJimple {
     
     // FOR TEST ONLY
     // int $r4;
-    JimpleVariable r4 = new JimpleVariable("$r4", "int", jMainMethod);
-    // String[] r5;
-    JimpleVariable r5 = new JimpleVariable("$r5", "String[]", jMainMethod);
-    // r4 = lengthof r5;
-    jim_ass.JimpleLengthOf(r4, r5, jMainMethod);
+//    JimpleVariable r4 = new JimpleVariable("$r4", "int", jMainMethod);
+//    // String[] r5;
+//    JimpleVariable r5 = new JimpleVariable("$r5", "String[]", jMainMethod);
+//    // r4 = lengthof r5;
+//    jim_ass.JimpleLengthOf(r4, r5, jMainMethod);
     
     // add lable0
     jMainMethod.addElement(forif);
+    // return;
+    jMainMethod.setReturn(null); 
+    
 
     try {
-      jDoc.printJimple(jClass.getJClassName() , "class");
+      jDoc.printJimple(jClass.getJClassName() , "jimple");
 
     } catch (FileNotFoundException e) {
       System.out.println("file exception");
