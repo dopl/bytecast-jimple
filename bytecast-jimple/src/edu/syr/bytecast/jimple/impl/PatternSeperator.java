@@ -23,21 +23,21 @@ import java.util.Map;
 public class PatternSeperator {
     // the result that store the filtered section
     private Map<Method, List<ParsedInstructionsSet>> result;
-    private List<MethodInfo> l_method_info;
+//    private List<MethodInfo> l_method_info;
 //    // store the temperate result of each ParsedInstructionsSet
 //    private List<ParsedInstructionsSet> temp_set_result;
     // used to store the all section name in the file and in order to judge whether the section is analyzed
     //private Map<String, Boolean> name_of_section;
     
     // seperate the whole sectin into different method
-    private List<Method> divideMethod(ISection wholeSection) {
-      List<MemoryInstructionPair> mip = wholeSection.getAllInstructionObjects();
+    public List<Method> divideMethod(List<MemoryInstructionPair> mip, List<MethodInfo> meInfo) {
+//      List<MemoryInstructionPair> mip = wholeSection.getAllInstructionObjects();
       List<Method> l_method = new ArrayList<Method>();
-      for(MethodInfo m_info : l_method_info)
+      for(MethodInfo m_info : meInfo)
       {
         Method m = new Method();
         List<MemoryInstructionPair> l_ins = new ArrayList<MemoryInstructionPair>();
-        m.setM_info(m_info);
+        m.setMethodInfo(m_info);
         for(int i = 0; i < mip.size(); i++)
         {
             if( mip.get(i).getmInstructionAddress()>= m_info.getStartMemeAddress() 
@@ -52,13 +52,13 @@ public class PatternSeperator {
       return l_method;
     }
     
-    public Map<Method, List<ParsedInstructionsSet>> doFilter(ISection wholeSection, List<MethodInfo> method_info)
+    public Map<Method, List<ParsedInstructionsSet>> doFilter(List<Method> methods, List<MethodInfo> method_info)
     {
         // the objective section to be filtered
 //        ISection obj_sec = all_section.get(0);
         result = new HashMap<Method, List<ParsedInstructionsSet>>();
-        l_method_info = method_info;
-        List<Method> methods = divideMethod(wholeSection);
+//        l_method_info = method_info;
+//        List<Method> methods = divideMethod(wholeSection);
         
         for (Method method : methods) {
               result.put(method, analyze(method.getL_instruction()));
@@ -114,21 +114,50 @@ public class PatternSeperator {
     private List<ParsedInstructionsSet> analyze(List<MemoryInstructionPair> obj_instruction) {
         List<ParsedInstructionsSet> parsed_list = new ArrayList<ParsedInstructionsSet>();
         
-        FilterScanner fs = new FilterScanner();
+        FilterRunner fr = new FilterRunner();
         //filter begins
         //PreMemoryProcess
         IFilter fil = new PreMemoryProcessFilter();
         FilterInfo finfo = new FilterInfo();
         finfo.setFilter_Name("PreMemoryProcess");
         finfo.setInst_Count(3);
-        fs.scan(obj_instruction, parsed_list, fil, finfo);
+        fr.run(obj_instruction, parsed_list, fil, finfo);
         
         //SetArgvAndArgcFilter
         fil = new SetArgvAndArgcFilter();
         finfo = new FilterInfo();
         finfo.setFilter_Name("SetArgvAndArgc");
         finfo.setInst_Count(2);
-        fs.scan(obj_instruction, parsed_list, fil, finfo);
+        fr.run(obj_instruction, parsed_list, fil, finfo);
+        
+        //IfFilter
+        fil = new IfFilter();
+        finfo = new FilterInfo();
+        finfo.setFilter_Name("If");
+        finfo.setInst_Count(2);
+        fr.run(obj_instruction, parsed_list, fil, finfo);
+        
+        //CallingFilter
+        fil = new CallingFilter();
+        finfo = new FilterInfo();
+        finfo.setFilter_Name("Calling");
+        finfo.setInst_Count(1);
+        fr.run(obj_instruction, parsed_list, fil, finfo);
+        
+        //PrintfFilter
+        fil = new CallingFilter();
+        finfo = new FilterInfo();
+        finfo.setFilter_Name("Printf");
+        finfo.setInst_Count(2);
+        fr.run(obj_instruction, parsed_list, fil, finfo);
+        
+        //LeaveFilter
+        fil = new LeaveFilter();
+        finfo = new FilterInfo();
+        finfo.setFilter_Name("Leave");
+        finfo.setInst_Count(2);
+        fr.run(obj_instruction, parsed_list, fil, finfo);
+        
         
 //        for(int index = 0; index < obj_instruction.size(); index++)
 //        {
@@ -147,11 +176,7 @@ public class PatternSeperator {
 //            }
 //        }
         
-        fil = new IfFilter();
-        finfo = new FilterInfo();
-        finfo.setFilter_Name("If");
-        finfo.setInst_Count(2);
-        fs.scan(obj_instruction, parsed_list, fil, finfo);
+        
         
         
         
@@ -172,11 +197,7 @@ public class PatternSeperator {
 //            }
 //        }
         // for each function getting from the callingFilter function, it need to store into a list
-        fil = new CallingFilter();
-        finfo = new FilterInfo();
-        finfo.setFilter_Name("Calling");
-        finfo.setInst_Count(1);
-        fs.scan(obj_instruction, parsed_list, fil, finfo);
+        
 //        for(int index = 0; index < obj_instruction.size(); index++)
 //        {
 //            if(fil.doTest(obj_instruction, index))
@@ -213,11 +234,7 @@ public class PatternSeperator {
 //            }
 //        }
         
-        fil = new LeaveFilter();
-        finfo = new FilterInfo();
-        finfo.setFilter_Name("Leave");
-        finfo.setInst_Count(2);
-        fs.scan(obj_instruction, parsed_list, fil, finfo);
+        
         
         
         

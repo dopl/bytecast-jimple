@@ -8,6 +8,12 @@ import edu.syr.bytecast.jimple.api.MethodInfo;
 import edu.syr.bytecast.jimple.api.Methods;
 import edu.syr.bytecast.jimple.beans.JInstructionInfo;
 import edu.syr.bytecast.jimple.beans.ParsedInstructionsSet;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,12 +34,20 @@ import soot.util.JasminOutputStream;
  */
 public class CreateJimple {
     
+    private SootClass sClass = new SootClass("TestClass", Modifier.PUBLIC);
+    private ArrayList<SootMethod> sootMethodList = new ArrayList<SootMethod>();
+    
+    public boolean jimple(ArrayList<ParsedInstructionsSet> pis_list, String fileName)
+    {
+        createJimpleSkeleton();
+        return true;
+    }
+    
     public void createMethodsBody(ArrayList<ParsedInstructionsSet> pis_list)
     {
-        ArrayList<SootMethod> sootMethodList = new ArrayList<SootMethod>();
-        SootClass sClass = new SootClass("TestClass", Modifier.PUBLIC);
+        //ArrayList<SootMethod> sootMethodList = new ArrayList<SootMethod>();
+        //SootClass sClass = new SootClass("TestClass", Modifier.PUBLIC);
         //Create class and Methods Skeleton
-        createJimpleSkeleton(sootMethodList, sClass);
         List<MethodInfo> methods = Methods.methods;
         //Arrays.sort(pis_list);
         for(int i=0;i<methods.size();i++)
@@ -53,7 +67,7 @@ public class CreateJimple {
                 {
                     Local arg = Jimple.v().newLocal(localName, ArrayType.v(RefType.v("java.lang.String"), 1));
                     body.getLocals().add(arg);
-                    ParameterRef paramRef
+                    //ParameterRef paramRef
                 }
                 else
                 {
@@ -74,7 +88,18 @@ public class CreateJimple {
         
     }
     
-    public void createJimpleSkeleton(ArrayList<SootMethod> sootMethodList, SootClass sClass)
+    public void createClassFile(String fileName) throws FileNotFoundException, IOException
+    {
+        //String fileName = SourceLocator.v().getFileNameFor(sClass, Options.output_format_class);
+        OutputStream streamOut = new JasminOutputStream(new FileOutputStream(fileName));
+        PrintWriter writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
+        JasminClass jasminClass = new soot.jimple.JasminClass(sClass);
+        jasminClass.print(writerOut);
+        writerOut.flush();
+        streamOut.close();
+    }
+    
+    public void createJimpleSkeleton()//ArrayList<SootMethod> sootMethodList, SootClass sClass)
     {
         List<MethodInfo> methods = Methods.methods;
         //SootClass sClass;

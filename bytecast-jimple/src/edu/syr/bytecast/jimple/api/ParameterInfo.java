@@ -11,7 +11,7 @@ import edu.syr.bytecast.amd64.impl.instruction.operand.OperandMemoryEffectiveAdd
  * @author QSA
  */
 public class ParameterInfo {
-     
+
     private String p_name;
     private JavaParameterType parametertype;
     private JavaDataType t;
