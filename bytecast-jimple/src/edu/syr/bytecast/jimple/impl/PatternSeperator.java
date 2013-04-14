@@ -22,38 +22,47 @@ import java.util.Map;
  */
 public class PatternSeperator {
     // the result that store the filtered section
-    private Map<ISection, List<ParsedInstructionsSet>> result;
-    private MethodInfo methodInfo;
+    private Map<Method, List<ParsedInstructionsSet>> result;
+    private List<MethodInfo> l_method_info;
 //    // store the temperate result of each ParsedInstructionsSet
 //    private List<ParsedInstructionsSet> temp_set_result;
     // used to store the all section name in the file and in order to judge whether the section is analyzed
     //private Map<String, Boolean> name_of_section;
     
+    // seperate the whole sectin into different method
     private List<Method> divideMethod(ISection wholeSection) {
       List<MemoryInstructionPair> mip = wholeSection.getAllInstructionObjects();
-      for(MethodInfo m_info : methodInfo)
+      List<Method> l_method = new ArrayList<Method>();
+      for(MethodInfo m_info : l_method_info)
       {
         Method m = new Method();
-        m.setMethodInfo(m_info);
-        for(m_info.getStartMemeAddress();)
+        List<MemoryInstructionPair> l_ins = new ArrayList<MemoryInstructionPair>();
+        m.setM_info(m_info);
+        for(int i = 0; i < mip.size(); i++)
+        {
+            if( mip.get(i).getmInstructionAddress()>= m_info.getStartMemeAddress() 
+                    && mip.get(i).getmInstructionAddress()<= m_info.getEndMemeAddress() )
+            {
+                l_ins.add(mip.get(i));
+            }
+        }
+        m.setL_instruction(l_ins);
+        l_method.add(m);
       }
-      return
+      return l_method;
     }
     
-    public Map<ISection, List<ParsedInstructionsSet>> doFilter(ISection wholeSection, List<MethodInfo> m_info)
+    public Map<Method, List<ParsedInstructionsSet>> doFilter(ISection wholeSection, List<MethodInfo> method_info)
     {
         // the objective section to be filtered
 //        ISection obj_sec = all_section.get(0);
-        result = new HashMap<ISection, List<ParsedInstructionsSet>>();
+        result = new HashMap<Method, List<ParsedInstructionsSet>>();
+        l_method_info = method_info;
         List<Method> methods = divideMethod(wholeSection);
-        for (MethodInfo methodinfo : m_info) {
-//          for (ISection section : all_section) {
-            String sectionname = wholeSection.getSectionName();
-            if (sectionname.equals(methodinfo.getMethodName())) {
-              result.put(section, analyze(wholeSection));
-//            }
+        
+        for (Method method : methods) {
+              result.put(method, analyze(method.getL_instruction()));
           }
-      }
 ////        temp_set_result = new ArrayList<ParsedInstructionsSet>();
 //        name_of_section = new HashMap<String, Boolean>();
 //        
@@ -102,9 +111,8 @@ public class PatternSeperator {
     }
     
     // filter the section
-    private List<ParsedInstructionsSet> analyze(ISection obj_section) {
+    private List<ParsedInstructionsSet> analyze(List<MemoryInstructionPair> obj_instruction) {
         List<ParsedInstructionsSet> parsed_list = new ArrayList<ParsedInstructionsSet>();
-        List<MemoryInstructionPair> obj_instruction = obj_section.getAllInstructionObjects();
         
         FilterScanner fs = new FilterScanner();
         //filter begins

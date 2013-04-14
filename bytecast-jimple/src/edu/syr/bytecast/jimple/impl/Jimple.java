@@ -26,6 +26,8 @@ import edu.syr.bytecast.amd64.api.instruction.IInstruction;
 import edu.syr.bytecast.amd64.api.output.MemoryInstructionPair;
 import edu.syr.bytecast.jimple.api.IFilter;
 import edu.syr.bytecast.jimple.api.IJimple;
+import edu.syr.bytecast.jimple.api.Method
+import edu.syr.bytecast.jimple.api.MethodInfo;
 import edu.syr.bytecast.jimple.beans.*;
 import java.util.List;
 import java.util.ArrayList;
@@ -37,15 +39,16 @@ public class Jimple implements IJimple{
 
     public boolean createJimple(IExecutableFile exe_file) {
         // the result that store the filtered section
-        Map<ISection, List<ParsedInstructionsSet>> filter_result = new HashMap<ISection, List<ParsedInstructionsSet>>();
+        Map<Method, List<ParsedInstructionsSet>> filter_result = new HashMap<Method, List<ParsedInstructionsSet>>();
         // get all the sections from the IExecutableFile
         
 //        List<ISection> all_section = exe_file.getSectionsWithInstructions();
         ISection wholeSection = exe_file.getSectionsWithInstructions().get(0);
         
+        List<MethodInfo> m_info = new ArrayList<MethodInfo>();
         //call the PatternSeperator to filter all the section
         PatternSeperator patt_Seperator = new PatternSeperator();
-        filter_result = patt_Seperator.doFilter(wholeSection);
+        filter_result = patt_Seperator.doFilter(wholeSection, m_info);
         //call the JimpleFileGenerator to creathe the jimple file 
         JimpleFileGenerator jim_Generator = new JimpleFileGenerator();
         jim_Generator.doJimpleCreate(filter_result);
