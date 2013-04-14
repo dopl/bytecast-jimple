@@ -33,6 +33,7 @@ public class MethodEndFilter implements IFilter{
                 //int ind = Methods.methods.size() - 1;
                 MethodInfo m_info = Methods.methods.get(count);
                 m_info.setEndMemAddress(mip.getmInstructionAddress());
+                m_info.setEndIndex(index);
                 count++;
                 return true;
             }
