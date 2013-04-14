@@ -6,6 +6,7 @@ package edu.syr.bytecast.jimple.impl;
 
 import edu.syr.bytecast.amd64.api.constants.InstructionType;
 import edu.syr.bytecast.amd64.api.constants.OperandType;
+import edu.syr.bytecast.amd64.api.constants.RegisterType;
 import edu.syr.bytecast.amd64.api.instruction.IInstruction;
 import edu.syr.bytecast.amd64.api.output.MemoryInstructionPair;
 import edu.syr.bytecast.jimple.api.IFilter;
@@ -23,9 +24,9 @@ public class PreMemoryProcessFilter implements IFilter{
     {
         IInstruction ins = instList.get(index).getInstruction();
         int count = 0;
-        if( ins.getInstructiontype() == InstructionType.PUSH
-            && ins.getOperands().get(0).getOperandType() == OperandType.REGISTER
-            && ins.getOperands().get(0).getOperandValue().toString().equals("%rbp") )
+        if( ins.getInstructiontype().equals(InstructionType.PUSH)
+            && ins.getOperands().get(0).getOperandType().equals(OperandType.REGISTER)
+            && ins.getOperands().get(0).getOperandValue().equals(RegisterType.RBP))
         {
             count++;
             ins = instList.get(index + count).getInstruction();

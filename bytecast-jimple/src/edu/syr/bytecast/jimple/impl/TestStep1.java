@@ -67,6 +67,7 @@ public class TestStep1 {
     filter_result = patt_Seperator.doFilter(
             patt_Seperator.divideMethod(wholeSection.getAllInstructionObjects(),
             m_info), m_info);
+    
     //call the JimpleFileGenerator to creathe the jimple file 
     JimpleFileGenerator jim_Generator = new JimpleFileGenerator();
 //    jim_Generator.doJimpleCreate(filter_result);
