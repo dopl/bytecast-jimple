@@ -114,21 +114,50 @@ public class PatternSeperator {
     private List<ParsedInstructionsSet> analyze(List<MemoryInstructionPair> obj_instruction) {
         List<ParsedInstructionsSet> parsed_list = new ArrayList<ParsedInstructionsSet>();
         
-        FilterScanner fs = new FilterScanner();
+        FilterRunner fr = new FilterRunner();
         //filter begins
         //PreMemoryProcess
         IFilter fil = new PreMemoryProcessFilter();
         FilterInfo finfo = new FilterInfo();
         finfo.setFilter_Name("PreMemoryProcess");
         finfo.setInst_Count(3);
-        fs.scan(obj_instruction, parsed_list, fil, finfo);
+        fr.run(obj_instruction, parsed_list, fil, finfo);
         
         //SetArgvAndArgcFilter
         fil = new SetArgvAndArgcFilter();
         finfo = new FilterInfo();
         finfo.setFilter_Name("SetArgvAndArgc");
         finfo.setInst_Count(2);
-        fs.scan(obj_instruction, parsed_list, fil, finfo);
+        fr.run(obj_instruction, parsed_list, fil, finfo);
+        
+        //IfFilter
+        fil = new IfFilter();
+        finfo = new FilterInfo();
+        finfo.setFilter_Name("If");
+        finfo.setInst_Count(2);
+        fr.run(obj_instruction, parsed_list, fil, finfo);
+        
+        //CallingFilter
+        fil = new CallingFilter();
+        finfo = new FilterInfo();
+        finfo.setFilter_Name("Calling");
+        finfo.setInst_Count(1);
+        fr.run(obj_instruction, parsed_list, fil, finfo);
+        
+        //PrintfFilter
+        fil = new CallingFilter();
+        finfo = new FilterInfo();
+        finfo.setFilter_Name("Printf");
+        finfo.setInst_Count(2);
+        fr.run(obj_instruction, parsed_list, fil, finfo);
+        
+        //LeaveFilter
+        fil = new LeaveFilter();
+        finfo = new FilterInfo();
+        finfo.setFilter_Name("Leave");
+        finfo.setInst_Count(2);
+        fr.run(obj_instruction, parsed_list, fil, finfo);
+        
         
 //        for(int index = 0; index < obj_instruction.size(); index++)
 //        {
@@ -147,11 +176,7 @@ public class PatternSeperator {
 //            }
 //        }
         
-        fil = new IfFilter();
-        finfo = new FilterInfo();
-        finfo.setFilter_Name("If");
-        finfo.setInst_Count(2);
-        fs.scan(obj_instruction, parsed_list, fil, finfo);
+        
         
         
         
@@ -172,11 +197,7 @@ public class PatternSeperator {
 //            }
 //        }
         // for each function getting from the callingFilter function, it need to store into a list
-        fil = new CallingFilter();
-        finfo = new FilterInfo();
-        finfo.setFilter_Name("Calling");
-        finfo.setInst_Count(1);
-        fs.scan(obj_instruction, parsed_list, fil, finfo);
+        
 //        for(int index = 0; index < obj_instruction.size(); index++)
 //        {
 //            if(fil.doTest(obj_instruction, index))
@@ -213,11 +234,7 @@ public class PatternSeperator {
 //            }
 //        }
         
-        fil = new LeaveFilter();
-        finfo = new FilterInfo();
-        finfo.setFilter_Name("Leave");
-        finfo.setInst_Count(2);
-        fs.scan(obj_instruction, parsed_list, fil, finfo);
+        
         
         
         

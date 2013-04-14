@@ -19,28 +19,21 @@ import java.util.List;
 public class PrintfFilter {
     public boolean doTest(List<MemoryInstructionPair> instList, int index){
         IInstruction ins = instList.get(index).getInstruction();
-        int count = 0;
-        if( ins.getInstructiontype() == InstructionType.CALLQ 
-                && ins.getOperands().get(1).getOperandType() == OperandType.SECTION_NAME
-                && ins.getOperands().get(1).getOperandValue().toString() ==  "printf@plt")
+        if( ins.getInstructiontype() == InstructionType.MOV
+                && ins.getOperands().get(0).getOperandType() == OperandType.CONSTANT
+                && ins.getOperands().get(0).getOperandValue().toString().equals("$0x0")
+                && ins.getOperands().get(1).getOperandValue().toString().equals("%eax")
+                && ins.getOperands().get(1).getOperandType() == OperandType.REGISTER)
         {
-            count++;
-            int judge = 0;
-            while(judge < 2)
+            ins = instList.get(index + 1).getInstruction();
+            if( ins.getInstructiontype() == InstructionType.CALLQ 
+                    && ins.getOperands().get(1).getOperandType() == OperandType.SECTION_NAME
+                    && ins.getOperands().get(1).getOperandValue().toString() ==  "printf@plt")
             {
-                ins = instList.get(index - count).getInstruction();
-                if( ins.getInstructiontype() == InstructionType.MOV
-                    && ins.getOperands().get(1).getOperandType() == OperandType.REGISTER
-                    && ins.getOperands().get(1).getOperandValue().toString() ==  "%eax") //SectionName
-                {
-                judge++;
-                count++;
                 return true;
-                }
             }
         }
         return false;
-    } 
-
-    
+    }
 }
+            
