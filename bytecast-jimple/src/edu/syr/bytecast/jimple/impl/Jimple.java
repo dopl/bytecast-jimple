@@ -85,13 +85,47 @@ public class Jimple implements IJimple{
         finfoME.setInst_Count(2);
         filtersList.add(MethodEndFilter);filterInfoList.add(finfoME);
         //fs.scan(mip_list, pis_list, MethodEndFilter, finfo);
+        //If Filter
+        IFilter IfFilter = new IfFilter();
+        FilterInfo finfoIf = new FilterInfo();
+        finfoIf.setFilter_Name("If");
+        finfoIf.setInst_Count(2);
+        filtersList.add(IfFilter);filterInfoList.add(finfoIf);
+        //Add Filter
+        IFilter AddFilter = new AddFilter();
+        FilterInfo finfoAdd = new FilterInfo();
+        finfoAdd.setFilter_Name("Add");
+        finfoAdd.setInst_Count(3);
+        filtersList.add(AddFilter);filterInfoList.add(finfoAdd);
+        //Calling Filter
+        IFilter CallingFilter = new CallingFilter();
+        FilterInfo finfoCF = new FilterInfo();
+        finfoCF.setFilter_Name("Calling");
+        finfoCF.setInst_Count(1);
+        filtersList.add(CallingFilter);filterInfoList.add(finfoCF);
+        //Divide by 2 Filter
+        IFilter DivFilter = new DivBy2NFilter();
+        FilterInfo finfoDIV = new FilterInfo();
+        finfoDIV.setFilter_Name("Divide");
+        finfoDIV.setInst_Count(5);
+        filtersList.add(DivFilter);filterInfoList.add(finfoDIV);
     }
     
     public void runFilters(ArrayList<IFilter> filtersList, ArrayList<FilterInfo> filterInfoList, 
             List<MemoryInstructionPair> mip_list, ArrayList<ParsedInstructionsSet> pis_list, 
             FilterScanner fs, ParameterScanner ps)
     {
-        for(int i=0;i<filtersList.size();i++)
+        
+        for(int i=0;i<2;i++)
+        {
+            IFilter filter = filtersList.get(i);
+            FilterInfo finfo = filterInfoList.get(i);
+            fs.scan(mip_list, pis_list, filter, finfo);
+        }
+        
+        ps.getParameters(mip_list);
+        
+        for(int i=2;i<filtersList.size();i++)
         {
             IFilter filter = filtersList.get(i);
             FilterInfo finfo = filterInfoList.get(i);

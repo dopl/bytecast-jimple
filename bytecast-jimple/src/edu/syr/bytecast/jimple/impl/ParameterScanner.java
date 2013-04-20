@@ -60,8 +60,8 @@ public class ParameterScanner {
                 memaddress = mip.getmInstructionAddress();
                 inst = mip.getInstruction();
             }
-            if(inst.getInstructiontype() == InstructionType.NOP);
-            else
+            //if(inst.getInstructiontype() == InstructionType.NOP);
+            //else
                 k++;
             //if(k >= methods.size())
             //    break;

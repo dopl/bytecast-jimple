@@ -17,22 +17,59 @@
  */
 
 package edu.syr.bytecast.jimple.impl;
+import edu.syr.bytecast.amd64.BytecastAmd64;
 import edu.syr.bytecast.amd64.api.constants.IBytecastAMD64;
 import edu.syr.bytecast.amd64.api.output.IExecutableFile;
-import edu.syr.bytecast.amd64.test.DepcrecatedMock;
+import edu.syr.bytecast.amd64.util.AMD64MockGenerator;
 import edu.syr.bytecast.jimple.api.IFilter;
+import edu.syr.bytecast.jimple.api.IJimple;
 import edu.syr.bytecast.jimple.api.MethodInfo;
 import edu.syr.bytecast.jimple.api.Methods;
 import edu.syr.bytecast.jimple.beans.FilterInfo;
 import edu.syr.bytecast.jimple.beans.ParsedInstructionsSet;
+import edu.syr.bytecast.test.mockups.MockBytecastFsys;
 import edu.syr.bytecast.util.Paths;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Main {
   
-  public static void main(String[] args)
+  public static void main(String[] args) throws Exception
   {
+      Set<String> exclusion = new HashSet<String>();
+         Paths.v().setRoot("/home/pahuja/code/bytecast");                  
+        try {
+            Paths.v().parsePathsFile();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        exclusion.add("<_IO_printf>");
+        AMD64MockGenerator gen = 
+                new AMD64MockGenerator(new MockBytecastFsys(),
+                "/home/pahuja/code/bytecast/bytecast-documents/AsciiManip01Prototype/a.out.static.objdump",
+                "<main>",exclusion);
+        try {
+            IBytecastAMD64 amd64Object = gen.generate();//buildInstructionObjects();
+            List<ParsedInstructionsSet> pis_list = new ArrayList<ParsedInstructionsSet>();
+            IJimple jimple = new Jimple();
+            jimple.createJimple(amd64Object, "Test");
+            //IExecutableFile ex = gen.run();
+            
+        } catch (FileNotFoundException ex1) {
+            Logger.getLogger(AMD64MockGenerator.class.getName()).log(Level.SEVERE, null, ex1);
+        } catch (IOException ex1) {
+            Logger.getLogger(AMD64MockGenerator.class.getName()).log(Level.SEVERE, null, ex1);
+        }
+      
+      
+      
+      /*
      
       //FSysBasicTest test = new FSysBasicTest();
         Paths.v().setRoot("/home/peike/code/bytecast");
@@ -86,7 +123,7 @@ public class Main {
       fs.scan(exefile.getSectionsWithInstructions().get(0).getAllInstructionObjects(), pis_list, DivFilter, finfo);
       
       System.out.println(pis_list.size());
-      
+      */
       /*
     
     IFilter filter = new IfFilter();
