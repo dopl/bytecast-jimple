@@ -17,13 +17,10 @@ import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.jimple.StringConstant;
 
-
 /**
- * 
+ *
  * @author Xirui Wang
  */
-
-
 public class JimpleAssign extends JimpleElement {
 
   private Unit a_assign;
@@ -47,7 +44,7 @@ public class JimpleAssign extends JimpleElement {
 //    baseMethod.getMethod().getActiveBody().getLocals().add(add_lhs);
     baseMethod.getMethod().getActiveBody().getUnits().add(a_assign);
   }
-  
+
   public void JimpleDirectAssign(JimpleVariable jVariable1, String stringConstant, JimpleMethod baseMethod) {
     add_lhs = jVariable1.getVariable();
     a_assign = Jimple.v().newAssignStmt(jVariable1.getVariable(), StringConstant.v(stringConstant));
@@ -85,11 +82,11 @@ public class JimpleAssign extends JimpleElement {
   }
 
   /**
-   * 
+   *
    * @param sum variable to store sum
    * @param addend first addend
    * @param augend second addend
-   * @param basemethod 
+   * @param basemethod
    */
   public void JimpleAdd(JimpleVariable sum,
           JimpleVariable addend, JimpleVariable augend, JimpleMethod basemethod) {
@@ -177,47 +174,46 @@ public class JimpleAssign extends JimpleElement {
 
   public void JimpleDiv(int jVariable1, int jVariable2) {
 
-    Value rhs = Jimple.v().newDivExpr(IntConstant.v(jVariable1), 
+    Value rhs = Jimple.v().newDivExpr(IntConstant.v(jVariable1),
             IntConstant.v(jVariable2));
     add_lhs = Jimple.v().newLocal("add_lhs", IntType.v());
     a_assign = Jimple.v().newAssignStmt(add_lhs, rhs);
   }
 
 // create  class a = new class() in jimple format   
-  public void JimpleNewClass(JimpleVariable jv, JimpleClass jClass, 
+  public void JimpleNewClass(JimpleVariable jv, JimpleClass jClass,
           JimpleMethod callFromMethod) {
     // jv = new type;
     Value rhs = Jimple.v().newNewExpr(jClass.getSClass().getType());
     a_assign = Jimple.v().newAssignStmt(jv.getVariable(), rhs);
     callFromMethod.getMethod().getActiveBody().getUnits().add(a_assign);
-    
+
     // specialinvoke sumBase.<test: void <init>()>();
-    Value ctorexpr = Jimple.v().newSpecialInvokeExpr(jv.getVariable(), 
+    Value ctorexpr = Jimple.v().newSpecialInvokeExpr(jv.getVariable(),
             jClass.getSClass().getMethodByName("<init>").makeRef());
     Unit ctorinvoke = Jimple.v().newInvokeStmt(ctorexpr);
     callFromMethod.getMethod().getActiveBody().getUnits().add(ctorinvoke);
   }
-  
+
   // new a array   array[]  =  new array[]()
-    public void JimpleNewArray(JimpleVariable jv, int arrayLength, 
+  public void JimpleNewArray(JimpleVariable jv, int arrayLength,
           JimpleMethod baseMethod) {
-    // jv = new type;
-    Value rhs = Jimple.v().newNewArrayExpr(jv.getType(), IntConstant.v(arrayLength));
+    String type = jv.getType().toString().substring(0, jv.getType().toString().indexOf("[]"));
+
+    Type arrayType = JimpleUtil.getTypeByString(type);
+    Value rhs = Jimple.v().newNewArrayExpr(arrayType, IntConstant.v(arrayLength));
     a_assign = Jimple.v().newAssignStmt(jv.getVariable(), rhs);
     baseMethod.getMethod().getActiveBody().getUnits().add(a_assign);
-    
+
   }
-  
-  
-  
-  
-  
-  public void JimpleLengthOf(JimpleVariable jv, JimpleVariable arr, 
+
+  public void JimpleLengthOf(JimpleVariable jv, JimpleVariable arr,
           JimpleMethod basemethod) {
     Value rhs = Jimple.v().newLengthExpr(arr.getVariable());
     a_assign = Jimple.v().newAssignStmt(jv.getVariable(), rhs);
     basemethod.getMethod().getActiveBody().getUnits().add(a_assign);
   }
+
   @Override
   protected Local getVariable() {
     return this.add_lhs;

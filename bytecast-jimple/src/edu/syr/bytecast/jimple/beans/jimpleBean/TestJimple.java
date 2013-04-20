@@ -106,9 +106,10 @@ public class TestJimple {
     
     //test for byte[]
     
+    // byte[] testByteArray;
     JimpleVariable byteArray = new JimpleVariable("testByteArray" , "byte[]" , jMainMethod);
     
-    
+    // testByteArray = newarray (byte)[5];
     jim_ass.JimpleNewArray(byteArray, 5, jMainMethod);
     
     
