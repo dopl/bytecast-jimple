@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import soot.*;
+import soot.JastAddJ.ReferenceType;
 import soot.jimple.IntConstant;
 import soot.jimple.JasminClass;
 import soot.jimple.Jimple;
@@ -37,20 +38,19 @@ public class CreateJimple {
     private SootClass sClass = new SootClass("TestClass", Modifier.PUBLIC);
     private ArrayList<SootMethod> sootMethodList = new ArrayList<SootMethod>();
     
-    public boolean jimple(ArrayList<ParsedInstructionsSet> pis_list, String fileName)
+    public boolean jimple(ArrayList<ParsedInstructionsSet> pis_list, String fileName) throws FileNotFoundException, IOException
     {
-        createJimpleSkeleton();
+        createClassSkeleton();
+        createClassFile(fileName);
         return true;
     }
     
     public void createMethodsBody(ArrayList<ParsedInstructionsSet> pis_list)
     {
-        //ArrayList<SootMethod> sootMethodList = new ArrayList<SootMethod>();
-        //SootClass sClass = new SootClass("TestClass", Modifier.PUBLIC);
         //Create class and Methods Skeleton
         List<MethodInfo> methods = Methods.methods;
         //Arrays.sort(pis_list);
-        for(int i=0;i<methods.size();i++)
+        for(int i=1;i<methods.size();i++)
         {
             MethodInfo minfo = methods.get(i);
             int si = minfo.getStartIndex();
@@ -62,17 +62,12 @@ public class CreateJimple {
             Chain units = body.getUnits();
             for(int k=0;k<minfo.getParameterCount();k++)
             {
-                String localName = "l"+k;
-                if(k==0)
-                {
-                    Local arg = Jimple.v().newLocal(localName, ArrayType.v(RefType.v("java.lang.String"), 1));
-                    body.getLocals().add(arg);
-                    //ParameterRef paramRef
-                }
-                else
-                {
-                    
-                }
+                String localName = "l"+i+k;
+                //if(minfo.)
+                Local arg = Jimple.v().newLocal(localName, IntType.v());
+                body.getLocals().add(arg);
+                                
+                
             }
             
             for(int j=0;j<pis_list.size();j++)
@@ -99,7 +94,7 @@ public class CreateJimple {
         streamOut.close();
     }
     
-    public void createJimpleSkeleton()//ArrayList<SootMethod> sootMethodList, SootClass sClass)
+    public void createClassSkeleton()//ArrayList<SootMethod> sootMethodList, SootClass sClass)
     {
         List<MethodInfo> methods = Methods.methods;
         //SootClass sClass;

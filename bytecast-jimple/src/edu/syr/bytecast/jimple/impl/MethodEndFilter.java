@@ -24,11 +24,12 @@ public class MethodEndFilter implements IFilter{
         
         MemoryInstructionPair mip = instList.get(index);
         IInstruction inst = mip.getInstruction();
-        if(inst.getInstructiontype() == InstructionType.LEAVEQ)
+        boolean t = inst.getInstructiontype() == InstructionType.LEAVE;
+        if(t)
         {
             mip = instList.get(++index);
             inst = mip.getInstruction();
-            if(inst.getInstructiontype() == InstructionType.RETQ)
+            if(inst.getInstructiontype() == InstructionType.RET)
             {
                 //int ind = Methods.methods.size() - 1;
                 MethodInfo m_info = Methods.methods.get(count);
@@ -37,9 +38,7 @@ public class MethodEndFilter implements IFilter{
                 count++;
                 return true;
             }
-            
         }
         return false;
     }
-    
 }

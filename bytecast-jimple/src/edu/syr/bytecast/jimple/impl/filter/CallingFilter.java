@@ -19,9 +19,14 @@ package edu.syr.bytecast.jimple.impl.filter;
 
 import edu.syr.bytecast.amd64.api.constants.InstructionType;
 import edu.syr.bytecast.amd64.api.constants.OperandType;
+import edu.syr.bytecast.amd64.api.constants.OperandTypeMemoryEffectiveAddress;
 import edu.syr.bytecast.amd64.api.instruction.IInstruction;
 import edu.syr.bytecast.amd64.api.output.MemoryInstructionPair;
+import edu.syr.bytecast.amd64.impl.instruction.operand.OperandSectionName;
 import edu.syr.bytecast.jimple.api.IFilter;
+import edu.syr.bytecast.jimple.api.MethodInfo;
+import edu.syr.bytecast.jimple.api.Methods;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,9 +42,27 @@ public class CallingFilter implements IFilter {
       if (ins.getOperands().get(0).getOperandType().equals(OperandType.MEMORY_EFFECITVE_ADDRESS)//OperandType.MEMORY_PHYSICAL_ADDRESS )
               && !funcName.contains("printf")) //the value of the second operand should be the SectionName, it hasn't been set up in AMD64 api
       {
+          long val = ((OperandTypeMemoryEffectiveAddress)ins.getOperands().get(0).getOperandValue()).getOffset();
+          //OperandSectionName operandSectionName = (OperandSectionName)ins.getOperands().get(1);
+          String name = (String)ins.getOperands().get(1).getOperandValue();
+          getName(val, name);
         return true;
       }
     }
     return false;
   }
+  
+  private void getName(long val, String name)
+  {
+      ArrayList<MethodInfo> methods = Methods.methods;
+      for(int i=0;i<methods.size();i++)
+      {
+          if(methods.get(i).getStartMemeAddress() == val)
+          {
+              methods.get(i).setMethodName(name);
+              break;
+          }
+      }
+  }
+  
 }
