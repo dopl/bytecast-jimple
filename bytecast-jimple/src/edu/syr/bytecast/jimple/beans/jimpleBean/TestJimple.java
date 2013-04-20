@@ -112,6 +112,12 @@ public class TestJimple {
     // testByteArray = newarray (byte)[5];
     jim_ass.JimpleNewArray(byteArray, 5, jMainMethod);
     
+    //testByteArray[0] =1;
+    
+    jim_ass.JimpleArrayAssign(byteArray, 0, 5, jMainMethod);
+     jim_ass.JimpleArrayAssign(byteArray, 1, 6, jMainMethod);
+      jim_ass.JimpleArrayAssign(byteArray, 2, 7, jMainMethod);
+    
     
     // $r2 = 1;
     jim_ass.JimpleDirectAssign(r2, 1, jMainMethod);

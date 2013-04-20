@@ -71,6 +71,25 @@ public class JimpleAssign extends JimpleElement {
       baseMethod.getMethod().getActiveBody().getUnits().add(a_assign);
     }
   }
+  
+  //assign a value to a variable of array :  array[0]=1
+  public void JimpleArrayAssign(JimpleVariable jv , int index , byte ass_value,JimpleMethod baseMethod){
+   Value lhs =  Jimple.v().newArrayRef(jv.getVariable(), IntConstant.v(index)); 
+  a_assign = Jimple.v().newAssignStmt(lhs, IntConstant.v(ass_value));
+//    baseMethod.getMethod().getActiveBody().getLocals().add(add_lhs);
+    baseMethod.getMethod().getActiveBody().getUnits().add(a_assign);
+      
+  }
+  
+    //assign a value to a variable of array :  array[0]=1
+  public void JimpleArrayAssign(JimpleVariable jv , int index , int ass_value,JimpleMethod baseMethod){
+   Value lhs =  Jimple.v().newArrayRef(jv.getVariable(), IntConstant.v(index)); 
+  a_assign = Jimple.v().newAssignStmt(lhs, IntConstant.v(ass_value));
+//    baseMethod.getMethod().getActiveBody().getLocals().add(add_lhs);
+    baseMethod.getMethod().getActiveBody().getUnits().add(a_assign);
+      
+  }
+
 
   //overload for add assignment     
   public void JimpleAdd(JimpleVariable jVariable1, JimpleVariable jVariable2) {
