@@ -94,6 +94,8 @@ public class TestJimple {
     forif.invokeNative("println", parameter_print, null, jMainMethod);
     JimpleElement[] paras = {forif};
     jc1.setTargets(paras);
+//    Runtime.AddPrintlntoJimple(jMainMethod);
+    
     
     // int $r2;
     JimpleVariable r2 = new JimpleVariable("$r2", "int", jMainMethod);
