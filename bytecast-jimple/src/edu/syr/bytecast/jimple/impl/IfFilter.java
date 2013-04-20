@@ -25,6 +25,11 @@ import edu.syr.bytecast.amd64.api.output.MemoryInstructionPair;
 import edu.syr.bytecast.jimple.api.IFilter;
 import java.util.List;
 
+/**
+ *
+ * @author Fei Qi
+ */
+
 public class IfFilter implements IFilter{
     public boolean doTest(List<MemoryInstructionPair> instList, int index)
     {

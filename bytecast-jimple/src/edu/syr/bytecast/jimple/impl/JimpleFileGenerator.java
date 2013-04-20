@@ -24,7 +24,7 @@ import java.util.Set;
 
 /**
  *
- * @author nick
+ * @author Fei Qi
  */
 public class JimpleFileGenerator {
     

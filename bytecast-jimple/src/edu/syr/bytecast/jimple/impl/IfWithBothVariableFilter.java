@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  *
- * @author nick
+ * @author Fei Qi
  */
 public class IfWithBothVariableFilter implements IFilter {
 

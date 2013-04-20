@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  *
- * @author nick
+ * @author Fei Qi
  */
 public class UseArgvAsParaFilter implements IFilter {
 

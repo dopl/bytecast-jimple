@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  *
- * @author nick
+ * @author Fei Qi
  */
 public class LeaveFilter implements IFilter{
     public boolean doTest(List<MemoryInstructionPair> instList, int index)

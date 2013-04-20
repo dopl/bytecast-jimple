@@ -22,31 +22,21 @@ public class PreMemoryProcessFilter implements IFilter {
 
   public boolean doTest(List<MemoryInstructionPair> instList, int index) {
     IInstruction ins = instList.get(index).getInstruction();
-    int count = 0;
-    if (ins.getInstructiontype().equals(InstructionType.PUSH)
-            && ins.getOperands().get(0).getOperandType().equals(OperandType.REGISTER)
-            && ins.getOperands().get(0).getOperandValue().equals(RegisterType.RBP)) {
-      count++;
-      ins = instList.get(index + count).getInstruction();
-      IOperand op0 = ins.getOperands().get(0);
-      IOperand op1 = ins.getOperands().get(1);
-      if (ins.getInstructiontype().equals(InstructionType.MOV)
-              && op0.getOperandType().equals(OperandType.REGISTER)
-              && op0.getOperandValue().equals(RegisterType.RSP)
-              && op1.getOperandType().equals(OperandType.REGISTER)
-              && op1.getOperandValue().equals(RegisterType.RBP)) //SectionName
-      {
-        count++;
-        ins = instList.get(index + count).getInstruction();
-        if (ins.getInstructiontype().equals(InstructionType.SUB)
-                && ins.getOperands().get(0).getOperandType().equals(OperandType.CONSTANT)
-                && ins.getOperands().get(1).getOperandType().equals(OperandType.REGISTER)
-                && ins.getOperands().get(1).getOperandValue().equals(RegisterType.RSP)) {
-          count++;
-          return true;
+        int count = 0;
+        if (ins.getInstructiontype().equals(InstructionType.PUSH)
+                && ins.getOperands().get(0).getOperandType().equals(OperandType.REGISTER)
+                && ins.getOperands().get(0).getOperandValue().equals(RegisterType.RBP)) {
+            count++;
+            ins = instList.get(index + count).getInstruction();
+            if (ins.getInstructiontype().equals(InstructionType.MOV)
+                    && ins.getOperands().get(0).getOperandType().equals(OperandType.REGISTER)
+                    && ins.getOperands().get(0).getOperandValue().equals(RegisterType.RSP)
+                    && ins.getOperands().get(1).getOperandType().equals(OperandType.REGISTER)
+                    && ins.getOperands().get(1).getOperandValue().equals(RegisterType.RBP)) //SectionName
+            {
+                return true;
+            }
         }
-      }
-    }
-    return false;
+        return false;
   }
 }

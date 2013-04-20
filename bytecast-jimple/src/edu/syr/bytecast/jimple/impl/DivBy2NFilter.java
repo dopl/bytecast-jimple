@@ -6,6 +6,7 @@ package edu.syr.bytecast.jimple.impl;
 
 import edu.syr.bytecast.amd64.api.constants.InstructionType;
 import edu.syr.bytecast.amd64.api.constants.OperandType;
+import edu.syr.bytecast.amd64.api.constants.RegisterType;
 import edu.syr.bytecast.amd64.api.instruction.IInstruction;
 import edu.syr.bytecast.amd64.api.output.MemoryInstructionPair;
 import edu.syr.bytecast.jimple.api.IFilter;
@@ -19,39 +20,36 @@ public class DivBy2NFilter implements IFilter {
 
     @Override
     public boolean doTest(List<MemoryInstructionPair> instList, int index) {
-        MemoryInstructionPair mip = instList.get(index);
-        IInstruction inst = mip.getInstruction();
-        //IInstruction inst = instList.get(index);
-        int op_index = 0;
-        if (inst.getInstructiontype() == InstructionType.MOV) {
-            if (inst.getOperands().get(op_index).getOperandType() == OperandType.MEMORY_EFFECITVE_ADDRESS
-                    && inst.getOperands().get(++op_index).getOperandType() == OperandType.REGISTER) {
-                mip = instList.get(index+1);
-                inst = mip.getInstruction();
-                //inst = instList.get(index + 1);
-                op_index = 0;
-                if (inst.getOperands().get(op_index).getOperandType() == OperandType.REGISTER
-                        && inst.getOperands().get(++op_index).getOperandType() == OperandType.REGISTER) {
-                    mip = instList.get(index+2);
-                    inst = mip.getInstruction();
-                    //inst = instList.get(index + 2);
-                    if (inst.getInstructiontype() == InstructionType.SHR) {//for checking sign
-                        mip = instList.get(index+3);
-                        inst = mip.getInstruction();
-                        //inst = instList.get(index + 3);
-                        if (inst.getInstructiontype() == InstructionType.LEA) {
-                            mip = instList.get(index+4);
-                            inst = mip.getInstruction();
-                            if(inst.getInstructiontype() == InstructionType.SAR){
-                                return true;    
-                            }
+        IInstruction ins = instList.get(index).getInstruction();
+        int count = 0;
+        if (ins.getInstructiontype().equals(InstructionType.MOV)
+                && ins.getOperands().get(0).getOperandType().equals(OperandType.MEMORY_EFFECITVE_ADDRESS)
+                && ins.getOperands().get(1).getOperandValue().equals(RegisterType.EAX)) {
+            count++;
+            ins = instList.get(index + count).getInstruction();
+            if (ins.getInstructiontype().equals(InstructionType.MOV)
+                    && ins.getOperands().get(0).getOperandValue().equals(RegisterType.EAX)
+                    && ins.getOperands().get(1).getOperandValue().equals(RegisterType.EDX)) {
+                count++;
+                ins = instList.get(index + count).getInstruction();
+                if (ins.getInstructiontype().equals(InstructionType.SHR)
+                        && ins.getOperands().get(0).getOperandType().equals(OperandType.CONSTANT)
+                        && ins.getOperands().get(1).getOperandValue().equals(RegisterType.EDX)) {
+                    count++;
+                    ins = instList.get(index + count).getInstruction();
+                    if (ins.getInstructiontype().equals(InstructionType.LEA)
+                            && ins.getOperands().get(0).getOperandType().equals(OperandType.MEMORY_EFFECITVE_ADDRESS)
+                            && ins.getOperands().get(1).getOperandValue().equals(RegisterType.EAX)) {
+                        count++;
+                        ins = instList.get(index + count).getInstruction();
+                        if (ins.getInstructiontype().equals(InstructionType.SAR)
+                                && ins.getOperands().get(0).getOperandValue().equals(RegisterType.EAX)) {
+                            return true;
                         }
                     }
                 }
             }
         }
         return false;
-
-        //throw new UnsupportedOperationException("Not supported yet.");
     }
 }

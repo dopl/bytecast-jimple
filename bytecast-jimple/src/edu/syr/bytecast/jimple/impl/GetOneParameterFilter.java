@@ -16,24 +16,23 @@ import java.util.List;
  *
  * @author Fei Qi
  */
-//this file is used to filter the pre-memory process part
-public class SetArgvAndArgcFilter implements IFilter {
+public class GetOneParameterFilter implements IFilter {
 
-    @Override
     public boolean doTest(List<MemoryInstructionPair> instList, int index) {
         IInstruction ins = instList.get(index).getInstruction();
         int count = 0;
         if (ins.getInstructiontype().equals(InstructionType.MOV)
-                && ins.getOperands().get(0).getOperandType().equals(OperandType.REGISTER)
                 && ins.getOperands().get(0).getOperandValue().equals(RegisterType.EDI)
                 && ins.getOperands().get(1).getOperandType().equals(OperandType.MEMORY_EFFECITVE_ADDRESS)) {
             count++;
             ins = instList.get(index + count).getInstruction();
-            if (ins.getInstructiontype().equals(InstructionType.MOV)
-                    && ins.getOperands().get(0).getOperandType().equals(OperandType.REGISTER)
+            if (!(ins.getInstructiontype().equals(InstructionType.MOV)
+                    && ins.getOperands().get(0).getOperandValue().equals(RegisterType.ESI)
+                    && ins.getOperands().get(1).getOperandType().equals(OperandType.MEMORY_EFFECITVE_ADDRESS))
+                    && !(ins.getInstructiontype().equals(InstructionType.MOV)
                     && ins.getOperands().get(0).getOperandValue().equals(RegisterType.RSI)
-                    && ins.getOperands().get(1).getOperandType().equals(OperandType.MEMORY_EFFECITVE_ADDRESS)) {
-                count++;
+                    && ins.getOperands().get(1).getOperandType().equals(OperandType.MEMORY_EFFECITVE_ADDRESS))) //SectionName
+            {
                 return true;
             }
         }

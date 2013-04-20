@@ -14,23 +14,21 @@ import java.util.List;
 
 /**
  *
- * @author nick
+ * @author Fei Qi
  */
-public class PreMemoryProcess2ndFilter implements IFilter {
+public class GetTwoParameterFilter implements IFilter {
 
     public boolean doTest(List<MemoryInstructionPair> instList, int index) {
         IInstruction ins = instList.get(index).getInstruction();
         int count = 0;
-        if (ins.getInstructiontype().equals(InstructionType.PUSH)
-                && ins.getOperands().get(0).getOperandType().equals(OperandType.REGISTER)
-                && ins.getOperands().get(0).getOperandValue().equals(RegisterType.RBP)) {
+        if (ins.getInstructiontype().equals(InstructionType.MOV)
+                && ins.getOperands().get(0).getOperandValue().equals(RegisterType.EDI)
+                && ins.getOperands().get(1).getOperandType().equals(OperandType.MEMORY_EFFECITVE_ADDRESS)) {
             count++;
             ins = instList.get(index + count).getInstruction();
             if (ins.getInstructiontype().equals(InstructionType.MOV)
-                    && ins.getOperands().get(0).getOperandType().equals(OperandType.REGISTER)
-                    && ins.getOperands().get(0).getOperandValue().equals(RegisterType.RSP)
-                    && ins.getOperands().get(1).getOperandType().equals(OperandType.REGISTER)
-                    && ins.getOperands().get(1).getOperandValue().equals(RegisterType.RBP)) //SectionName
+                    && ins.getOperands().get(0).getOperandValue().equals(RegisterType.ESI)
+                    && ins.getOperands().get(1).getOperandType().equals(OperandType.MEMORY_EFFECITVE_ADDRESS)) //SectionName
             {
                 return true;
             }
