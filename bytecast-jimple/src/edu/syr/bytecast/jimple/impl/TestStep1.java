@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.syr.bytecast.jimple.impl;
+package edu.syr.bytecast.jimple.impl;   
 
 import edu.syr.bytecast.amd64.api.constants.IBytecastAMD64;
 import edu.syr.bytecast.amd64.api.output.IExecutableFile;
@@ -23,7 +23,7 @@ public class TestStep1 {
   public static void main(String[] args) {
     Map<Method, List<ParsedInstructionsSet>> filter_result = new HashMap<Method, List<ParsedInstructionsSet>>();
     // get all the sections from the IExecutableFile
-    Paths.v().setRoot("/home/peike/code/bytecast");
+    Paths.v().setRoot("/home/nick/code/bytecast");
     try {
       Paths.v().parsePathsFile();
     } catch (Exception e) {

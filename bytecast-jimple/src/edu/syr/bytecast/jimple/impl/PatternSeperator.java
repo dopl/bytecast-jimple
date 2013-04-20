@@ -71,6 +71,13 @@ public class PatternSeperator {
     finfo.setFilter_Name("PreMemoryProcess");
     finfo.setInst_Count(3);
     fr.run(obj_instruction, parsed_list, fil, finfo);
+    
+    //PreMemoryProcess2ND
+    fil = new PreMemoryProcess2ndFilter();
+    finfo = new FilterInfo();
+    finfo.setFilter_Name("PreMemoryProcess2nd");
+    finfo.setInst_Count(2);
+    fr.run(obj_instruction, parsed_list, fil, finfo);
 
     //SetArgvAndArgcFilter
     fil = new SetArgvAndArgcFilter();
@@ -78,12 +85,26 @@ public class PatternSeperator {
     finfo.setFilter_Name("SetArgvAndArgc");
     finfo.setInst_Count(2);
     fr.run(obj_instruction, parsed_list, fil, finfo);
+    
+    //IfWithBothVariableFilter
+    fil = new UseArgvAsParaFilter();
+    finfo = new FilterInfo();
+    finfo.setFilter_Name("UseArgvAsPara");
+    finfo.setInst_Count(5);
+    fr.run(obj_instruction, parsed_list, fil, finfo);
 
     //IfFilter
     fil = new IfFilter();
     finfo = new FilterInfo();
     finfo.setFilter_Name("If");
     finfo.setInst_Count(2);
+    fr.run(obj_instruction, parsed_list, fil, finfo);
+    
+    //IfWithBothVariableFilter
+    fil = new IfWithBothVariableFilter();
+    finfo = new FilterInfo();
+    finfo.setFilter_Name("IfWithBothVariable");
+    finfo.setInst_Count(3);
     fr.run(obj_instruction, parsed_list, fil, finfo);
 
     //CallingFilter
@@ -94,7 +115,7 @@ public class PatternSeperator {
     fr.run(obj_instruction, parsed_list, fil, finfo);
 
     //PrintfFilter
-    fil = new CallingFilter();
+    fil = new PrintfFilter();
     finfo = new FilterInfo();
     finfo.setFilter_Name("Printf");
     finfo.setInst_Count(2);
