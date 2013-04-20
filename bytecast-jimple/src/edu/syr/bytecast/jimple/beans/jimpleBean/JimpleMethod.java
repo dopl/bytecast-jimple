@@ -68,7 +68,7 @@ public class JimpleMethod {
 
     units = jBody.getUnits();
     locals = jBody.getLocals();
-    initMethod();
+    initMethod();   //add init method for each method
   }
 
   private void initMethod() {
@@ -92,13 +92,10 @@ public class JimpleMethod {
       units.add(thistmt);
 
     }
-    declaringClass.addMethod(myMethod);
+    declaringClass.addMethod(myMethod);    //add the method to the class that u want to put in
   }
   
-  public void initMain() {
-      
-  }
-
+  //get the list of given method's parameter
   public List<String> getParameterTypes() {
     if (this.parameters_type != null) {
       return this.parameters_type;
