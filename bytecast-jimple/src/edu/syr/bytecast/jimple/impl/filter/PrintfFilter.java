@@ -3,13 +3,14 @@
  * and open the template in the editor.
  */
 
-package edu.syr.bytecast.jimple.impl;
+package edu.syr.bytecast.jimple.impl.filter;
 
 import edu.syr.bytecast.amd64.api.constants.InstructionType;
 import edu.syr.bytecast.amd64.api.constants.OperandType;
 import edu.syr.bytecast.amd64.api.constants.RegisterType;
 import edu.syr.bytecast.amd64.api.instruction.IInstruction;
 import edu.syr.bytecast.amd64.api.output.MemoryInstructionPair;
+import edu.syr.bytecast.jimple.api.IFilter;
 import java.util.List;
 
 /**
@@ -17,7 +18,7 @@ import java.util.List;
  * @author tongxu
  */
 
-public class PrintfFilter {
+public class PrintfFilter implements IFilter{
     public boolean doTest(List<MemoryInstructionPair> instList, int index){
         IInstruction ins = instList.get(index).getInstruction();
         if( ins.getInstructiontype().equals(InstructionType.MOV)

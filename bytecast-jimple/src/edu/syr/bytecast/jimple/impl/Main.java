@@ -17,7 +17,12 @@
  */
 
 package edu.syr.bytecast.jimple.impl;
+
 import edu.syr.bytecast.amd64.BytecastAmd64;
+import edu.syr.bytecast.jimple.impl.filter.IfFilter;
+import edu.syr.bytecast.jimple.impl.filter.DivBy2NFilter;
+import edu.syr.bytecast.jimple.impl.filter.CallingFilter;
+import edu.syr.bytecast.jimple.impl.filter.AddFilter;
 import edu.syr.bytecast.amd64.api.constants.IBytecastAMD64;
 import edu.syr.bytecast.amd64.api.output.IExecutableFile;
 import edu.syr.bytecast.amd64.util.AMD64MockGenerator;

@@ -25,6 +25,7 @@ public class JimpleMethod {
   private String methodName;
   private String returnType;
   private SootClass declaringClass;
+  private JimpleClass jimple_Class;
   private int modifier;
   private JimpleBody jBody;
   private PatchingChain<Unit> units;
@@ -46,6 +47,7 @@ public class JimpleMethod {
     this.returnType = returnType;
     this.parameters_type = parameters_type;
     this.declaringClass = declaringClass.getSClass();
+    this.jimple_Class = declaringClass;
     createMethod();
   }
 
@@ -105,7 +107,17 @@ public class JimpleMethod {
     }
 
   }
-
+  
+  //get the jimple class that this method is involved in
+  public JimpleClass getJimpleClass(){
+      if(jimple_Class!= null)
+          return jimple_Class;
+      
+     return null;
+            
+  }
+  
+ 
   protected SootMethod getMethod() {
 
     return myMethod;

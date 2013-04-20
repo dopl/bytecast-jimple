@@ -38,9 +38,10 @@ public class CreateJimple {
     private SootClass sClass = new SootClass("TestClass", Modifier.PUBLIC);
     private ArrayList<SootMethod> sootMethodList = new ArrayList<SootMethod>();
     
-    public boolean jimple(ArrayList<ParsedInstructionsSet> pis_list, String fileName)
+    public boolean jimple(ArrayList<ParsedInstructionsSet> pis_list, String fileName) throws FileNotFoundException, IOException
     {
         createClassSkeleton();
+        createClassFile(fileName);
         return true;
     }
     

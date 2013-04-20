@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.syr.bytecast.jimple.impl;
+package edu.syr.bytecast.jimple.impl.filter;
 
 import edu.syr.bytecast.amd64.api.constants.InstructionType;
 import edu.syr.bytecast.amd64.api.instruction.IInstruction;
@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  *
- * @author nick
+ * @author Fei Qi
  */
 public class LeaveFilter implements IFilter{
     public boolean doTest(List<MemoryInstructionPair> instList, int index)

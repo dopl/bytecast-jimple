@@ -16,7 +16,7 @@
  *
  */
 
-package edu.syr.bytecast.jimple.impl;
+package edu.syr.bytecast.jimple.impl.filter;
 
 import edu.syr.bytecast.amd64.api.constants.InstructionType;
 import edu.syr.bytecast.amd64.api.constants.OperandType;
@@ -24,6 +24,11 @@ import edu.syr.bytecast.amd64.api.instruction.IInstruction;
 import edu.syr.bytecast.amd64.api.output.MemoryInstructionPair;
 import edu.syr.bytecast.jimple.api.IFilter;
 import java.util.List;
+
+/**
+ *
+ * @author Fei Qi
+ */
 
 public class IfFilter implements IFilter{
     public boolean doTest(List<MemoryInstructionPair> instList, int index)
@@ -36,12 +41,12 @@ public class IfFilter implements IFilter{
         {
             count++;
             ins = instList.get(index + count).getInstruction();
-            if(ins.getInstructiontype().equals(InstructionType.JNE)
+            if((ins.getInstructiontype().equals(InstructionType.JNE)
                     || ins.getInstructiontype().equals(InstructionType.JE)
                     || ins.getInstructiontype().equals(InstructionType.JLE)
                     || ins.getInstructiontype().equals(InstructionType.JGE)
                     || ins.getInstructiontype().equals(InstructionType.JL)
-                    || ins.getInstructiontype().equals(InstructionType.JG)
+                    || ins.getInstructiontype().equals(InstructionType.JG))
                     && ins.getOperands().get(0).getOperandType().equals(OperandType.MEMORY_EFFECITVE_ADDRESS)) //SectionName
             {
                 count++;
