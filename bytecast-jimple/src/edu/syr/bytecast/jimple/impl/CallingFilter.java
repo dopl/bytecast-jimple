@@ -15,7 +15,6 @@
  * along with Bytecast.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 package edu.syr.bytecast.jimple.impl;
 
 import edu.syr.bytecast.amd64.api.constants.InstructionType;
@@ -29,17 +28,18 @@ import java.util.List;
  *
  * @author Fei Qi
  */
-public class CallingFilter implements IFilter{
-    public boolean doTest(List<MemoryInstructionPair> instList, int index)
-    {
-        IInstruction ins = instList.get(index).getInstruction();
-        if( ins.getInstructiontype() == InstructionType.CALLQ 
-                && ins.getOperands().get(0).getOperandType() == OperandType.MEMORY_EFFECITVE_ADDRESS)//OperandType.MEMORY_PHYSICAL_ADDRESS )
-                //the value of the second operand should be the SectionName, it hasn't been set up in AMD64 api
-        {
-            return true;
-        }
-        return false;
-    } 
-    
+public class CallingFilter implements IFilter {
+
+  public boolean doTest(List<MemoryInstructionPair> instList, int index) {
+    IInstruction ins = instList.get(index).getInstruction();
+    if (ins.getInstructiontype().equals(InstructionType.CALLQ)) {
+        String funcName = ins.getOperands().get(1).getOperandValue().toString();
+      if (ins.getOperands().get(0).getOperandType().equals(OperandType.MEMORY_EFFECITVE_ADDRESS)//OperandType.MEMORY_PHYSICAL_ADDRESS )
+              && !funcName.contains("printf")) //the value of the second operand should be the SectionName, it hasn't been set up in AMD64 api
+      {
+        return true;
+      }
+    }
+    return false;
+  }
 }

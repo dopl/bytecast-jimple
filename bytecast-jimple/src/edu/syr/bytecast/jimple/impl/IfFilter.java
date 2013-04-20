@@ -30,19 +30,19 @@ public class IfFilter implements IFilter{
     {
         IInstruction ins = instList.get(index).getInstruction();
         int count = 0;
-        if( ins.getInstructiontype() == InstructionType.CMPL
-                && ins.getOperands().get(0).getOperandType() == OperandType.CONSTANT
-                && ins.getOperands().get(1).getOperandType() == OperandType.MEMORY_EFFECITVE_ADDRESS )
+        if( ins.getInstructiontype().equals(InstructionType.CMPL)
+                && ins.getOperands().get(0).getOperandType().equals(OperandType.CONSTANT)
+                && ins.getOperands().get(1).getOperandType().equals(OperandType.MEMORY_EFFECITVE_ADDRESS ))
         {
             count++;
             ins = instList.get(index + count).getInstruction();
-            if( (ins.getInstructiontype() == InstructionType.JNE
-                    || ins.getInstructiontype() == InstructionType.JE
-                    || ins.getInstructiontype() == InstructionType.JLE
-                    || ins.getInstructiontype() == InstructionType.JGE
-                    || ins.getInstructiontype() == InstructionType.JL
-                    || ins.getInstructiontype() == InstructionType.JG)
-                    && ins.getOperands().get(0).getOperandType() == OperandType.MEMORY_EFFECITVE_ADDRESS ) //SectionName
+            if(ins.getInstructiontype().equals(InstructionType.JNE)
+                    || ins.getInstructiontype().equals(InstructionType.JE)
+                    || ins.getInstructiontype().equals(InstructionType.JLE)
+                    || ins.getInstructiontype().equals(InstructionType.JGE)
+                    || ins.getInstructiontype().equals(InstructionType.JL)
+                    || ins.getInstructiontype().equals(InstructionType.JG)
+                    && ins.getOperands().get(0).getOperandType().equals(OperandType.MEMORY_EFFECITVE_ADDRESS)) //SectionName
             {
                 count++;
                 return true;
@@ -104,11 +104,11 @@ public class IfFilter implements IFilter{
 //    // ray write code here
 //    IInstruction  instruction = instList.get(index); //get the instruction from insList depending on the index
 //    //<--------------Test <if> Statement(first instruction)-------------->
-//      if(instruction.getInstructiontype() == InstructionType.CMPQ) //check whether or not it is if's first statement
+//      if(instruction.getInstructiontype().equals(InstructionType.CMPQ) //check whether or not it is if's first statement
 //      {
 //         IInstruction  instructionNext = instList.get(index+1); //get next instruction
 //          
-//        if(instructionNext.getInstructiontype() == InstructionType.JE ||instructionNext.getInstructiontype()== InstructionType.JB 
+//        if(instructionNext.getInstructiontype().equals(InstructionType.JE ||instructionNext.getInstructiontype()== InstructionType.JB 
 //                || instructionNext.getInstructiontype()== InstructionType.JAE || instructionNext.getInstructiontype()== InstructionType.JMP 
 //                || instructionNext.getInstructiontype()== InstructionType.JNE || instructionNext.getInstructiontype()== InstructionType.JLE)//JLE and JQ    
 //        {
@@ -116,20 +116,20 @@ public class IfFilter implements IFilter{
 //            String temp = instructionNext.getOperands().get(0).getOperandValue().toString();
 //            for( int i = index +1; i < instList.size(); i++)
 //            {
-//                if(instList.get(i).getMemoryAddress().toString() == temp)
+//                if(instList.get(i).getMemoryAddress().toString().equals(temp)
 //                {
 //                    end_if = i - 1;
 //                }
-//                if(instList.get(i - 1).getInstructiontype() == InstructionType.JE || instList.get(i - 1).getInstructiontype() == InstructionType.JB 
-//                        || instList.get(i - 1).getInstructiontype() == InstructionType.JAE || instList.get(i - 1).getInstructiontype() == InstructionType.JMP 
-//                        || instList.get(i - 1).getInstructiontype() == InstructionType.JNE || instList.get(i - 1).getInstructiontype() == InstructionType.JLE )
+//                if(instList.get(i - 1).getInstructiontype().equals(InstructionType.JE || instList.get(i - 1).getInstructiontype().equals(InstructionType.JB 
+//                        || instList.get(i - 1).getInstructiontype().equals(InstructionType.JAE || instList.get(i - 1).getInstructiontype().equals(InstructionType.JMP 
+//                        || instList.get(i - 1).getInstructiontype().equals(InstructionType.JNE || instList.get(i - 1).getInstructiontype().equals(InstructionType.JLE )
 //                {
 //                    hasElse = true;
 //                    begin_else = i;
 //                    temp = instList.get(i - 1).getOperands().get(0).getOperandValue().toString();
 //                    for( int j = i; j < instList.size(); j++)
 //                    {
-//                        if(instList.get(j).getMemoryAddress().toString() == temp)
+//                        if(instList.get(j).getMemoryAddress().toString().equals(temp)
 //                        {
 //                            end_else = j - 1;
 //                            break;

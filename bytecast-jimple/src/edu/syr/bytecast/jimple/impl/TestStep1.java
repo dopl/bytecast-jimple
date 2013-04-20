@@ -7,22 +7,19 @@ package edu.syr.bytecast.jimple.impl;
 import edu.syr.bytecast.amd64.api.constants.IBytecastAMD64;
 import edu.syr.bytecast.amd64.api.output.IExecutableFile;
 import edu.syr.bytecast.amd64.api.output.ISection;
-import edu.syr.bytecast.amd64.test.TestBytecastAmd64;
+import edu.syr.bytecast.amd64.test.DepcrecatedMock;
 import edu.syr.bytecast.jimple.api.Method;
 import edu.syr.bytecast.jimple.api.MethodInfo;
 import edu.syr.bytecast.jimple.beans.ParsedInstructionsSet;
 import edu.syr.bytecast.util.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
  * @author peike
  */
 public class TestStep1 {
-
+  
   public static void main(String[] args) {
     Map<Method, List<ParsedInstructionsSet>> filter_result = new HashMap<Method, List<ParsedInstructionsSet>>();
     // get all the sections from the IExecutableFile
@@ -32,10 +29,9 @@ public class TestStep1 {
     } catch (Exception e) {
       System.out.println(e.getMessage());
     }
-    IBytecastAMD64 testdata = new TestBytecastAmd64();
+    IBytecastAMD64 testdata = new DepcrecatedMock();
     IExecutableFile exe_file = testdata.buildInstructionObjects();
 
-    List<ISection> all_section = exe_file.getSectionsWithInstructions();
     ISection wholeSection = exe_file.getSectionsWithInstructions().get(0);
 
     List<MethodInfo> m_info = new ArrayList<MethodInfo>();
@@ -51,26 +47,59 @@ public class TestStep1 {
     MethodInfo mi2 = new MethodInfo();
     mi2.setMethodName("dustuff");
     mi2.setStartIndex(32);
-    mi2.setEndIndex(18);
+    mi2.setEndIndex(50);
     mi2.setStartMemAddress(0x40050fL);
     mi2.setEndMemAddress(0x400541L);
     m_info.add(mi2);
-
+    MethodInfo mi3 = new MethodInfo();
+    mi3.setMethodName("sum");
+    mi3.setStartIndex(51);
+    mi3.setEndIndex(60);
+    mi3.setStartMemAddress(0x400414L);
+    mi3.setEndMemAddress(0x4004f8L);
+    m_info.add(mi3);
+    MethodInfo mi4 = new MethodInfo();
+    mi4.setMethodName("halve");
+    mi4.setStartIndex(61);
+    mi4.setEndIndex(71);
+    mi4.setStartMemAddress(0x4004f9L);
+    mi4.setEndMemAddress(0x40050eL);
+    m_info.add(mi4);
+    
 
     //call the PatternSeperator to filter all the section
     PatternSeperator patt_Seperator = new PatternSeperator();
     List<Method> result_methods = patt_Seperator.divideMethod(
             wholeSection.getAllInstructionObjects(), m_info);
-    for (Method m : result_methods) {
-      System.out.println(m.getMethodInfo().getMethodName());
-    }
     filter_result = patt_Seperator.doFilter(
-            patt_Seperator.divideMethod(wholeSection.getAllInstructionObjects(),
-            m_info), m_info);
+            result_methods, m_info);
     
-    //call the JimpleFileGenerator to creathe the jimple file 
-    JimpleFileGenerator jim_Generator = new JimpleFileGenerator();
-//    jim_Generator.doJimpleCreate(filter_result);
-//    return false;
+    
+    Comparator<ParsedInstructionsSet> mysorter = new Comparator<ParsedInstructionsSet>() {
+
+      @Override
+      public int compare(ParsedInstructionsSet pis1, ParsedInstructionsSet pis2) {
+            if (pis1.getInfo().getStart_Index() > pis2.getInfo().getStart_Index()) {
+                return 1;
+            } else if (pis1.getInfo().getStart_Index() == pis2.getInfo().getStart_Index()) {
+                return 0;
+            } else {
+                return -1;
+            }
+        }
+    };
+    
+    
+    for (Method m : result_methods) {
+      List<ParsedInstructionsSet> resultSet = filter_result.get(m);
+      Collections.sort(resultSet, mysorter);
+      
+      
+      System.out.println("method: " + m.getMethodInfo().getMethodName());
+      for (ParsedInstructionsSet pis : resultSet) {
+        System.out.println("pattern name: " + pis.getInfo().getInstruction_Name());
+        System.out.println("pattern start index: " + pis.getInfo().getStart_Index());
+      }
+    }
   }
 }
