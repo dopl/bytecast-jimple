@@ -16,7 +16,7 @@
  *
  */
 
-package edu.syr.bytecast.jimple.impl;
+package edu.syr.bytecast.jimple.impl.filter;
 
 import edu.syr.bytecast.amd64.api.constants.InstructionType;
 import edu.syr.bytecast.amd64.api.constants.OperandType;

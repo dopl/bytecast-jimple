@@ -4,6 +4,18 @@
  */
 package edu.syr.bytecast.jimple.impl;
 
+import edu.syr.bytecast.jimple.impl.filter.IfWithBothVariableFilter;
+import edu.syr.bytecast.jimple.impl.filter.IfFilter;
+import edu.syr.bytecast.jimple.impl.filter.GetTwoParameterFilter;
+import edu.syr.bytecast.jimple.impl.filter.GetOneParameterFilter;
+import edu.syr.bytecast.jimple.impl.filter.DivBy2NFilter;
+import edu.syr.bytecast.jimple.impl.filter.CallingFilter;
+import edu.syr.bytecast.jimple.impl.filter.AddFilter;
+import edu.syr.bytecast.jimple.impl.filter.LeaveFilter;
+import edu.syr.bytecast.jimple.impl.filter.PreMemoryProcessFilter;
+import edu.syr.bytecast.jimple.impl.filter.PrintfFilter;
+import edu.syr.bytecast.jimple.impl.filter.SetArgvAndArgcFilter;
+import edu.syr.bytecast.jimple.impl.filter.UseArgvAsParaFilter;
 import edu.syr.bytecast.amd64.api.instruction.IInstruction;
 import edu.syr.bytecast.amd64.api.output.ISection;
 import edu.syr.bytecast.amd64.api.output.MemoryInstructionPair;
