@@ -287,6 +287,15 @@ public class TestStep2 {
     private void divideBy2NFilterProcess(Method m, ParsedInstructionsSet ins_set) {
     }
 
+    private boolean updateRegToVarMap(String regName, String varName) {
+      //  rax is equal to eax
+      if (regToVar.containsKey(regName)) {
+        regToVar.put(regName, varName);
+      } else {
+        
+      }
+      return true;
+    }
     public static void main(String[] argv) {
         Map<Method, List<ParsedInstructionsSet>> filter_result = new HashMap<Method, List<ParsedInstructionsSet>>();
         // get all the sections from the IExecutableFile
