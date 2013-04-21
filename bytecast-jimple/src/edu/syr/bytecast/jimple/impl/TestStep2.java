@@ -21,6 +21,7 @@ import edu.syr.bytecast.amd64.test.DepcrecatedMock;
 import edu.syr.bytecast.jimple.api.Method;
 import edu.syr.bytecast.jimple.api.MethodInfo;
 import edu.syr.bytecast.jimple.beans.*;
+import edu.syr.bytecast.jimple.beans.jimpleBean.JimpleAssign;
 import edu.syr.bytecast.jimple.beans.jimpleBean.JimpleClass;
 import edu.syr.bytecast.jimple.beans.jimpleBean.JimpleDoc;
 import edu.syr.bytecast.jimple.beans.jimpleBean.JimpleMethod;
@@ -275,11 +276,10 @@ public class TestStep2 {
 
     private void setArgFilterProcess(Method m, ParsedInstructionsSet ins_set) {
         List<MemoryInstructionPair> pair_list = ins_set.getInstructions_List(); 
-        //String argc = pair_list.get(0).getInstruction().getOperands().get(1).getOperandValue().toString();
-//        String argv = pair_list.get(1).getInstruction().getOperands().get(1).getOperandValue().toString();
-//            updateRegToVarMap(argv, "argv");
-            
-       //  JimpleMethod jmethod = Map_jMethod.get(m.getMethodInfo().getMethodName()); 
+         JimpleAssign jim_ass = new JimpleAssign();       
+         JimpleMethod jmethod = Map_jMethod.get(m.getMethodInfo().getMethodName()); 
+         JimpleVariable j_argv = new JimpleVariable("argv", "String []", jmethod);
+         jim_ass.JimpleParameterAssign(j_argv, "String []", 0, jmethod);
         // jmethod.
      
             
