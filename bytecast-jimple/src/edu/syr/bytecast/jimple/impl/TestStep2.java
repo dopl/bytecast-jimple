@@ -39,7 +39,13 @@ public class TestStep2 {
     private JimpleDoc jimple_doc;
     private JimpleClass jimple_class;
     private Set<Method> methods;
-
+    
+    // maintain a relation between variable and register
+    // example:
+    // edx : v1
+    // -0x4(%rbp) : p1
+    private Map<String, String> regToVar;
+    
     public TestStep2(Map<Method, List<ParsedInstructionsSet>> temp_map) {
         this.method_map = temp_map;
         this.methods = temp_map.keySet();
@@ -47,7 +53,7 @@ public class TestStep2 {
         jimple_doc = new JimpleDoc();
         jimple_class = new JimpleClass("test2", 1);
         jimple_doc.addClass(jimple_class);
-
+        regToVar = new HashMap<String, String>();
     }
 
     public void createJimple() {
@@ -233,6 +239,10 @@ public class TestStep2 {
     }
 
     private void addFilterProcess(Method m, ParsedInstructionsSet ins_set) {
+      String augendRegName = ins_set.getInstructions_List().get(0).
+              getInstruction().getOperands().get(1).getOperandValue().toString();
+      String addend = ins_set.getInstructions_List().get(1).
+              getInstruction().getOperands().get(1).getOperandValue().toString();
     }
 
     private void getOneParaFilterProcess(Method m, ParsedInstructionsSet ins_set) {
