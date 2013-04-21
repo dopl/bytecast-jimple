@@ -21,10 +21,7 @@ import edu.syr.bytecast.amd64.test.DepcrecatedMock;
 import edu.syr.bytecast.jimple.api.Method;
 import edu.syr.bytecast.jimple.api.MethodInfo;
 import edu.syr.bytecast.jimple.beans.*;
-import edu.syr.bytecast.jimple.beans.jimpleBean.JimpleClass;
-import edu.syr.bytecast.jimple.beans.jimpleBean.JimpleDoc;
-import edu.syr.bytecast.jimple.beans.jimpleBean.JimpleMethod;
-import edu.syr.bytecast.jimple.beans.jimpleBean.JimpleVariable;
+import edu.syr.bytecast.jimple.beans.jimpleBean.*;
 import edu.syr.bytecast.util.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +37,8 @@ public class TestStep2 {
     private JimpleClass jimple_class;
     private Set<Method> methods;
     private int _vcount;
-    
+    private JimpleAssign jimAss;
+    private JimpleInvoke jimInvk;
     // maintain a relation between variable and register
     // example:
     // edx : v1
@@ -312,16 +310,17 @@ public class TestStep2 {
     }
 
     private void addFilterProcess(Method m, ParsedInstructionsSet ins_set) {
-//              getInstruction().getOperands().get(1).getOperandValue().toString();
-//      String addend = ins_set.getInstructions_List().get(1).
-//              getInstruction().getOperands().get(1).getOperandValue().toString();
       JimpleMethod currentJM = Map_jMethod.get(m.getMethodInfo().getMethodName());
       for (MemoryInstructionPair mip : ins_set.getInstructions_List()) {
         InstructionType thisIType = mip.getInstruction().getInstructiontype();
         if (thisIType.equals(InstructionType.MOV)) {
-          
+          JimpleVariable rhs = regToJVar.get(getRegister(mip.
+                  getInstruction().getOperands().get(0).getOperandValue()));
+          JimpleVariable newJV = new JimpleVariable(getNewVarName(), "int", currentJM);
+          jimAss.JimpleDirectAssign(newJV, rhs, currentJM);
         } else if (thisIType.equals(InstructionType.ADD)) {
-          
+          JimpleVariable rhs = regToJVar.get(getRegister(mip.
+                  getInstruction().getOperands().get(0).getOperandValue()));
         } else if (thisIType.equals(InstructionType.LEA)) {
           
         }
@@ -364,18 +363,33 @@ public class TestStep2 {
         }
     }
     
-    private String getNewVarName(String regName)
+    private String getNewVarName()
     {
         String temp ="v" + Integer.toString(getVcount());
         return temp;
     }
     
-//    private JimpleVariable getExistJVar
 
-    private boolean updateRegToVarMap(String regName, JimpleMethod baseMethod) {
+    private JimpleVariable getExistJVar(String regName) {
+    if (regToJVar.containsKey(regName)) {
+      return regToJVar.get(regName);
+    } else {
+      // I know, too ugly
+      if (regName.equals("rax")) {
+        return regToJVar.get("eax");
+      } else if (regName.equals("rdx")) {
+        return regToJVar.get("edx");
+
+      } else {
+        return null;
+      }
+    }
+  }
+
+    private boolean updateRegToVarMap(String regName, JimpleVariable newJV, JimpleMethod baseMethod) {
         
-        JimpleVariable JVar = new JimpleVariable(getNewVarName(regName), "int", baseMethod);
-        regToJVar.put(regName, JVar);
+//        JimpleVariable JVar = new JimpleVariable(getNewVarName(regName), "int", baseMethod);
+        regToJVar.put(regName, newJV);
         return true;
     }
 
