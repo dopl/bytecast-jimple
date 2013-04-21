@@ -11,6 +11,8 @@ package edu.syr.bytecast.jimple.impl;
 import edu.syr.bytecast.amd64.api.constants.IBytecastAMD64;
 import edu.syr.bytecast.amd64.api.constants.InstructionType;
 import edu.syr.bytecast.amd64.api.constants.OperandType;
+import edu.syr.bytecast.amd64.api.constants.RegisterType;
+import edu.syr.bytecast.amd64.api.instruction.IInstruction;
 import edu.syr.bytecast.amd64.api.output.IExecutableFile;
 import edu.syr.bytecast.amd64.api.output.ISection;
 import edu.syr.bytecast.amd64.api.output.MemoryInstructionPair;
@@ -19,13 +21,9 @@ import edu.syr.bytecast.jimple.api.Method;
 import edu.syr.bytecast.jimple.api.MethodInfo;
 import edu.syr.bytecast.jimple.beans.*;
 import edu.syr.bytecast.jimple.beans.jimpleBean.JimpleClass;
-import edu.syr.bytecast.jimple.beans.jimpleBean.JimpleCondition;
 import edu.syr.bytecast.jimple.beans.jimpleBean.JimpleDoc;
 import edu.syr.bytecast.jimple.beans.jimpleBean.JimpleMethod;
-import edu.syr.bytecast.jimple.beans.jimpleBean.JimpleVariable;
 import edu.syr.bytecast.util.Paths;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -102,7 +100,16 @@ public class TestStep2 {
     }
 
     private void implementSingleJimpleMethod(Method m, List<ParsedInstructionsSet> listPis) {
+        int start_index_of_this, number_of_lines;
+        int end_index_of_last = 0;
         for (ParsedInstructionsSet pis : listPis) {
+            start_index_of_this = pis.getInfo().getStart_Index();
+            number_of_lines = start_index_of_this - end_index_of_last;
+            if (number_of_lines != 0) {
+                for (int i = end_index_of_last; i < number_of_lines; i++) {
+                    handleUnparsedLines(m.getL_instruction().get(i), m.getL_instruction().get(i - 1));
+                }
+            }
             if (pis.getInfo().getInstruction_Name().equals("PreMemoryProcess")) {
                 prememoryFilterProcess(m, pis);
             } else if (pis.getInfo().getInstruction_Name().equals("SetArgvAndArgc")) {
@@ -126,6 +133,7 @@ public class TestStep2 {
             } else if (pis.getInfo().getInstruction_Name().equals("Add")) {
                 addFilterProcess(m, pis);
             }
+            end_index_of_last = pis.getInfo().getStart_Index() + pis.getInfo().getInstructions_Count();
         }
     }
 //    private void insAnalyze(ParsedInstructionsSet ins_set) {
@@ -216,6 +224,25 @@ public class TestStep2 {
 //            // write the Jimple Leave statement
 //        }
 //    }
+
+    private void handleUnparsedLines(MemoryInstructionPair singleLine, MemoryInstructionPair lastSingleLine) {
+        IInstruction ins = singleLine.getInstruction();
+        if (ins.getInstructiontype().equals(InstructionType.MOV)
+                && ins.getOperands().get(0).getOperandType().equals(OperandType.REGISTER)
+                && ins.getOperands().get(1).getOperandValue().equals(RegisterType.EAX)) {
+            // return 0;
+        } else if (ins.getInstructiontype().equals(InstructionType.MOV)
+                && ins.getOperands().get(0).getOperandValue().equals(RegisterType.EAX)) {
+            IInstruction ins_last = lastSingleLine.getInstruction();
+            if (ins_last.getInstructiontype().equals(InstructionType.CALLQ)) {
+                String funcName = ins.getOperands().get(1).getOperandValue().toString();
+                if (ins.getOperands().get(0).getOperandType().equals(OperandType.MEMORY_EFFECITVE_ADDRESS)//OperandType.MEMORY_PHYSICAL_ADDRESS )
+                        && !funcName.contains("printf")) {
+                    // put the result of function "eax" into map;
+                }
+            }
+        }
+    }
 
     private void prememoryFilterProcess(Method m, ParsedInstructionsSet ins_set) {
     }
