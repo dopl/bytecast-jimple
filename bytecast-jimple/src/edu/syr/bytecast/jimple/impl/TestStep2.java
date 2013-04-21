@@ -46,7 +46,7 @@ public class TestStep2 {
     // -0x4(%rbp) : p1
     private Map<String, String> regToVar;
     private Map<String, JimpleVariable>  varToJVar;
-    
+
     public TestStep2(Map<Method, List<ParsedInstructionsSet>> temp_map) {
         this.method_map = temp_map;
         this.methods = temp_map.keySet();
@@ -288,6 +288,17 @@ public class TestStep2 {
     }
 
     private void useArgFilterProcess(Method m, ParsedInstructionsSet ins_set) {
+        List<MemoryInstructionPair> pair_list = ins_set.getInstructions_List();
+        String left_operand =
+                pair_list.get(0).getInstruction().getOperands().get(0).getOperandValue().toString();
+        String right_operand =
+                pair_list.get(0).getInstruction().getOperands().get(1).getOperandValue().toString();
+        if (regToVar.containsKey(left_operand)) {
+            left_operand = regToVar.get(left_operand);
+        }
+        updateRegToVarMap(right_operand, left_operand);
+
+
     }
 
     private void callingFilterProcess(Method m, ParsedInstructionsSet ins_set) {
@@ -297,10 +308,10 @@ public class TestStep2 {
     }
 
     private void addFilterProcess(Method m, ParsedInstructionsSet ins_set) {
-      String augendRegName = ins_set.getInstructions_List().get(0).
-              getInstruction().getOperands().get(1).getOperandValue().toString();
-      String addend = ins_set.getInstructions_List().get(1).
-              getInstruction().getOperands().get(1).getOperandValue().toString();
+        String augendRegName = ins_set.getInstructions_List().get(0).
+                getInstruction().getOperands().get(1).getOperandValue().toString();
+        String addend = ins_set.getInstructions_List().get(1).
+                getInstruction().getOperands().get(1).getOperandValue().toString();
     }
 
     private void getOneParaFilterProcess(Method m, ParsedInstructionsSet ins_set) {
@@ -317,16 +328,54 @@ public class TestStep2 {
 
     private void divideBy2NFilterProcess(Method m, ParsedInstructionsSet ins_set) {
     }
+    
+    private String getVarFormMap(String regName)
+    {
+        String temp ="";
+        if (regToVar.containsKey(regName)) {
+            temp = regToVar.get(regName);
+        }
+        else{
+            temp = Integer.toString(getVcount());
+        }
+        return temp;
+    }
 
     private boolean updateRegToVarMap(String regName, String varName) {
-      //  rax is equal to eax
-      if (regToVar.containsKey(regName)) {
-        regToVar.put(regName, varName);                  
-      } else {
-        
-      }
-      return true;
+
+        regToVar.put(regName, varName);
+        return true;
     }
+    
+
+    private void transferParameter(OperandType type, String value) {
+        if (type == OperandType.CONSTANT) {
+            value = value.substring(3);
+            int temp = Integer.parseInt(value);
+            value = Integer.toOctalString(temp);
+        }
+    }
+
+    // judge the symbol of the judgement statement
+    private String judgeSymbolOfIfStatement(InstructionType ins_type) {
+        String symbol = "";
+        if (ins_type == InstructionType.JNE) {
+            symbol = "!=";
+        } else if (ins_type == InstructionType.JE) {
+            symbol = "==";
+        } else if (ins_type == InstructionType.JLE) {
+            symbol = "<=";
+        } else if (ins_type == InstructionType.JGE) {
+            symbol = ">=";
+        } else if (ins_type == InstructionType.JL) {
+            symbol = "<";
+        } else if (ins_type == InstructionType.JG) {
+            symbol = ">";
+        }
+        // there are a lot of other situation, u can add "else if" statement to handle other situation
+        return symbol;
+    }
+
     public static void main(String[] argv) {
         Map<Method, List<ParsedInstructionsSet>> filter_result = new HashMap<Method, List<ParsedInstructionsSet>>();
         // get all the sections from the IExecutableFile
