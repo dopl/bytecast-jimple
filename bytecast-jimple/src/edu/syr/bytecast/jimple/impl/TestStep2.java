@@ -14,6 +14,7 @@ import edu.syr.bytecast.amd64.api.constants.OperandType;
 import edu.syr.bytecast.amd64.api.constants.OperandTypeMemoryEffectiveAddress;
 import edu.syr.bytecast.amd64.api.constants.RegisterType;
 import edu.syr.bytecast.amd64.api.instruction.IInstruction;
+import edu.syr.bytecast.amd64.api.instruction.IOperand;
 import edu.syr.bytecast.amd64.api.output.IExecutableFile;
 import edu.syr.bytecast.amd64.api.output.ISection;
 import edu.syr.bytecast.amd64.api.output.MemoryInstructionPair;
@@ -26,6 +27,7 @@ import edu.syr.bytecast.jimple.beans.jimpleBean.JimpleClass;
 import edu.syr.bytecast.jimple.beans.jimpleBean.JimpleDoc;
 import edu.syr.bytecast.jimple.beans.jimpleBean.JimpleMethod;
 import edu.syr.bytecast.jimple.beans.jimpleBean.JimpleVariable;
+import edu.syr.bytecast.jimple.beans.jimpleBean.*;
 import edu.syr.bytecast.util.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +43,8 @@ public class TestStep2 {
     private JimpleClass jimple_class;
     private Set<Method> methods;
     private int _vcount;
-    
+    private JimpleAssign jimAss;
+    private JimpleInvoke jimInvk;
     // maintain a relation between variable and register
     // example:
     // edx : v1
@@ -294,12 +297,11 @@ public class TestStep2 {
                 getMemoryEffectiveAddress(pair_list.get(0).getInstruction().getOperands().get(0).getOperandValue());
         String right_operand1 =
                 getRegister(pair_list.get(0).getInstruction().getOperands().get(1).getOperandValue());
-        left_operand1 = getVarFormMap(left_operand1);
+        left_operand1 = (left_operand1);
         updateRegToVarMap(right_operand1, left_operand1);
-        String left_operand2 = pair_list.get(1).getInstruction().getOperands().get(0).getOperandValue().toString();
-        left_operand2 = transferHexToOctal(left_operand2);
-        int argv_index = Integer.parseInt(left_operand2, 10) / 8;
-        updateRegToVarMap("rax", left_operand1 + "[" + Integer.toOctalString(argv_index) + "]");
+        long left_operand2 = getLong(pair_list.get(1).getInstruction().getOperands().get(0).getOperandValue());
+        long argv_index = left_operand2 / 8;
+        updateRegToVarMap("rax", left_operand1 + "[" + Long.toOctalString(argv_index) + "]");
         updateRegToVarMap("eax", left_operand1);
 
 
@@ -309,21 +311,51 @@ public class TestStep2 {
     }
 
     private void leaveFilterProcess(Method m, ParsedInstructionsSet ins_set) {
+        char a = '5';
+        int b = (int) a;
     }
+    
 
     private void addFilterProcess(Method m, ParsedInstructionsSet ins_set) {
-//              getInstruction().getOperands().get(1).getOperandValue().toString();
-//      String addend = ins_set.getInstructions_List().get(1).
-//              getInstruction().getOperands().get(1).getOperandValue().toString();
       JimpleMethod currentJM = Map_jMethod.get(m.getMethodInfo().getMethodName());
       for (MemoryInstructionPair mip : ins_set.getInstructions_List()) {
         InstructionType thisIType = mip.getInstruction().getInstructiontype();
+        List<IOperand> curOps = mip.getInstruction().getOperands();
+        
         if (thisIType.equals(InstructionType.MOV)) {
+          String leftReg = getRegister(curOps.get(0).getOperandValue());
+          String rightReg = getRegister(curOps.get(1).getOperandValue());
+          
+          updateRegToVarMap(rightReg, getExistJVar(leftReg));
           
         } else if (thisIType.equals(InstructionType.ADD)) {
           
-        } else if (thisIType.equals(InstructionType.LEA)) {
+          if (curOps.get(0).getOperandType().equals(OperandType.CONSTANT)) {
+            long addend = getLong(curOps.get(0).getOperandValue());
+            JimpleVariable lhs = regToJVar.get(getRegister(curOps.get(1).getOperandValue()));
+            jimAss.JimpleDirectAssign(lhs, (int)addend, currentJM);
+            
+          } else {
+            JimpleVariable lhs = regToJVar.get(getRegister(curOps.get(1).getOperandValue()));
+            JimpleVariable rhs = regToJVar.get(getRegister(curOps.get(0).getOperandValue()));
+            jimAss.JimpleDirectAssign(lhs, rhs, currentJM);
+          }
           
+        } else if (thisIType.equals(InstructionType.LEA)) {
+          OperandTypeMemoryEffectiveAddress otmea = (OperandTypeMemoryEffectiveAddress) curOps.get(0).getOperandValue();
+//          long offset = otmea.getOffset();
+          String base = getRegister(otmea.getBase());
+          String index = getRegister(otmea.getIndex());
+          int scale = otmea.getScale();
+          
+          JimpleVariable addend = getExistJVar(base);
+          JimpleVariable augend = getExistJVar(index);
+          JimpleVariable sum = new JimpleVariable(getNewVarName(), "int", currentJM);
+          jimAss.JimpleMul(addend, scale, currentJM);
+          
+          
+          // the offset is defaulted zero
+          jimAss.JimpleAdd(sum, addend, augend, currentJM);
         }
           
       }
@@ -342,7 +374,36 @@ public class TestStep2 {
     }
 
     private void divideBy2NFilterProcess(Method m, ParsedInstructionsSet ins_set) {
-      
+      JimpleMethod currentJM = Map_jMethod.get(m.getMethodInfo().getMethodName());
+      for (MemoryInstructionPair mip : ins_set.getInstructions_List()) {
+        InstructionType thisIType = mip.getInstruction().getInstructiontype();
+        List<IOperand> curOps = mip.getInstruction().getOperands();
+        
+        if (thisIType.equals(InstructionType.MOV)) {
+           String leftReg = getRegister(curOps.get(0).getOperandValue());
+          String rightReg = getRegister(curOps.get(1).getOperandValue());
+          updateRegToVarMap(rightRegReg, getExistJVar(leftReg));
+          
+        } else if (thisIType.equals(InstructionType.SHR)) {
+          if ()
+            
+        } else if (thisIType.equals(InstructionType.LEA)) {
+          OperandTypeMemoryEffectiveAddress otmea = (OperandTypeMemoryEffectiveAddress) curOps.get(0).getOperandValue();
+//          long offset = otmea.getOffset();
+          String base = getRegister(otmea.getBase());
+          String index = getRegister(otmea.getIndex());
+          int scale = otmea.getScale();
+          
+          JimpleVariable addend = getExistJVar(base);
+          JimpleVariable augend = getExistJVar(index);
+          JimpleVariable sum = new JimpleVariable(getNewVarName(), "int", currentJM);
+          jimAss.JimpleMul(addend, scale, currentJM);
+          
+          
+          // the offset is defaulted zero
+          jimAss.JimpleAdd(sum, addend, augend, currentJM);
+        }
+      }
     }
 
     private String getMemoryEffectiveAddress(Object obj) {
@@ -359,23 +420,44 @@ public class TestStep2 {
         if (obj == null) {
             RegisterType rt = (RegisterType) obj;
             return rt.name();
-        } else {
+        } else {regToJVar.get
             return "";
         }
     }
     
-    private String getNewVarName(String regName)
+    private long getLong(Object obj) {
+            Long rt = (Long) obj;
+            return rt.longValue();
+    }
+    
+    
+    private String getNewVarName()
     {
         String temp ="v" + Integer.toString(getVcount());
         return temp;
     }
     
-//    private JimpleVariable getExistJVar
 
-    private boolean updateRegToVarMap(String regName, JimpleMethod baseMethod) {
+    private JimpleVariable getExistJVar(String regName) {
+    if (regToJVar.containsKey(regName)) {
+      return regToJVar.get(regName);
+    } else {
+      // I know, too ugly
+      if (regName.equals("rax")) {
+        return regToJVar.get("eax");
+      } else if (regName.equals("rdx")) {
+        return regToJVar.get("edx");
+
+      } else {
+        return null;
+      }
+    }
+  }
+
+    private boolean updateRegToVarMap(String key, JimpleVariable value) {
         
-        JimpleVariable JVar = new JimpleVariable(getNewVarName(regName), "int", baseMethod);
-        regToJVar.put(regName, JVar);
+          regToJVar.put(key, value);
+//        JimpleVariable JVar = new JimpleVariable(getNewVarName(regName), "int", baseMethod);
         return true;
     }
 

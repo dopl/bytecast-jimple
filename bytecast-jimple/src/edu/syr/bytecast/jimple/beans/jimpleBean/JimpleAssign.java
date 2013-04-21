@@ -37,10 +37,16 @@ public class JimpleAssign extends JimpleElement {
     a_assign = Jimple.v().newAssignStmt(jVariable1.getVariable(), jVariable2.getVariable());
 
   }
+  
+  public void JimpleDirectAssign(JimpleVariable lhs, JimpleVariable rhs, JimpleMethod baseMethod) {
+    add_lhs = lhs.getVariable();
+    a_assign = Jimple.v().newAssignStmt(add_lhs, rhs.getVariable());
+    baseMethod.getMethod().getActiveBody().getUnits().add(a_assign);
+  }
 
-  public void JimpleDirectAssign(JimpleVariable jVariable1, int jVariable2, JimpleMethod baseMethod) {
-    add_lhs = jVariable1.getVariable();
-    a_assign = Jimple.v().newAssignStmt(jVariable1.getVariable(), IntConstant.v(jVariable2));
+  public void JimpleDirectAssign(JimpleVariable lhs, int rhs, JimpleMethod baseMethod) {
+    add_lhs = lhs.getVariable();
+    a_assign = Jimple.v().newAssignStmt(add_lhs, IntConstant.v(rhs));
 //    baseMethod.getMethod().getActiveBody().getLocals().add(add_lhs);
     baseMethod.getMethod().getActiveBody().getUnits().add(a_assign);
   }
@@ -173,6 +179,12 @@ public class JimpleAssign extends JimpleElement {
     Value rhs = Jimple.v().newMulExpr(IntConstant.v(jVariable1), IntConstant.v(jVariable2));
     add_lhs = Jimple.v().newLocal("add_lhs", IntType.v());
     a_assign = Jimple.v().newAssignStmt(add_lhs, rhs);
+  }
+  
+  public void JimpleMul(JimpleVariable lhs, int multipend, JimpleMethod jMethod) {
+    Value rhs = Jimple.v().newMulExpr(lhs.getVariable(), IntConstant.v(multipend));
+    a_assign = Jimple.v().newAssignStmt(lhs.getVariable(), rhs);
+    jMethod.getMethod().getActiveBody().getUnits().add(a_assign);
   }
 
   //overload for divide assignment     
