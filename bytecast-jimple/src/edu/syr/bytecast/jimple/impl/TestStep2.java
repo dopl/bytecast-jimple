@@ -294,12 +294,11 @@ public class TestStep2 {
                 getMemoryEffectiveAddress(pair_list.get(0).getInstruction().getOperands().get(0).getOperandValue());
         String right_operand1 =
                 getRegister(pair_list.get(0).getInstruction().getOperands().get(1).getOperandValue());
-        left_operand1 = getVarFormMap(left_operand1);
+        left_operand1 = (left_operand1);
         updateRegToVarMap(right_operand1, left_operand1);
-        String left_operand2 = pair_list.get(1).getInstruction().getOperands().get(0).getOperandValue().toString();
-        left_operand2 = transferHexToOctal(left_operand2);
-        int argv_index = Integer.parseInt(left_operand2, 10) / 8;
-        updateRegToVarMap("rax", left_operand1 + "[" + Integer.toOctalString(argv_index) + "]");
+        long left_operand2 = getLong(pair_list.get(1).getInstruction().getOperands().get(0).getOperandValue());
+        long argv_index = left_operand2 / 8;
+        updateRegToVarMap("rax", left_operand1 + "[" + Long.toOctalString(argv_index) + "]");
         updateRegToVarMap("eax", left_operand1);
 
 
@@ -363,6 +362,12 @@ public class TestStep2 {
             return "";
         }
     }
+    
+    private long getLong(Object obj) {
+            Long rt = (Long) obj;
+            return rt.longValue();
+    }
+    
     
     private String getNewVarName(String regName)
     {
