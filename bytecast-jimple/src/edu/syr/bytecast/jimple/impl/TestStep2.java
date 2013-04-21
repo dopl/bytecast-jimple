@@ -11,6 +11,7 @@ package edu.syr.bytecast.jimple.impl;
 import edu.syr.bytecast.amd64.api.constants.IBytecastAMD64;
 import edu.syr.bytecast.amd64.api.constants.InstructionType;
 import edu.syr.bytecast.amd64.api.constants.OperandType;
+import edu.syr.bytecast.amd64.api.constants.OperandTypeMemoryEffectiveAddress;
 import edu.syr.bytecast.amd64.api.constants.RegisterType;
 import edu.syr.bytecast.amd64.api.instruction.IInstruction;
 import edu.syr.bytecast.amd64.api.output.IExecutableFile;
@@ -262,14 +263,17 @@ public class TestStep2 {
 
     private void useArgFilterProcess(Method m, ParsedInstructionsSet ins_set) {
         List<MemoryInstructionPair> pair_list = ins_set.getInstructions_List();
-        String left_operand =
-                pair_list.get(0).getInstruction().getOperands().get(0).getOperandValue().toString();
-        String right_operand =
-                pair_list.get(0).getInstruction().getOperands().get(1).getOperandValue().toString();
-        if (regToVar.containsKey(left_operand)) {
-            left_operand = regToVar.get(left_operand);
-        }
-        updateRegToVarMap(right_operand, left_operand);
+        String left_operand1 =
+                getMemoryEffectiveAddress(pair_list.get(0).getInstruction().getOperands().get(0).getOperandValue());
+        String right_operand1 =
+                getRegister(pair_list.get(0).getInstruction().getOperands().get(1).getOperandValue());
+        left_operand1 = getVarFormMap(left_operand1);
+        updateRegToVarMap(right_operand1, left_operand1);
+        String left_operand2 = pair_list.get(1).getInstruction().getOperands().get(0).getOperandValue().toString();
+        left_operand2 = transferHexToOctal(left_operand2);
+        int argv_index = Integer.parseInt(left_operand2, 10) / 8;
+        updateRegToVarMap("rax", left_operand1 + "[" + Integer.toOctalString(argv_index) + "]");
+        updateRegToVarMap("eax", left_operand1);
 
 
     }
@@ -301,14 +305,31 @@ public class TestStep2 {
 
     private void divideBy2NFilterProcess(Method m, ParsedInstructionsSet ins_set) {
     }
-    
-    private String getVarFormMap(String regName)
-    {
-        String temp ="";
+
+    private String getMemoryEffectiveAddress(Object obj) {
+        OperandTypeMemoryEffectiveAddress otmea = (OperandTypeMemoryEffectiveAddress) obj;
+        long offset = otmea.getOffset();
+        String base = getRegister(otmea.getBase());
+        String index = getRegister(otmea.getIndex());
+        int scale = otmea.getScale();
+        String result = String.valueOf(offset) + "(" + base + "," + index + ")";
+        return result;
+    }
+
+    private String getRegister(Object obj) {
+        if (obj == null) {
+            RegisterType rt = (RegisterType) obj;
+            return rt.name();
+        } else {
+            return "";
+        }
+    }
+
+    private String getVarFormMap(String regName) {
+        String temp = "";
         if (regToVar.containsKey(regName)) {
             temp = regToVar.get(regName);
-        }
-        else{
+        } else {
             temp = getVcount();
         }
         return temp;
@@ -318,14 +339,11 @@ public class TestStep2 {
         regToVar.put(regName, varName);
         return true;
     }
-    
 
-    private void transferParameter(OperandType type, String value) {
-        if (type == OperandType.CONSTANT) {
-            value = value.substring(3);
-            int temp = Integer.parseInt(value);
-            value = Integer.toOctalString(temp);
-        }
+    private String transferHexToOctal(String value) {
+        String temp = value.substring(3);
+        int temp1 = Integer.parseInt(temp, 16);
+        return Integer.toOctalString(temp1);
     }
 
     // judge the symbol of the judgement statement

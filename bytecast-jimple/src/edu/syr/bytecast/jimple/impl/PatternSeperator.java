@@ -203,7 +203,7 @@ public class PatternSeperator {
     fil = new PrintfFilter();
     finfo = new FilterInfo();
     finfo.setFilter_Name("Printf");
-    finfo.setInst_Count(2);
+    finfo.setInst_Count(1);
     fr.run(obj_instruction, parsed_list, fil, finfo);
 
     //LeaveFilter
