@@ -57,15 +57,12 @@ public class TestStep2 {
         initializeAllJimpleMethod();
 
         // implementJimpleMethod();
-
-
-
     }
 
     private void initializeAllJimpleMethod() {
 
 
-        List<ParsedInstructionsSet> main_ins = new ArrayList<ParsedInstructionsSet>();
+        // List<ParsedInstructionsSet> main_ins = new ArrayList<ParsedInstructionsSet>();
 
         //create all jimple method
         for (Method m : methods) {
@@ -82,7 +79,7 @@ public class TestStep2 {
 
 
             //test for method output
-           
+
             Map_jMethod.put(m_info.getMethodName(), jMethod);
         }
 //        try {
@@ -97,22 +94,44 @@ public class TestStep2 {
 
     }
 
-
     private void implementJimpleMethod() {
         for (Method m : methods) {
             List<ParsedInstructionsSet> method_ParseIns = method_map.get(m);
-            implementSingleJimpleMethod(m,method_ParseIns);
+            implementSingleJimpleMethod(m, method_ParseIns);
         }
     }
 
-    private void implementSingleJimpleMethod(Method method, List<ParsedInstructionsSet> listPis) {
+    private void implementSingleJimpleMethod(Method m, List<ParsedInstructionsSet> listPis) {
         for (ParsedInstructionsSet pis : listPis) {
-            insAnalyze(pis);
+            if (pis.getInfo().getInstruction_Name().equals("PreMemoryProcess")) {
+                prememoryFilterProcess(m, pis);
+            } else if (pis.getInfo().getInstruction_Name().equals("SetArgvAndArgc")) {
+                setArgFilterProcess(m, pis);
+            } else if (pis.getInfo().getInstruction_Name().equals("UseArgvAndArgc")) {
+                useArgFilterProcess(m, pis);
+            } else if (pis.getInfo().getInstruction_Name().equals("Calling")) {
+                callingFilterProcess(m, pis);
+            } else if (pis.getInfo().getInstruction_Name().equals("Leave")) {
+                leaveFilterProcess(m, pis);
+            } else if (pis.getInfo().getInstruction_Name().equals("GetOneParameter")) {
+                addFilterProcess(m, pis);
+            } else if (pis.getInfo().getInstruction_Name().equals("GetTwoParameter")) {
+                addFilterProcess(m, pis);
+            } else if (pis.getInfo().getInstruction_Name().equals("IfWithBothVariable")) {
+                addFilterProcess(m, pis);
+            } else if (pis.getInfo().getInstruction_Name().equals("DivBy2N")) {
+                addFilterProcess(m, pis);
+            } else if (pis.getInfo().getInstruction_Name().equals("If")) {
+                addFilterProcess(m, pis);
+            } else if (pis.getInfo().getInstruction_Name().equals("Add")) {
+                addFilterProcess(m, pis);
+            }
         }
     }
-    private void insAnalyze(ParsedInstructionsSet ins_set) {
-        // initialize the jimple file
+//    private void insAnalyze(ParsedInstructionsSet ins_set) {
+//        // initialize the jimple file
 //        JInstructionInfo info = ins_set.getInfo();
+//        
 //        List<MemoryInstructionPair> pair_list = ins_set.getInstructions_List();
 //        String name = info.getInstruction_Name();
 //
@@ -196,10 +215,41 @@ public class TestStep2 {
 //        } else if (name.equals("Leave")) {
 //            // write the Jimple Leave statement
 //        }
+//    }
+
+    private void prememoryFilterProcess(Method m, ParsedInstructionsSet ins_set) {
     }
-    
-    
-    
+
+    private void setArgFilterProcess(Method m, ParsedInstructionsSet ins_set) {
+    }
+
+    private void useArgFilterProcess(Method m, ParsedInstructionsSet ins_set) {
+    }
+
+    private void callingFilterProcess(Method m, ParsedInstructionsSet ins_set) {
+    }
+
+    private void leaveFilterProcess(Method m, ParsedInstructionsSet ins_set) {
+    }
+
+    private void addFilterProcess(Method m, ParsedInstructionsSet ins_set) {
+    }
+
+    private void getOneParaFilterProcess(Method m, ParsedInstructionsSet ins_set) {
+    }
+
+    private void getTwoParaFilterProcess(Method m, ParsedInstructionsSet ins_set) {
+    }
+
+    private void ifFilterProcess(Method m, ParsedInstructionsSet ins_set) {
+    }
+
+    private void ifWith2VaribFilterProcess(Method m, ParsedInstructionsSet ins_set) {
+    }
+
+    private void divideBy2NFilterProcess(Method m, ParsedInstructionsSet ins_set) {
+    }
+
     public static void main(String[] argv) {
         Map<Method, List<ParsedInstructionsSet>> filter_result = new HashMap<Method, List<ParsedInstructionsSet>>();
         // get all the sections from the IExecutableFile
@@ -220,5 +270,4 @@ public class TestStep2 {
         TestStep2 test2 = new TestStep2(filter_result);
         test2.createJimple();
     }
-    
 }
