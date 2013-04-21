@@ -180,6 +180,12 @@ public class JimpleAssign extends JimpleElement {
     add_lhs = Jimple.v().newLocal("add_lhs", IntType.v());
     a_assign = Jimple.v().newAssignStmt(add_lhs, rhs);
   }
+  
+  public void JimpleMul(JimpleVariable lhs, int multipend, JimpleMethod jMethod) {
+    Value rhs = Jimple.v().newMulExpr(lhs.getVariable(), IntConstant.v(multipend));
+    a_assign = Jimple.v().newAssignStmt(lhs.getVariable(), rhs);
+    jMethod.getMethod().getActiveBody().getUnits().add(a_assign);
+  }
 
   //overload for divide assignment     
   public void JimpleDiv(JimpleVariable jVariable1, JimpleVariable jVariable2) {
