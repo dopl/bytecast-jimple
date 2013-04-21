@@ -228,7 +228,7 @@ public class TestStep2 {
 //            }
 //        } else if (name.equals("Leave")) {
 //            // write the Jimple Leave statement
-//        }
+//        }argv
 //    }
 
     private void handleUnparsedLines(MemoryInstructionPair singleLine, MemoryInstructionPair lastSingleLine) {
@@ -271,10 +271,22 @@ public class TestStep2 {
     }
 
     private void addFilterProcess(Method m, ParsedInstructionsSet ins_set) {
-      String augendRegName = ins_set.getInstructions_List().get(0).
-              getInstruction().getOperands().get(1).getOperandValue().toString();
-      String addend = ins_set.getInstructions_List().get(1).
-              getInstruction().getOperands().get(1).getOperandValue().toString();
+//      String augendRegName = ins_set.getInstructions_List().get(0).
+//              getInstruction().getOperands().get(1).getOperandValue().toString();
+//      String addend = ins_set.getInstructions_List().get(1).
+//              getInstruction().getOperands().get(1).getOperandValue().toString();
+      JimpleMethod currentJM = Map_jMethod.get(m.getMethodInfo().getMethodName());
+      for (MemoryInstructionPair mip : ins_set.getInstructions_List()) {
+        InstructionType thisIType = mip.getInstruction().getInstructiontype();
+        if (thisIType.equals(InstructionType.MOV)) {
+          
+        } else if (thisIType.equals(InstructionType.ADD)) {
+          
+        } else if (thisIType.equals(InstructionType.LEA)) {
+          
+        }
+          
+      }
     }
 
     private void getOneParaFilterProcess(Method m, ParsedInstructionsSet ins_set) {
@@ -290,6 +302,7 @@ public class TestStep2 {
     }
 
     private void divideBy2NFilterProcess(Method m, ParsedInstructionsSet ins_set) {
+      
     }
 
     private boolean updateRegToVarMap(String regName, String varName) {
