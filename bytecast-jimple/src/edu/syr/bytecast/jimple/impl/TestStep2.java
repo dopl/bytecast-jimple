@@ -23,6 +23,7 @@ import edu.syr.bytecast.jimple.beans.*;
 import edu.syr.bytecast.jimple.beans.jimpleBean.JimpleClass;
 import edu.syr.bytecast.jimple.beans.jimpleBean.JimpleDoc;
 import edu.syr.bytecast.jimple.beans.jimpleBean.JimpleMethod;
+import edu.syr.bytecast.jimple.beans.jimpleBean.JimpleVariable;
 import edu.syr.bytecast.util.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,13 +38,15 @@ public class TestStep2 {
     private JimpleDoc jimple_doc;
     private JimpleClass jimple_class;
     private Set<Method> methods;
+    private int _vcount;
     
     // maintain a relation between variable and register
     // example:
     // edx : v1
     // -0x4(%rbp) : p1
-    private Map<String, String> regToVar;
-    
+//    private Map<String, String> regToVar;
+    private Map<String, JimpleVariable>  regToJVar;
+
     public TestStep2(Map<Method, List<ParsedInstructionsSet>> temp_map) {
         this.method_map = temp_map;
         this.methods = temp_map.keySet();
@@ -51,7 +54,9 @@ public class TestStep2 {
         jimple_doc = new JimpleDoc();
         jimple_class = new JimpleClass("test2", 1);
         jimple_doc.addClass(jimple_class);
-        regToVar = new HashMap<String, String>();
+        this._vcount = 0;
+        regToJVar = new HashMap<String, JimpleVariable>();
+//        varToJVar = new HashMap<String , JimpleVariable>();
     }
 
     public void createJimple() {
@@ -71,20 +76,26 @@ public class TestStep2 {
         //create all jimple method
         for (Method m : methods) {
 
+              //main method
+           if(m.getMethodInfo().getMethodName().equals("main")){
             MethodInfo m_info = m.getMethodInfo();
-            ArrayList<String> parameter_type_sum = new ArrayList<String>();
+            ArrayList<String> parameter_type = new ArrayList<String>();
+              parameter_type.add("String[]");
+           }
+            
+           else{
+            MethodInfo m_info = m.getMethodInfo();
+            ArrayList<String> parameter_type = new ArrayList<String>();
             int para_num = m_info.getParameterCount();
             if (para_num != 0) {
                 for (int i = 0; i < para_num; i++) {
-                    parameter_type_sum.add("int");
+                    parameter_type.add("int");
                 }
             }
-            JimpleMethod jMethod = new JimpleMethod(1, "int", m_info.getMethodName(), parameter_type_sum, jimple_class);
-
-
+            JimpleMethod jMethod = new JimpleMethod(1, "int", m_info.getMethodName(), parameter_type, this.jimple_class);
             //test for method output
-
             Map_jMethod.put(m_info.getMethodName(), jMethod);
+           }
         }
 //        try {
 //            jimple_doc.printJimple(jimple_class.getJClassName(), "jimple");
@@ -105,6 +116,14 @@ public class TestStep2 {
         }
     }
 
+    private int getVcount(){
+        
+        int temp = _vcount++;
+        
+        return temp;
+    }
+    
+    
     private void implementSingleJimpleMethod(Method m, List<ParsedInstructionsSet> listPis) {
         int start_index_of_this, number_of_lines;
         int end_index_of_last = 0;
@@ -255,13 +274,31 @@ public class TestStep2 {
 
     private void setArgFilterProcess(Method m, ParsedInstructionsSet ins_set) {
         List<MemoryInstructionPair> pair_list = ins_set.getInstructions_List(); 
-        String argc = pair_list.get(0).getInstruction().getOperands().get(1).getOperandValue().toString();
-        String argv = pair_list.get(1).getInstruction().getOperands().get(1).getOperandValue().toString();
-            updateRegToVarMap(argv, argv);
-            updateRegToVarMap(argv, argv);
+        //String argc = pair_list.get(0).getInstruction().getOperands().get(1).getOperandValue().toString();
+//        String argv = pair_list.get(1).getInstruction().getOperands().get(1).getOperandValue().toString();
+//            updateRegToVarMap(argv, "argv");
+            
+       //  JimpleMethod jmethod = Map_jMethod.get(m.getMethodInfo().getMethodName()); 
+        // jmethod.
+     
+            
+         
+            
+            //updateRegToVarMap(argv, argv);
     }
 
     private void useArgFilterProcess(Method m, ParsedInstructionsSet ins_set) {
+        List<MemoryInstructionPair> pair_list = ins_set.getInstructions_List();
+        String left_operand =
+                pair_list.get(0).getInstruction().getOperands().get(0).getOperandValue().toString();
+        String right_operand =
+                pair_list.get(0).getInstruction().getOperands().get(1).getOperandValue().toString();
+        if (regToJVar.containsKey(left_operand)) {
+//            left_operand = regToJVar.get(left_operand);
+        }
+//        updateRegToVarMap(right_operand, left_operand);
+
+
     }
 
     private void callingFilterProcess(Method m, ParsedInstructionsSet ins_set) {
@@ -271,7 +308,6 @@ public class TestStep2 {
     }
 
     private void addFilterProcess(Method m, ParsedInstructionsSet ins_set) {
-//      String augendRegName = ins_set.getInstructions_List().get(0).
 //              getInstruction().getOperands().get(1).getOperandValue().toString();
 //      String addend = ins_set.getInstructions_List().get(1).
 //              getInstruction().getOperands().get(1).getOperandValue().toString();
@@ -304,51 +340,51 @@ public class TestStep2 {
     private void divideBy2NFilterProcess(Method m, ParsedInstructionsSet ins_set) {
       
     }
-
-    private boolean updateRegToVarMap(String regName, String varName) {
-      //  rax is equal to eax
-      if (regToVar.containsKey(regName)) {
-        regToVar.put(regName, varName);
-      } else {
-        
-      }
-      return true;
+    
+    private String getNewVarName(String regName)
+    {
+        String temp ="v" + Integer.toString(getVcount());
+        return temp;
     }
     
-    private void transferParameter(OperandType type, String value, Map<String, String> parameter)
-    {
-        if( type == OperandType.CONSTANT)
-        {
+//    private JimpleVariable getExistJVar
+
+    private boolean updateRegToVarMap(String regName, JimpleMethod baseMethod) {
+        
+        JimpleVariable JVar = new JimpleVariable(getNewVarName(regName), "int", baseMethod);
+        regToJVar.put(regName, JVar);
+        return true;
+    }
+    
+
+    private void transferParameter(OperandType type, String value) {
+        if (type == OperandType.CONSTANT) {
             value = value.substring(3);
             int temp = Integer.parseInt(value);
             value = Integer.toOctalString(temp);
         }
-        else if( type == OperandType.MEMORY_EFFECITVE_ADDRESS)
-        {
-            value = parameter.get(value);
-        }
     }
-    
+
     // judge the symbol of the judgement statement
-    private String judgeSymbolOfIfStatement(InstructionType ins_type)
-    {
+    private String judgeSymbolOfIfStatement(InstructionType ins_type) {
         String symbol = "";
-        if(ins_type == InstructionType.JNE)
-                symbol = "!=";
-        else if(ins_type == InstructionType.JE)
-                symbol = "==";
-        else if(ins_type == InstructionType.JLE)
-                symbol = "<=";
-        else if(ins_type == InstructionType.JGE)
-                symbol = ">=";
-        else if(ins_type == InstructionType.JL)
-                symbol = "<";
-        else if(ins_type == InstructionType.JG)
-                symbol = ">";
-            // there are a lot of other situation, u can add "else if" statement to handle other situation
+        if (ins_type == InstructionType.JNE) {
+            symbol = "!=";
+        } else if (ins_type == InstructionType.JE) {
+            symbol = "==";
+        } else if (ins_type == InstructionType.JLE) {
+            symbol = "<=";
+        } else if (ins_type == InstructionType.JGE) {
+            symbol = ">=";
+        } else if (ins_type == InstructionType.JL) {
+            symbol = "<";
+        } else if (ins_type == InstructionType.JG) {
+            symbol = ">";
+        }
+        // there are a lot of other situation, u can add "else if" statement to handle other situation
         return symbol;
     }
-    
+
     public static void main(String[] argv) {
         Map<Method, List<ParsedInstructionsSet>> filter_result = new HashMap<Method, List<ParsedInstructionsSet>>();
         // get all the sections from the IExecutableFile

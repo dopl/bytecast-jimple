@@ -76,7 +76,7 @@ public class JimpleMethod {
   private void initMethod() {
     if (methodName.equals("main")) {
       // java.lang.String[] p0
-      Local para0 = Jimple.v().newLocal("p0", 
+      Local para0 = Jimple.v().newLocal("argv", 
               JimpleUtil.getTypeByString("String[]"));
       locals.add(para0);
       // p0 := @parameter0: java.lang.String[];
