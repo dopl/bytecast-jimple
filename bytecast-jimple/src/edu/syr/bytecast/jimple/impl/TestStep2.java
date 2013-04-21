@@ -39,6 +39,7 @@ public class TestStep2 {
     private JimpleDoc jimple_doc;
     private JimpleClass jimple_class;
     private Set<Method> methods;
+    private Map<String, String> parameter;
 
     public TestStep2(Map<Method, List<ParsedInstructionsSet>> temp_map) {
         this.method_map = temp_map;
@@ -46,6 +47,7 @@ public class TestStep2 {
         Map_jMethod = new HashMap<String, JimpleMethod>();
         jimple_doc = new JimpleDoc();
         jimple_class = new JimpleClass("test2", 1);
+        parameter = new HashMap<String , String>();
         jimple_doc.addClass(jimple_class);
 
     }
@@ -221,6 +223,11 @@ public class TestStep2 {
     }
 
     private void setArgFilterProcess(Method m, ParsedInstructionsSet ins_set) {
+        List<MemoryInstructionPair> pair_list = ins_set.getInstructions_List(); 
+        String argc = pair_list.get(0).getInstruction().getOperands().get(1).getOperandValue().toString();
+        String argv = pair_list.get(1).getInstruction().getOperands().get(1).getOperandValue().toString();
+            parameter.put(argc, "argc");
+            parameter.put(argv, "argv");
     }
 
     private void useArgFilterProcess(Method m, ParsedInstructionsSet ins_set) {
