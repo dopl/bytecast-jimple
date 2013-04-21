@@ -301,6 +301,41 @@ public class TestStep2 {
       }
       return true;
     }
+    
+    private void transferParameter(OperandType type, String value, Map<String, String> parameter)
+    {
+        if( type == OperandType.CONSTANT)
+        {
+            value = value.substring(3);
+            int temp = Integer.parseInt(value);
+            value = Integer.toOctalString(temp);
+        }
+        else if( type == OperandType.MEMORY_EFFECITVE_ADDRESS)
+        {
+            value = parameter.get(value);
+        }
+    }
+    
+    // judge the symbol of the judgement statement
+    private String judgeSymbolOfIfStatement(InstructionType ins_type)
+    {
+        String symbol = "";
+        if(ins_type == InstructionType.JNE)
+                symbol = "!=";
+        else if(ins_type == InstructionType.JE)
+                symbol = "==";
+        else if(ins_type == InstructionType.JLE)
+                symbol = "<=";
+        else if(ins_type == InstructionType.JGE)
+                symbol = ">=";
+        else if(ins_type == InstructionType.JL)
+                symbol = "<";
+        else if(ins_type == InstructionType.JG)
+                symbol = ">";
+            // there are a lot of other situation, u can add "else if" statement to handle other situation
+        return symbol;
+    }
+    
     public static void main(String[] argv) {
         Map<Method, List<ParsedInstructionsSet>> filter_result = new HashMap<Method, List<ParsedInstructionsSet>>();
         // get all the sections from the IExecutableFile
