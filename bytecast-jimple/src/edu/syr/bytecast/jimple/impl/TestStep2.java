@@ -254,6 +254,11 @@ public class TestStep2 {
     }
 
     private void setArgFilterProcess(Method m, ParsedInstructionsSet ins_set) {
+        List<MemoryInstructionPair> pair_list = ins_set.getInstructions_List(); 
+        String argc = pair_list.get(0).getInstruction().getOperands().get(1).getOperandValue().toString();
+        String argv = pair_list.get(1).getInstruction().getOperands().get(1).getOperandValue().toString();
+            updateRegToVarMap(argv, argv);
+            updateRegToVarMap(argv, argv);
     }
 
     private void useArgFilterProcess(Method m, ParsedInstructionsSet ins_set) {
