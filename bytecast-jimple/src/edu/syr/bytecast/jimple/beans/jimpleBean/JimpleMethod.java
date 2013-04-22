@@ -76,13 +76,13 @@ public class JimpleMethod {
   private void initMethod() {
     if (methodName.equals("main")) {
       // java.lang.String[] p0
-      Local para0 = Jimple.v().newLocal("argv", 
-              JimpleUtil.getTypeByString("String[]"));
-      locals.add(para0);
-      // p0 := @parameter0: java.lang.String[];
-      Value para_assi = Jimple.v().newParameterRef(JimpleUtil.getTypeByString("String[]"), 0);
-      IdentityStmt parastmt = Jimple.v().newIdentityStmt(para0, para_assi);
-      units.add(parastmt);
+//      Local para0 = Jimple.v().newLocal("argv", 
+//              JimpleUtil.getTypeByString("String[]"));
+//      locals.add(para0);
+//      // p0 := @parameter0: java.lang.String[];
+//      Value para_assi = Jimple.v().newParameterRef(JimpleUtil.getTypeByString("String[]"), 0);
+//      IdentityStmt parastmt = Jimple.v().newIdentityStmt(para0, para_assi);
+//      units.add(parastmt);
     } else {
       // Class r0;
       Local thisref = Jimple.v().newLocal("r0", declaringClass.getType());
