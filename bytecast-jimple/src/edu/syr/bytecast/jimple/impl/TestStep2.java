@@ -153,15 +153,15 @@ public class TestStep2 {
             } else if (pis.getInfo().getInstruction_Name().equals("GetOneParameter")) {
                 addFilterProcess(m, pis);
             } else if (pis.getInfo().getInstruction_Name().equals("GetTwoParameter")) {
-                addFilterProcess(m, pis);
+                getOneParaFilterProcess(m, pis);
             } else if (pis.getInfo().getInstruction_Name().equals("IfWithBothVariable")) {
-                addFilterProcess(m, pis);
+                ifWith2VaribFilterProcess(m, pis);
             } else if (pis.getInfo().getInstruction_Name().equals("DivBy2N")) {
-                addFilterProcess(m, pis);
+                getTwoParaFilterProcess(m, pis);
             } else if (pis.getInfo().getInstruction_Name().equals("If")) {
-                addFilterProcess(m, pis);
+                ifFilterProcess(m, pis);
             } else if (pis.getInfo().getInstruction_Name().equals("Add")) {
-                addFilterProcess(m, pis);
+                divideBy2NFilterProcess(m, pis);
             }
             end_index_of_last = pis.getInfo().getStart_Index() + pis.getInfo().getInstructions_Count();
         }
