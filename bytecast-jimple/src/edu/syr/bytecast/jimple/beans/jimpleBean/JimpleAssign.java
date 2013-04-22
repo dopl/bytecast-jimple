@@ -202,6 +202,13 @@ public class JimpleAssign extends JimpleElement {
     add_lhs = Jimple.v().newLocal("add_lhs", jVariable1.getType());
     a_assign = Jimple.v().newAssignStmt(add_lhs, rhs);
   }
+  
+  public void JimpleDiv(JimpleVariable lhs, int divisor, JimpleMethod jMethod) {
+
+    Value rhs = Jimple.v().newDivExpr(lhs.getVariable(), IntConstant.v(divisor));
+    a_assign = Jimple.v().newAssignStmt(lhs.getVariable(), rhs);
+    jMethod.getMethod().getActiveBody().getUnits().add(a_assign);
+  }
 
   public void JimpleDiv(int jVariable1, int jVariable2) {
 
