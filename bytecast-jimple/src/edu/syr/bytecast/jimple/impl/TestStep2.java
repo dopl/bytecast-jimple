@@ -119,6 +119,9 @@ public class TestStep2 {
 //        }
 
 
+
+  }
+
   private void implementJimpleMethod() {
     for (Method m : methods) {
       List<ParsedInstructionsSet> method_ParseIns = method_map.get(m);
@@ -278,22 +281,37 @@ public class TestStep2 {
       }
     }
 
+  }
 
   private void prememoryFilterProcess(Method m, ParsedInstructionsSet ins_set) {
   }
 
   private void setArgFilterProcess(Method m, ParsedInstructionsSet ins_set) {
-         List<MemoryInstructionPair> pair_list = ins_set.getInstructions_List();
-        String left_operand1 =
-                getMemoryEffectiveAddress(pair_list.get(0).getInstruction().getOperands().get(0).getOperandValue());
-        String right_operand1 =
-                getRegister(pair_list.get(0).getInstruction().getOperands().get(1).getOperandValue());
-        left_operand1 = (left_operand1);
-        updateRegToVarMap(right_operand1, left_operand1);
-        long left_operand2 = getLong(pair_list.get(1).getInstruction().getOperands().get(0).getOperandValue());
-        long argv_index = left_operand2 / 8;
-        updateRegToVarMap("rax", left_operand1 + "[" + Long.toOctalString(argv_index) + "]");
-        updateRegToVarMap("eax", left_operand1);
+         JimpleMethod jmethod = Map_jMethod.get(m.getMethodInfo().getMethodName());        
+        
+        List<MemoryInstructionPair> pair_list = ins_set.getInstructions_List();        
+        JimpleAssign jim_ass = new JimpleAssign();        
+        JimpleVariable j_argv = new JimpleVariable("argv", "String []", jmethod);
+        JimpleVariable j_argc = new JimpleVariable("argc", "int" ,  jmethod);
+        jim_ass.JimpleParameterAssign(j_argv, "String []", 0, jmethod);
+        jim_ass.JimpleLengthOf(j_argc, j_argv, jmethod);
+        for (MemoryInstructionPair mip : ins_set.getInstructions_List()) {
+            InstructionType thisIType = mip.getInstruction().getInstructiontype();
+            List<IOperand> curOps = mip.getInstruction().getOperands();
+            String leftReg = getRegister(curOps.get(0).getOperandValue());
+            String rightReg = getRegister(curOps.get(1).getOperandValue());
+            
+            if (thisIType.equals(InstructionType.MOV) && rightReg.equals("%rsi")) {     
+                updateRegToVarMap(rightReg, j_argv);
+            }
+            
+            else{
+                updateRegToVarMap(rightReg, j_argc);
+            }
+
+        }
+            // jmethod.
+            //updateRegToVarMap(argv, argv);
 
 
 
@@ -387,6 +405,8 @@ public class TestStep2 {
       }
 
     }
+
+  }
 
   private void getOneParaFilterProcess(Method m, ParsedInstructionsSet ins_set) {
   }
@@ -502,7 +522,8 @@ public class TestStep2 {
       symbol = "<";
     } else if (ins_type == InstructionType.JG) {
       symbol = ">";
-    }  
+    }
+    // there are a lot of other situation, u can add "else if" statement to handle other situation
     return symbol;
   }
 
