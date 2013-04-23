@@ -126,6 +126,7 @@ public class TestStep2 {
     }
   }
 
+<<<<<<< HEAD
   private int getVcount() {
 
     int temp = _vcount++;
@@ -142,6 +143,7 @@ public class TestStep2 {
       if (number_of_lines != 0) {
         for (int i = end_index_of_last; i < number_of_lines; i++) {
           handleUnparsedLines(m.getL_instruction().get(i), m.getL_instruction().get(i - 1));
+
         }
       }
       if (pis.getInfo().getInstruction_Name().equals("PreMemoryProcess")) {
