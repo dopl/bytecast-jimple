@@ -91,6 +91,7 @@ public class TestStep2 {
         parameter_type.add("String[]");
         JimpleMethod jMethod = new JimpleMethod(1, "void", "main", parameter_type, jimple_class);
         Map_jMethod.put("main", jMethod);
+        // thisclass obj = new thisclass();
         objectOfThisClass = new JimpleVariable("obj", jimple_class.getJClassName(), jMethod);
         jimAss.JimpleNewClass(objectOfThisClass, jimple_class, jMethod);
       } else {
@@ -126,7 +127,6 @@ public class TestStep2 {
     }
   }
 
-<<<<<<< HEAD
   private int getVcount() {
 
     int temp = _vcount++;
