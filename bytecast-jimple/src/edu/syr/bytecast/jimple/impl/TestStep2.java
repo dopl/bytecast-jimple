@@ -36,7 +36,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class TestStep2 {
-
+    
     private Map<Method, List<ParsedInstructionsSet>> method_map;
     private Map<String, JimpleMethod> Map_jMethod;
     private JimpleDoc jimple_doc;
@@ -50,8 +50,8 @@ public class TestStep2 {
     // edx : v1
     // -0x4(%rbp) : p1
 //    private Map<String, String> regToVar;
-    private Map<String, JimpleVariable>  regToJVar;
-
+    private Map<String, JimpleVariable> regToJVar;
+    
     public TestStep2(Map<Method, List<ParsedInstructionsSet>> temp_map) {
         this.method_map = temp_map;
         this.methods = temp_map.keySet();
@@ -63,16 +63,16 @@ public class TestStep2 {
         regToJVar = new HashMap<String, JimpleVariable>();
 //        varToJVar = new HashMap<String , JimpleVariable>();
     }
-
+    
     public void createJimple() {
-
-
-
+        
+        
+        
         initializeAllJimpleMethod();
 
         // implementJimpleMethod();
     }
-
+    
     private void initializeAllJimpleMethod() {
 
 
@@ -81,26 +81,24 @@ public class TestStep2 {
         //create all jimple method
         for (Method m : methods) {
 
-              //main method
-           if(m.getMethodInfo().getMethodName().equals("main")){
-            MethodInfo m_info = m.getMethodInfo();
-            ArrayList<String> parameter_type = new ArrayList<String>();
-              parameter_type.add("String[]");
-           }
-            
-           else{
-            MethodInfo m_info = m.getMethodInfo();
-            ArrayList<String> parameter_type = new ArrayList<String>();
-            int para_num = m_info.getParameterCount();
-            if (para_num != 0) {
-                for (int i = 0; i < para_num; i++) {
-                    parameter_type.add("int");
+            //main method
+            if (m.getMethodInfo().getMethodName().equals("main")) {
+                MethodInfo m_info = m.getMethodInfo();
+                ArrayList<String> parameter_type = new ArrayList<String>();
+                parameter_type.add("String[]");
+            } else {
+                MethodInfo m_info = m.getMethodInfo();
+                ArrayList<String> parameter_type = new ArrayList<String>();
+                int para_num = m_info.getParameterCount();
+                if (para_num != 0) {
+                    for (int i = 0; i < para_num; i++) {
+                        parameter_type.add("int");
+                    }
                 }
+                JimpleMethod jMethod = new JimpleMethod(1, "int", m_info.getMethodName(), parameter_type, this.jimple_class);
+                //test for method output
+                Map_jMethod.put(m_info.getMethodName(), jMethod);
             }
-            JimpleMethod jMethod = new JimpleMethod(1, "int", m_info.getMethodName(), parameter_type, this.jimple_class);
-            //test for method output
-            Map_jMethod.put(m_info.getMethodName(), jMethod);
-           }
         }
 //        try {
 //            jimple_doc.printJimple(jimple_class.getJClassName(), "jimple");
@@ -111,23 +109,22 @@ public class TestStep2 {
 //            System.out.println("IO exception");
 //        }
 
-
+        
     }
-
+    
     private void implementJimpleMethod() {
         for (Method m : methods) {
             List<ParsedInstructionsSet> method_ParseIns = method_map.get(m);
             implementSingleJimpleMethod(m, method_ParseIns);
         }
     }
-
-    private int getVcount(){
+    
+    private int getVcount() {
         
         int temp = _vcount++;
         
         return temp;
     }
-    
     
     private void implementSingleJimpleMethod(Method m, List<ParsedInstructionsSet> listPis) {
         int start_index_of_this, number_of_lines;
@@ -273,23 +270,39 @@ public class TestStep2 {
             }
         }
     }
-
+    
     private void prememoryFilterProcess(Method m, ParsedInstructionsSet ins_set) {
     }
-
+    
     private void setArgFilterProcess(Method m, ParsedInstructionsSet ins_set) {
-        List<MemoryInstructionPair> pair_list = ins_set.getInstructions_List(); 
-         JimpleAssign jim_ass = new JimpleAssign();       
-         JimpleMethod jmethod = Map_jMethod.get(m.getMethodInfo().getMethodName()); 
-         JimpleVariable j_argv = new JimpleVariable("argv", "String []", jmethod);
-         jim_ass.JimpleParameterAssign(j_argv, "String []", 0, jmethod);
-        // jmethod.
-     
+        JimpleMethod jmethod = Map_jMethod.get(m.getMethodInfo().getMethodName());        
+        
+        List<MemoryInstructionPair> pair_list = ins_set.getInstructions_List();        
+        JimpleAssign jim_ass = new JimpleAssign();        
+        JimpleVariable j_argv = new JimpleVariable("argv", "String []", jmethod);
+        JimpleVariable j_argc = new JimpleVariable("argc", "int" ,  jmethod);
+        jim_ass.JimpleParameterAssign(j_argv, "String []", 0, jmethod);
+        jim_ass.JimpleLengthOf(j_argc, j_argv, jmethod);
+        for (MemoryInstructionPair mip : ins_set.getInstructions_List()) {
+            InstructionType thisIType = mip.getInstruction().getInstructiontype();
+            List<IOperand> curOps = mip.getInstruction().getOperands();
+            String leftReg = getRegister(curOps.get(0).getOperandValue());
+            String rightReg = getRegister(curOps.get(1).getOperandValue());
             
-         
+            if (thisIType.equals(InstructionType.MOV) && rightReg.equals("%rsi")) {     
+                updateRegToVarMap(rightReg, j_argv);
+            }
             
+            else{
+                updateRegToVarMap(rightReg, j_argc);
+            }
+
+        }
+            // jmethod.
             //updateRegToVarMap(argv, argv);
-    }
+        }
+
+    
 
     private void useArgFilterProcess(Method m, ParsedInstructionsSet ins_set) {
         List<MemoryInstructionPair> pair_list = ins_set.getInstructions_List();
@@ -303,109 +316,109 @@ public class TestStep2 {
         long argv_index = left_operand2 / 8;
         updateRegToVarMap("rax", left_operand1 + "[" + Long.toOctalString(argv_index) + "]");
         updateRegToVarMap("eax", left_operand1);
-
-
+        
+        
     }
-
+    
     private void callingFilterProcess(Method m, ParsedInstructionsSet ins_set) {
     }
-
+    
     private void leaveFilterProcess(Method m, ParsedInstructionsSet ins_set) {
         char a = '5';
         int b = (int) a;
     }
     
-
     private void addFilterProcess(Method m, ParsedInstructionsSet ins_set) {
-      JimpleMethod currentJM = Map_jMethod.get(m.getMethodInfo().getMethodName());
-      for (MemoryInstructionPair mip : ins_set.getInstructions_List()) {
-        InstructionType thisIType = mip.getInstruction().getInstructiontype();
-        List<IOperand> curOps = mip.getInstruction().getOperands();
-        
-        if (thisIType.equals(InstructionType.MOV)) {
-          String leftReg = getRegister(curOps.get(0).getOperandValue());
-          String rightReg = getRegister(curOps.get(1).getOperandValue());
-          
-          updateRegToVarMap(rightReg, getExistJVar(leftReg));
-          
-        } else if (thisIType.equals(InstructionType.ADD)) {
-          
-          if (curOps.get(0).getOperandType().equals(OperandType.CONSTANT)) {
-            long addend = getLong(curOps.get(0).getOperandValue());
-            JimpleVariable lhs = regToJVar.get(getRegister(curOps.get(1).getOperandValue()));
-            jimAss.JimpleDirectAssign(lhs, (int)addend, currentJM);
+        JimpleMethod currentJM = Map_jMethod.get(m.getMethodInfo().getMethodName());
+        for (MemoryInstructionPair mip : ins_set.getInstructions_List()) {
+            InstructionType thisIType = mip.getInstruction().getInstructiontype();
+            List<IOperand> curOps = mip.getInstruction().getOperands();
             
-          } else {
-            JimpleVariable lhs = regToJVar.get(getRegister(curOps.get(1).getOperandValue()));
-            JimpleVariable rhs = regToJVar.get(getRegister(curOps.get(0).getOperandValue()));
-            jimAss.JimpleDirectAssign(lhs, rhs, currentJM);
-          }
-          
-        } else if (thisIType.equals(InstructionType.LEA)) {
-          OperandTypeMemoryEffectiveAddress otmea = (OperandTypeMemoryEffectiveAddress) curOps.get(0).getOperandValue();
+            if (thisIType.equals(InstructionType.MOV)) {
+                String leftReg = getRegister(curOps.get(0).getOperandValue());
+                String rightReg = getRegister(curOps.get(1).getOperandValue());
+                
+                updateRegToVarMap(rightReg, getExistJVar(leftReg));
+                
+            } else if (thisIType.equals(InstructionType.ADD)) {
+                
+                if (curOps.get(0).getOperandType().equals(OperandType.CONSTANT)) {
+                    long addend = getLong(curOps.get(0).getOperandValue());
+                    JimpleVariable lhs = regToJVar.get(getRegister(curOps.get(1).getOperandValue()));
+                    jimAss.JimpleDirectAssign(lhs, (int) addend, currentJM);
+                    
+                } else {
+                    JimpleVariable lhs = regToJVar.get(getRegister(curOps.get(1).getOperandValue()));
+                    JimpleVariable rhs = regToJVar.get(getRegister(curOps.get(0).getOperandValue()));
+                    jimAss.JimpleDirectAssign(lhs, rhs, currentJM);
+                }
+                
+            } else if (thisIType.equals(InstructionType.LEA)) {
+                OperandTypeMemoryEffectiveAddress otmea = (OperandTypeMemoryEffectiveAddress) curOps.get(0).getOperandValue();
 //          long offset = otmea.getOffset();
-          String base = getRegister(otmea.getBase());
-          String index = getRegister(otmea.getIndex());
-          int scale = otmea.getScale();
-          
-          JimpleVariable addend = getExistJVar(base);
-          JimpleVariable augend = getExistJVar(index);
-          JimpleVariable sum = new JimpleVariable(getNewVarName(), "int", currentJM);
-          jimAss.JimpleMul(addend, scale, currentJM);
-          
-          
-          // the offset is defaulted zero
-          jimAss.JimpleAdd(sum, addend, augend, currentJM);
-        }
-          
-      }
-    }
+                String base = getRegister(otmea.getBase());
+                String index = getRegister(otmea.getIndex());
+                int scale = otmea.getScale();
+                
+                JimpleVariable addend = getExistJVar(base);
+                JimpleVariable augend = getExistJVar(index);
+                JimpleVariable sum = new JimpleVariable(getNewVarName(), "int", currentJM);
+                jimAss.JimpleMul(addend, scale, currentJM);
 
+
+                // the offset is defaulted zero
+                jimAss.JimpleAdd(sum, addend, augend, currentJM);
+            }
+            
+        }
+    }
+    
     private void getOneParaFilterProcess(Method m, ParsedInstructionsSet ins_set) {
     }
-
+    
     private void getTwoParaFilterProcess(Method m, ParsedInstructionsSet ins_set) {
     }
-
+    
     private void ifFilterProcess(Method m, ParsedInstructionsSet ins_set) {
     }
-
+    
     private void ifWith2VaribFilterProcess(Method m, ParsedInstructionsSet ins_set) {
     }
-
+    
     private void divideBy2NFilterProcess(Method m, ParsedInstructionsSet ins_set) {
-      JimpleMethod currentJM = Map_jMethod.get(m.getMethodInfo().getMethodName());
-      for (MemoryInstructionPair mip : ins_set.getInstructions_List()) {
-        InstructionType thisIType = mip.getInstruction().getInstructiontype();
-        List<IOperand> curOps = mip.getInstruction().getOperands();
-        
-        if (thisIType.equals(InstructionType.MOV)) {
-           String leftReg = getRegister(curOps.get(0).getOperandValue());
-          String rightReg = getRegister(curOps.get(1).getOperandValue());
-          updateRegToVarMap(rightRegReg, getExistJVar(leftReg));
-          
-        } else if (thisIType.equals(InstructionType.SHR)) {
-          if ()
+        JimpleMethod currentJM = Map_jMethod.get(m.getMethodInfo().getMethodName());
+        for (MemoryInstructionPair mip : ins_set.getInstructions_List()) {
+            InstructionType thisIType = mip.getInstruction().getInstructiontype();
+            List<IOperand> curOps = mip.getInstruction().getOperands();
             
-        } else if (thisIType.equals(InstructionType.LEA)) {
-          OperandTypeMemoryEffectiveAddress otmea = (OperandTypeMemoryEffectiveAddress) curOps.get(0).getOperandValue();
+            if (thisIType.equals(InstructionType.MOV)) {
+                String leftReg = getRegister(curOps.get(0).getOperandValue());
+                String rightReg = getRegister(curOps.get(1).getOperandValue());
+                updateRegToVarMap(rightRegReg, getExistJVar(leftReg));
+                
+            } else if (thisIType.equals(InstructionType.SHR)) {
+                if () {
+                    
+                }
+            } else if (thisIType.equals(InstructionType.LEA)) {
+                OperandTypeMemoryEffectiveAddress otmea = (OperandTypeMemoryEffectiveAddress) curOps.get(0).getOperandValue();
 //          long offset = otmea.getOffset();
-          String base = getRegister(otmea.getBase());
-          String index = getRegister(otmea.getIndex());
-          int scale = otmea.getScale();
-          
-          JimpleVariable addend = getExistJVar(base);
-          JimpleVariable augend = getExistJVar(index);
-          JimpleVariable sum = new JimpleVariable(getNewVarName(), "int", currentJM);
-          jimAss.JimpleMul(addend, scale, currentJM);
-          
-          
-          // the offset is defaulted zero
-          jimAss.JimpleAdd(sum, addend, augend, currentJM);
-        }
-      }
-    }
+                String base = getRegister(otmea.getBase());
+                String index = getRegister(otmea.getIndex());
+                int scale = otmea.getScale();
+                
+                JimpleVariable addend = getExistJVar(base);
+                JimpleVariable augend = getExistJVar(index);
+                JimpleVariable sum = new JimpleVariable(getNewVarName(), "int", currentJM);
+                jimAss.JimpleMul(addend, scale, currentJM);
 
+
+                // the offset is defaulted zero
+                jimAss.JimpleAdd(sum, addend, augend, currentJM);
+            }
+        }
+    }
+    
     private String getMemoryEffectiveAddress(Object obj) {
         OperandTypeMemoryEffectiveAddress otmea = (OperandTypeMemoryEffectiveAddress) obj;
         long offset = otmea.getOffset();
@@ -415,52 +428,51 @@ public class TestStep2 {
         String result = String.valueOf(offset) + "(" + base + "," + index + ")";
         return result;
     }
-
+    
     private String getRegister(Object obj) {
         if (obj == null) {
             RegisterType rt = (RegisterType) obj;
             return rt.name();
-        } else {regToJVar.get
+        } else {
+            regToJVar.get
             return "";
         }
     }
     
     private long getLong(Object obj) {
-            Long rt = (Long) obj;
-            return rt.longValue();
+        Long rt = (Long) obj;
+        return rt.longValue();
     }
     
-    
-    private String getNewVarName()
-    {
-        String temp ="v" + Integer.toString(getVcount());
+    private String getNewVarName() {
+        String temp = "v" + Integer.toString(getVcount());
         return temp;
     }
     
-
     private JimpleVariable getExistJVar(String regName) {
-    if (regToJVar.containsKey(regName)) {
-      return regToJVar.get(regName);
-    } else {
-      // I know, too ugly
-      if (regName.equals("rax")) {
-        return regToJVar.get("eax");
-      } else if (regName.equals("rdx")) {
-        return regToJVar.get("edx");
-
-      } else {
-        return null;
-      }
+        if (regToJVar.containsKey(regName)) {
+            return regToJVar.get(regName);
+        } else {
+            // I know, too ugly
+            // zhi dao jiu hao hahahahahahhah:D
+            if (regName.equals("rax")) {
+                return regToJVar.get("eax");
+            } else if (regName.equals("rdx")) {
+                return regToJVar.get("edx");
+                
+            } else {
+                return null;
+            }
+        }
     }
-  }
-
+    
     private boolean updateRegToVarMap(String key, JimpleVariable value) {
         
-          regToJVar.put(key, value);
+        regToJVar.put(key, value);
 //        JimpleVariable JVar = new JimpleVariable(getNewVarName(regName), "int", baseMethod);
         return true;
     }
-
+    
     private String transferHexToOctal(String value) {
         String temp = value.substring(3);
         int temp1 = Integer.parseInt(temp, 16);
@@ -486,7 +498,7 @@ public class TestStep2 {
         // there are a lot of other situation, u can add "else if" statement to handle other situation
         return symbol;
     }
-
+    
     public static void main(String[] argv) {
         Map<Method, List<ParsedInstructionsSet>> filter_result = new HashMap<Method, List<ParsedInstructionsSet>>();
         // get all the sections from the IExecutableFile
@@ -498,12 +510,12 @@ public class TestStep2 {
         }
         IBytecastAMD64 testdata = new DepcrecatedMock();
         IExecutableFile exe_file = testdata.buildInstructionObjects();
-
+        
         ISection wholeSection = exe_file.getSectionsWithInstructions().get(0);
-
+        
         PatternSeperator patt_Seperator = new PatternSeperator();
         filter_result = patt_Seperator.doSeperate(wholeSection);
-
+        
         TestStep2 test2 = new TestStep2(filter_result);
         test2.createJimple();
     }
