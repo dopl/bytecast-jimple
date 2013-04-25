@@ -55,6 +55,12 @@ public class TestStep2 {
      * the instance of the only class used in main
      */
     private JimpleVariable objectOfThisClass;
+    
+    /**
+     * 
+     * 
+     */
+    private Map<String, JimpleCondition> memAddrToJCond;
 
     public TestStep2(Map<Method, List<ParsedInstructionsSet>> temp_map) {
         this.method_map = temp_map;
@@ -229,19 +235,19 @@ public class TestStep2 {
     }
 
     private void useArgFilterProcess(Method m, ParsedInstructionsSet ins_set) {
-        List<MemoryInstructionPair> pair_list = ins_set.getInstructions_List();
-        String left_operand1 =
-                getMemoryEffectiveAddress(pair_list.get(0).getInstruction().getOperands().get(0).getOperandValue());
-        String right_operand1 =
-                getRegister(pair_list.get(0).getInstruction().getOperands().get(1).getOperandValue());
-        left_operand1 = (left_operand1);
-        updateRegToVarMap(right_operand1, left_operand1);
-        long left_operand2 = getLong(pair_list.get(1).getInstruction().getOperands().get(0).getOperandValue());
-        long argv_index = left_operand2 / 8;
-        updateRegToVarMap("rax", left_operand1 + "[" + Long.toOctalString(argv_index) + "]");
-        updateRegToVarMap("eax", left_operand1);
-
-
+//        List<MemoryInstructionPair> pair_list = ins_set.getInstructions_List();
+//        String left_operand1 =
+//                getMemoryEffectiveAddress(pair_list.get(0).getInstruction().getOperands().get(0).getOperandValue());
+//        String right_operand1 =
+//                getRegister(pair_list.get(0).getInstruction().getOperands().get(1).getOperandValue());
+//        left_operand1 = (left_operand1);
+//        updateRegToVarMap(right_operand1, left_operand1);
+//        long left_operand2 = getLong(pair_list.get(1).getInstruction().getOperands().get(0).getOperandValue());
+//        long argv_index = left_operand2 / 8;
+//        updateRegToVarMap("rax", left_operand1 + "[" + Long.toOctalString(argv_index) + "]");
+//        updateRegToVarMap("eax", left_operand1);
+//
+//
     }
 
     private void callingFilterProcess(Method m, ParsedInstructionsSet ins_set) {
@@ -366,10 +372,25 @@ public class TestStep2 {
            }
         }
         
+
         
     }
 
     private void ifFilterProcess(Method m, ParsedInstructionsSet ins_set) {
+      
+      long rhs = getLong(ins_set.getInstructions_List().get(0).
+              getInstruction().getOperands().get(0).getOperandValue());
+      
+      JimpleVariable lhs = regToJVar.get(getMemoryEffectiveAddress(ins_set.
+              getInstructions_List().get(0).getInstruction().
+              getOperands().get(1).getOperandValue()));
+      
+      String compareSymbol = judgeSymbolOfIfStatement(ins_set.getInstructions_List().get(1)
+              .getInstruction().getInstructiontype());
+      
+      JimpleCondition ifcondition = new JimpleCondition(
+              compareSymbol, lhs, (int)rhs, Map_jMethod.get(m.getMethodInfo().getMethodName()));
+      
     }
 
     private void ifWith2VaribFilterProcess(Method m, ParsedInstructionsSet ins_set) {
