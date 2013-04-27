@@ -174,7 +174,7 @@ public class TestStep2 {
         setArgFilterProcess(m, pis);
       } else if (pis.getInfo().getInstruction_Name().equals("UseArgvAndArgc")) {
         useArgFilterProcess(m, pis);
-      } else if (pis.getInfo().getInstruction_Name().equals("Calling")) {
+//      } else if (pis.getInfo().getInstruction_Name().equals("Calling")) {
         callingFilterProcess(m, pis);
       } else if (pis.getInfo().getInstruction_Name().equals("Leave")) {
         leaveFilterProcess(m, pis);
@@ -184,12 +184,12 @@ public class TestStep2 {
         getTwoParaFilterProcess(m, pis);
 //      } else if (pis.getInfo().getInstruction_Name().equals("IfWithBothVariable")) {
 //        ifWith2VaribFilterProcess(m, pis);
-//      } else if (pis.getInfo().getInstruction_Name().equals("DivBy2N")) {
-//        divideBy2NFilterProcess(m, pis);
+      } else if (pis.getInfo().getInstruction_Name().equals("DivBy2N")) {
+        divideBy2NFilterProcess(m, pis);
 ////            } else if (pis.getInfo().getInstruction_Name().equals("If")) {
 ////                ifFilterProcess(m, pis);
-//      } else if (pis.getInfo().getInstruction_Name().equals("Add")) {
-//        addFilterProcess(m, pis);
+      } else if (pis.getInfo().getInstruction_Name().equals("Add")) {
+        addFilterProcess(m, pis);
       }
       end_index_of_last = pis.getInfo().getStart_Index() + pis.getInfo().getInstructions_Count();
     }
@@ -351,7 +351,7 @@ public class TestStep2 {
       List<IOperand> curOps = mip.getInstruction().getOperands();
 
       if (thisIType.equals(InstructionType.MOV)) {
-        String leftReg = getRegister(curOps.get(0).getOperandValue());
+        String leftReg = getMemoryEffectiveAddress(curOps.get(0).getOperandValue());
         String rightReg = getRegister(curOps.get(1).getOperandValue());
 
         updateRegToVarMap(rightReg, getExistJVar(leftReg));
@@ -482,9 +482,14 @@ public class TestStep2 {
       MemoryInstructionPair mip = ins_set.getInstructions_List().get(mipIndex);
       InstructionType thisIType = mip.getInstruction().getInstructiontype();
       List<IOperand> curOps = mip.getInstruction().getOperands();
-
+      
       if (thisIType.equals(InstructionType.MOV)) {
-        String leftReg = getRegister(curOps.get(0).getOperandValue());
+        String leftReg;
+        if (curOps.get(0).getOperandValue() instanceof OperandTypeMemoryEffectiveAddress) {
+          leftReg = getMemoryEffectiveAddress(curOps.get(0).getOperandValue());
+        } else {
+          leftReg = getRegister(curOps.get(0).getOperandValue());
+        }
         String rightReg = getRegister(curOps.get(1).getOperandValue());
         updateRegToVarMap(rightReg, getExistJVar(leftReg));
 
