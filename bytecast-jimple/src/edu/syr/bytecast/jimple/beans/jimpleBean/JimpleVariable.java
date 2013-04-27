@@ -61,4 +61,19 @@ public class JimpleVariable extends JimpleElement {
     protected Unit getElement() {
         return null;
     }
+
+  @Override
+  protected Local getLocalForTarget() {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  @Override
+  protected Unit getAssStmtForTarget() {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  @Override
+  protected Unit getInvStmtForTarget() {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
 }

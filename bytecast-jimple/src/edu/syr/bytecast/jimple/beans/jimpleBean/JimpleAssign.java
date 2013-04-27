@@ -271,4 +271,19 @@ public class JimpleAssign extends JimpleElement {
   protected Unit getElement() {
     return a_assign;
   }
+
+  @Override
+  protected Local getLocalForTarget() {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  @Override
+  protected Unit getAssStmtForTarget() {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  @Override
+  protected Unit getInvStmtForTarget() {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
 }
