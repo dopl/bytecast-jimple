@@ -40,6 +40,54 @@ public class JimpleInvoke extends JimpleElement {
     this.isTarget = false;
   }
 
+  public void invokeUserDefined(JimpleMethod method2Call, List paraVal,
+          JimpleVariable returnTo, JimpleMethod basemethod) {
+    Value invokeExpr;
+    if (paraVal == null) {
+      invokeExpr = Jimple.v().newVirtualInvokeExpr(basemethod.getThisRef(),
+              method2Call.getMethod().makeRef());
+    } else {
+      // cast any parameter type to soot.Value
+      List<Value> paraForJimple = new ArrayList<Value>();
+      if (paraVal.get(0) instanceof JimpleVariable) {
+        for (JimpleVariable jv : (List<JimpleVariable>) paraVal) {
+          paraForJimple.add(jv.getVariable());
+        }
+      } else if (paraVal.get(0) instanceof String) {
+        for (String str : (List<String>) paraVal) {
+          paraForJimple.add(StringConstant.v(str));
+        }
+      } else if (paraVal.get(0) instanceof Integer) {
+        for (int i : (List<Integer>) paraVal) {
+          paraForJimple.add(IntConstant.v(i));
+        }
+      }
+      invokeExpr = Jimple.v().newVirtualInvokeExpr(basemethod.getThisRef(),
+              method2Call.getMethod().makeRef(), paraForJimple);
+
+    }
+
+    if (!method2Call.getReturnType().equals("void") && returnTo != null) {
+      this.invokestmt = Jimple.v().newAssignStmt(returnTo.getVariable(), invokeExpr);
+    } else {
+      this.invokestmt = Jimple.v().newInvokeStmt(invokeExpr);
+    }
+    basemethod.getMethod().getActiveBody().getUnits().add(invokestmt);
+  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   public void invokeUserDefined(JimpleVariable baseobj, JimpleMethod method2Call, List paraVal,
           JimpleVariable returnTo, JimpleMethod basemethod) {
     // Local to store return value
@@ -69,7 +117,7 @@ public class JimpleInvoke extends JimpleElement {
 
     }
 
-    if (!method2Call.getReturnType().equals("void")) {
+    if (!method2Call.getReturnType().equals("void") && returnTo != null) {
       this.invokestmt = Jimple.v().newAssignStmt(returnTo.getVariable(), invokeExpr);
     } else {
       this.invokestmt = Jimple.v().newInvokeStmt(invokeExpr);
