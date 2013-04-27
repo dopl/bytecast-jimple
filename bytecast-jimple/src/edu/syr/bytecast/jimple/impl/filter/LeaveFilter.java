@@ -18,10 +18,10 @@ public class LeaveFilter implements IFilter{
     public boolean doTest(List<MemoryInstructionPair> instList, int index)
     {
         IInstruction ins = instList.get(index).getInstruction();
-        if( ins.getInstructiontype().equals(InstructionType.LEAVEQ))         // AMD64 group will add this TYPE
+        if( ins.getInstructiontype().equals(InstructionType.LEAVE))         // AMD64 group will add this TYPE
         {
             ins = instList.get(index + 1).getInstruction();
-            if(ins.getInstructiontype().equals(InstructionType.RETQ)) // AMD64 group will add this TYPE
+            if(ins.getInstructiontype().equals(InstructionType.RET)) // AMD64 group will add this TYPE
             {
                 return true;
             }

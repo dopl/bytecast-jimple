@@ -187,8 +187,8 @@ public class TestStep2 {
 //        ifWith2VaribFilterProcess(m, pis);
       } else if (pis.getInfo().getInstruction_Name().equals("DivBy2N")) {
         divideBy2NFilterProcess(m, pis);
-//      } else if (pis.getInfo().getInstruction_Name().equals("If")) {
-//          ifFilterProcess(m, pis);
+      } else if (pis.getInfo().getInstruction_Name().equals("If")) {
+          ifFilterProcess(m, pis);
       } else if (pis.getInfo().getInstruction_Name().equals("Add")) {
         addFilterProcess(m, pis);
       }
@@ -208,7 +208,7 @@ public class TestStep2 {
                 && ins.getOperands().get(0).getOperandValue().equals(RegisterType.EAX)) {
             IInstruction ins_last = lastSingleLine.getInstruction();
             if (ins_last.getInstructiontype().equals(InstructionType.CALLQ)) {
-                String funcName = (String)ins.getOperands().get(1).getOperandValue();
+                String funcName = (String) ins_last.getOperands().get(1).getOperandValue();
                 if (ins.getOperands().get(0).getOperandType().equals(OperandType.MEMORY_EFFECITVE_ADDRESS)//OperandType.MEMORY_PHYSICAL_ADDRESS )
                         && !funcName.contains("printf")) {
                     String leftop = getRegister(ins.getOperands().get(0).getOperandValue());
@@ -409,9 +409,10 @@ public class TestStep2 {
         JimpleVariable sum = new JimpleVariable(getNewVarName(), "int", currentJM);
         jimAss.JimpleMul(addend, scale, currentJM);
 
-
+        String rhs = getRegister(curOps.get(1).getOperandValue());
         // the offset is defaulted zero
         jimAss.JimpleAdd(sum, addend, augend, currentJM);
+        updateRegToVarMap(rhs, sum);
       }
 
     }
