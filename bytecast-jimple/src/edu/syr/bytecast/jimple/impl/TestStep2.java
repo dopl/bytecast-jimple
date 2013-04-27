@@ -340,6 +340,12 @@ public class TestStep2 {
     JimpleVariable return_j = null;
 
     return_j = regToJVar.get("EAX");
+    
+    if(return_j==null)
+        baseMethod.setReturn(null);
+    
+   else
+        baseMethod.setReturn(return_j);
 
 
 
