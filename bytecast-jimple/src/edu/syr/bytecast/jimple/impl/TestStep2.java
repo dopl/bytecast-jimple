@@ -292,8 +292,8 @@ public class TestStep2 {
                 getMemoryEffectiveAddress(pair_list.get(0).getInstruction().getOperands().get(0).getOperandValue());
         String right_operand1 =
                 getRegister(pair_list.get(0).getInstruction().getOperands().get(1).getOperandValue());
-        left_operand1 = (left_operand1);
-        updateRegToVarMap(right_operand1, left_operand1);
+        JimpleVariable jvar1 = getExistJVar(left_operand1);
+        updateRegToVarMap(right_operand1, jvar1,);
         long left_operand2 = getLong(pair_list.get(1).getInstruction().getOperands().get(0).getOperandValue());
         long argv_index = left_operand2 / 8;
         updateRegToVarMap("rax", left_operand1 + "[" + Long.toOctalString(argv_index) + "]");
@@ -391,7 +391,7 @@ public class TestStep2 {
     }
   }
 
-    private boolean updateRegToVarMap(String regName, JimpleVariable newJV, JimpleMethod baseMethod) {
+    private boolean updateRegToVarMap(String regName, JimpleVariable newJV) {
         
 //        JimpleVariable JVar = new JimpleVariable(getNewVarName(regName), "int", baseMethod);
         regToJVar.put(regName, newJV);
