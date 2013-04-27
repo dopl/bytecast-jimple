@@ -175,7 +175,7 @@ public class TestStep2 {
       } else if (pis.getInfo().getInstruction_Name().equals("UseArgvAndArgc")) {
         useArgFilterProcess(m, pis);
 //      } else if (pis.getInfo().getInstruction_Name().equals("Calling")) {
-        callingFilterProcess(m, pis);
+//        callingFilterProcess(m, pis);
       } else if (pis.getInfo().getInstruction_Name().equals("Leave")) {
         leaveFilterProcess(m, pis);
       } else if (pis.getInfo().getInstruction_Name().equals("GetOneParameter")) {
@@ -235,6 +235,7 @@ public class TestStep2 {
 
   private void prememoryFilterProcess(Method m, ParsedInstructionsSet ins_set) {
   }
+
 
   private void setArgFilterProcess(Method m, ParsedInstructionsSet ins_set) {
     JimpleMethod jmethod = Map_jMethod.get(m.getMethodInfo().getMethodName());
@@ -339,6 +340,12 @@ public class TestStep2 {
     JimpleVariable return_j = null;
 
     return_j = regToJVar.get("EAX");
+    
+    if(return_j==null)
+        baseMethod.setReturn(null);
+    
+   else
+        baseMethod.setReturn(return_j);
 
 
 
@@ -438,8 +445,6 @@ public class TestStep2 {
       }
     }
 
-
-
   }
 
   //cmp -0x8(%rbp)<right hand side>, %eax<left hand side>
@@ -504,7 +509,6 @@ public class TestStep2 {
             // a /= 2;
             jimAss.JimpleDiv(dividendJV, 2, currentJM);
           }
-
         }
       }
     }
