@@ -163,8 +163,8 @@ public class TestStep2 {
       start_index_of_this = pis.getInfo().getStart_Index();
       number_of_lines = start_index_of_this - end_index_of_last;
       if (number_of_lines != 0) {
-        for (int i = end_index_of_last; i < number_of_lines; i++) {
-          handleUnparsedLines(m, m.getL_instruction().get(i), m.getL_instruction().get(i - 1));
+        for (int i = 0; i < number_of_lines; i++) {
+          handleUnparsedLines(m, m.getL_instruction().get(end_index_of_last + i), m.getL_instruction().get(end_index_of_last + i - 1));
 
         }
       }
