@@ -75,17 +75,11 @@ public class TestStep2 {
     }
 
     public void createJimple() {
-
-
-
         initializeAllJimpleMethod();
-
         // implementJimpleMethod();
     }
 
     private void initializeAllJimpleMethod() {
-
-
         // List<ParsedInstructionsSet> main_ins = new ArrayList<ParsedInstructionsSet>();
 
         //create all jimple method
@@ -184,7 +178,7 @@ public class TestStep2 {
     private void handleUnparsedLines(Method m ,MemoryInstructionPair singleLine, MemoryInstructionPair lastSingleLine) {
         IInstruction ins = singleLine.getInstruction();
         if (ins.getInstructiontype().equals(InstructionType.MOV)
-                && ins.getOperands().get(0).getOperandType().equals(OperandType.REGISTER)
+                && ins.getOperands().get(0).getOperandType().equals(OperandType.CONSTANT)
                 && ins.getOperands().get(1).getOperandValue().equals(RegisterType.EAX)) {
             // add return statement return 0 to the coresponding fucntion;
             JimpleMethod currentJVM = Map_jMethod.get(m.getMethodInfo().getMethodName());
@@ -194,14 +188,28 @@ public class TestStep2 {
                 && ins.getOperands().get(0).getOperandValue().equals(RegisterType.EAX)) {
             IInstruction ins_last = lastSingleLine.getInstruction();
             if (ins_last.getInstructiontype().equals(InstructionType.CALLQ)) {
-                String funcName = ins.getOperands().get(1).getOperandValue().toString();
+                String funcName = (String)ins.getOperands().get(1).getOperandValue();
                 if (ins.getOperands().get(0).getOperandType().equals(OperandType.MEMORY_EFFECITVE_ADDRESS)//OperandType.MEMORY_PHYSICAL_ADDRESS )
                         && !funcName.contains("printf")) {
-                    // put the result of function "eax" into map;
-                    // leave printf for runtime team
-                  //  updateRegToVarMap(leftvalue, rightvalue);
+                    String leftop = getRegister(ins.getOperands().get(0).getOperandValue());
+                    String rightop = getMemoryEffectiveAddress(ins.getOperands().get(1).getOperandValue());
+                    updateRegToVarMap(rightop, getExistJVar(leftop));
                 }
             }
+        } else if (ins.getInstructiontype().equals(InstructionType.MOV)){
+            String leftop, rightop;
+            if(ins.getOperands().get(0).getOperandValue() instanceof OperandTypeMemoryEffectiveAddress){
+                leftop = getMemoryEffectiveAddress(ins.getOperands().get(0).getOperandValue());
+            } else {
+                leftop = getRegister(ins.getOperands().get(0).getOperandValue());
+            }
+            if(ins.getOperands().get(1).getOperandValue() instanceof OperandTypeMemoryEffectiveAddress){
+                rightop = getMemoryEffectiveAddress(ins.getOperands().get(1).getOperandValue());
+            } else {
+                rightop = getRegister(ins.getOperands().get(1).getOperandValue());
+            }
+            updateRegToVarMap(rightop, getExistJVar(leftop));
+            
         }
 
     }
