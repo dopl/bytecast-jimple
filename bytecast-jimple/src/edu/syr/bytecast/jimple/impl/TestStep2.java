@@ -173,10 +173,10 @@ public class TestStep2 {
         prememoryFilterProcess(m, pis);
       } else if (pis.getInfo().getInstruction_Name().equals("SetArgvAndArgc")) {
         setArgFilterProcess(m, pis);
-      } else if (pis.getInfo().getInstruction_Name().equals("UseArgvAndArgc")) {
+      } else if (pis.getInfo().getInstruction_Name().equals("UseArgvAsPara")) {
         useArgFilterProcess(m, pis);
-//      } else if (pis.getInfo().getInstruction_Name().equals("Calling")) {
-//        callingFilterProcess(m, pis);
+      } else if (pis.getInfo().getInstruction_Name().equals("Calling")) {
+        callingFilterProcess(m, pis);
       } else if (pis.getInfo().getInstruction_Name().equals("Leave")) {
         leaveFilterProcess(m, pis);
       } else if (pis.getInfo().getInstruction_Name().equals("GetOneParameter")) {
