@@ -159,15 +159,15 @@ public class TestStep2 {
             } else if (pis.getInfo().getInstruction_Name().equals("Leave")) {
                 leaveFilterProcess(m, pis);
             } else if (pis.getInfo().getInstruction_Name().equals("GetOneParameter")) {
-                addFilterProcess(m, pis);
+                getOneParaFilterProcess(m, pis);
             } else if (pis.getInfo().getInstruction_Name().equals("GetTwoParameter")) {
-                addFilterProcess(m, pis);
+                getTwoParaFilterProcess(m, pis);
             } else if (pis.getInfo().getInstruction_Name().equals("IfWithBothVariable")) {
-                addFilterProcess(m, pis);
+                ifWith2VaribFilterProcess(m, pis);
             } else if (pis.getInfo().getInstruction_Name().equals("DivBy2N")) {
-                addFilterProcess(m, pis);
+                divideBy2NFilterProcess(m, pis);
             } else if (pis.getInfo().getInstruction_Name().equals("If")) {
-                addFilterProcess(m, pis);
+                ifFilterProcess(m, pis);
             } else if (pis.getInfo().getInstruction_Name().equals("Add")) {
                 addFilterProcess(m, pis);
             }
@@ -216,9 +216,9 @@ public class TestStep2 {
             InstructionType thisIType = mip.getInstruction().getInstructiontype();
             List<IOperand> curOps = mip.getInstruction().getOperands();
             String leftReg = getRegister(curOps.get(0).getOperandValue());
-            String rightReg = getRegister(curOps.get(1).getOperandValue());
+            String rightReg = getMemoryEffectiveAddress(curOps.get(1).getOperandValue());
 
-            if (thisIType.equals(InstructionType.MOV) && rightReg.equals("%rsi")) {
+            if (thisIType.equals(InstructionType.MOV) && leftReg.equals("%rsi")) {
                 updateRegToVarMap(rightReg, j_argv);
             } else {
                 updateRegToVarMap(rightReg, j_argc);
@@ -241,14 +241,13 @@ public class TestStep2 {
          JimpleVariable j_array =null;
          int index=0;
          for (int i=0; i<pair_list.size();i++){
-          InstructionType thisIType = pair_list.get(i).getInstruction().getInstructiontype();
-            
+          InstructionType thisIType = pair_list.get(i).getInstruction().getInstructiontype();   
           //find move and add 
           if(thisIType.equals(InstructionType.MOV)&& (i!=pair_list.size())){
               InstructionType nextIType = pair_list.get(i+1).getInstruction().getInstructiontype();
                 if(nextIType.equals(InstructionType.ADD)){
                     //get the whole value not only the register
-                    leftReg = getRegister(pair_list.get(i).getInstruction().getOperands().get(0).getOperandValue());
+                    leftReg = getMemoryEffectiveAddress(pair_list.get(i).getInstruction().getOperands().get(0).getOperandValue());
                     j_array =  regToJVar.get(leftReg); 
                     
                     long temp = getLong(pair_list.get(i+1).getInstruction().getOperands().get(0).getOperandValue());
@@ -358,29 +357,32 @@ public class TestStep2 {
     private void getOneParaFilterProcess(Method m, ParsedInstructionsSet ins_set) {
         JimpleMethod jmethod = Map_jMethod.get(m.getMethodInfo().getMethodName());
         List<MemoryInstructionPair> pair_list = ins_set.getInstructions_List();
+        List<String> paratypes = jmethod.getParameterTypes();
+        int index = paratypes.size()-1;
+        // assign parameter from the last para to the first para
         for (MemoryInstructionPair mip : pair_list) {
             InstructionType thisIType = mip.getInstruction().getInstructiontype();
             List<IOperand> curOps = mip.getInstruction().getOperands();
-
+            if(thisIType.equals(InstructionType.MOV)){
             String leftReg = getRegister(curOps.get(0).getOperandValue());
-            String rightReg = getRegister(curOps.get(1).getOperandValue());
-
-            List<String> paratypes = jmethod.getParameterTypes();
-            for (int i = 0; i < paratypes.size(); ++i) {
-                JimpleVariable jvar = new JimpleVariable("l" + Integer.toString(i), paratypes.get(i), jmethod);
+            String rightReg = getMemoryEffectiveAddress(curOps.get(1).getOperandValue());
+// for this case just have one parameter    
+               if(index >=0){
+                JimpleVariable jvar = new JimpleVariable("l" + Integer.toString(index), paratypes.get(index), jmethod);
                 JimpleAssign jim_ass = new JimpleAssign();
-                jim_ass.JimpleParameterAssign(jvar, paratypes.get(i), i, jmethod);
-
+                jim_ass.JimpleParameterAssign(jvar, paratypes.get(index), index, jmethod);
                 updateRegToVarMap(rightReg, jvar);
-            }
+                index--;
+               }
+               }
             //get the para value of function
         }
     }
 
     private void getTwoParaFilterProcess(Method m, ParsedInstructionsSet ins_set) {
-             JimpleMethod jmethod = Map_jMethod.get(m.getMethodInfo().getMethodName());
+        JimpleMethod jmethod = Map_jMethod.get(m.getMethodInfo().getMethodName());
         List<MemoryInstructionPair> pair_list = ins_set.getInstructions_List();
-       
+         List<String> paratypes = jmethod.getParameterTypes();
         
         for (int mipIndex = 0; mipIndex < pair_list.size(); ++mipIndex) {
             MemoryInstructionPair mip = ins_set.getInstructions_List().get(mipIndex);
@@ -392,7 +394,6 @@ public class TestStep2 {
             String leftReg = getRegister(curOps.get(0).getOperandValue());
             String rightReg = getRegister(curOps.get(1).getOperandValue());
 
-            List<String> paratypes = jmethod.getParameterTypes();
             //two paranums , and will assign to second para first then the first para
             //use mipindex to decide which para is assigned         
                 JimpleVariable jvar = new JimpleVariable("l" + Integer.toString(mipIndex), paratypes.get(mipIndex), jmethod);
@@ -447,8 +448,14 @@ public class TestStep2 {
         String base = getRegister(otmea.getBase());
         String index = getRegister(otmea.getIndex());
         int scale = otmea.getScale();
+        if(index == null){
+            String result = String.valueOf(offset) + "(" + base +")";
+            return result;
+        }
+        else{
         String result = String.valueOf(offset) + "(" + base + "," + index + ")";
         return result;
+        }
     }
 
     private String getRegister(Object obj) {
