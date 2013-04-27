@@ -150,7 +150,7 @@ public class TestStep2 {
             number_of_lines = start_index_of_this - end_index_of_last;
             if (number_of_lines != 0) {
                 for (int i = end_index_of_last; i < number_of_lines; i++) {
-                    handleUnparsedLines(m.getL_instruction().get(i), m.getL_instruction().get(i - 1));
+                    handleUnparsedLines(m, m.getL_instruction().get(i), m.getL_instruction().get(i - 1));
 
                 }
             }
@@ -181,12 +181,15 @@ public class TestStep2 {
         }
     }
 
-    private void handleUnparsedLines(MemoryInstructionPair singleLine, MemoryInstructionPair lastSingleLine) {
+    private void handleUnparsedLines(Method m ,MemoryInstructionPair singleLine, MemoryInstructionPair lastSingleLine) {
         IInstruction ins = singleLine.getInstruction();
         if (ins.getInstructiontype().equals(InstructionType.MOV)
                 && ins.getOperands().get(0).getOperandType().equals(OperandType.REGISTER)
                 && ins.getOperands().get(1).getOperandValue().equals(RegisterType.EAX)) {
-            // return 0;
+            // add return statement return 0 to the coresponding fucntion;
+            JimpleMethod currentJVM = Map_jMethod.get(m.getMethodInfo().getMethodName());
+            currentJVM.setReturn(null);   // return void
+                           
         } else if (ins.getInstructiontype().equals(InstructionType.MOV)
                 && ins.getOperands().get(0).getOperandValue().equals(RegisterType.EAX)) {
             IInstruction ins_last = lastSingleLine.getInstruction();
@@ -195,6 +198,8 @@ public class TestStep2 {
                 if (ins.getOperands().get(0).getOperandType().equals(OperandType.MEMORY_EFFECITVE_ADDRESS)//OperandType.MEMORY_PHYSICAL_ADDRESS )
                         && !funcName.contains("printf")) {
                     // put the result of function "eax" into map;
+                    // leave printf for runtime team
+                  //  updateRegToVarMap(leftvalue, rightvalue);
                 }
             }
         }
@@ -208,11 +213,11 @@ public class TestStep2 {
         JimpleMethod jmethod = Map_jMethod.get(m.getMethodInfo().getMethodName());
 
         List<MemoryInstructionPair> pair_list = ins_set.getInstructions_List();
-        JimpleAssign jim_ass = new JimpleAssign();
+        //JimpleAssign jim_ass = new JimpleAssign();
         JimpleVariable j_argv = new JimpleVariable("argv", "String []", jmethod);
         JimpleVariable j_argc = new JimpleVariable("argc", "int", jmethod);
-        jim_ass.JimpleParameterAssign(j_argv, "String []", 0, jmethod);
-        jim_ass.JimpleLengthOf(j_argc, j_argv, jmethod);
+        jimAss.JimpleParameterAssign(j_argv, "String []", 0, jmethod);
+        jimAss.JimpleLengthOf(j_argc, j_argv, jmethod);
         for (MemoryInstructionPair mip : pair_list) {
             InstructionType thisIType = mip.getInstruction().getInstructiontype();
             List<IOperand> curOps = mip.getInstruction().getOperands();
@@ -235,7 +240,37 @@ public class TestStep2 {
     }
 
     private void useArgFilterProcess(Method m, ParsedInstructionsSet ins_set) {
-//        List<MemoryInstructionPair> pair_list = ins_set.getInstructions_List();
+        JimpleMethod jmethod = Map_jMethod.get(m.getMethodInfo().getMethodName());
+        List<MemoryInstructionPair> pair_list = ins_set.getInstructions_List();
+         String leftReg = null;
+         String rightReg = null;
+         JimpleVariable j_array =null;
+         int index=0;
+         for (int i=0; i<pair_list.size();i++){
+          InstructionType thisIType = pair_list.get(i).getInstruction().getInstructiontype();
+            
+          //find move and add 
+          if(thisIType.equals(InstructionType.MOV)&& (i!=pair_list.size())){
+              InstructionType nextIType = pair_list.get(i+1).getInstruction().getInstructiontype();
+                if(nextIType.equals(InstructionType.ADD)){
+                    //get the whole value not only the register
+                    leftReg = getRegister(pair_list.get(i).getInstruction().getOperands().get(0).getOperandValue());
+                    j_array =  regToJVar.get(leftReg); 
+                    
+                    long temp = getLong(pair_list.get(i+1).getInstruction().getOperands().get(0).getOperandValue());
+                    index = (int)temp/8 -1;      
+                }                
+         }
+          
+              if(thisIType.equals(InstructionType.MOVSBL)){
+                   //change getReg later to obtain all the value from right operand
+                    rightReg =getRegister(pair_list.get(i).getInstruction().getOperands().get(1).getOperandValue());;
+                    JimpleVariable j_var = new JimpleVariable("argv"+ Integer.toString(index), "String", jmethod);
+                    jimAss.JimpleAssignFromArray(j_var, j_array, index, jmethod);
+                    updateRegToVarMap(rightReg, j_var);
+                }
+             
+         }
 //        String left_operand1 =
 //                getMemoryEffectiveAddress(pair_list.get(0).getInstruction().getOperands().get(0).getOperandValue());
 //        String right_operand1 =
@@ -246,8 +281,8 @@ public class TestStep2 {
 //        long argv_index = left_operand2 / 8;
 //        updateRegToVarMap("rax", left_operand1 + "[" + Long.toOctalString(argv_index) + "]");
 //        updateRegToVarMap("eax", left_operand1);
-//
-//
+
+
     }
 
     private void callingFilterProcess(Method m, ParsedInstructionsSet ins_set) {
@@ -276,6 +311,8 @@ public class TestStep2 {
     }
 
     private void leaveFilterProcess(Method m, ParsedInstructionsSet ins_set) {
+        
+        
     }
 
     private void addFilterProcess(Method m, ParsedInstructionsSet ins_set) {

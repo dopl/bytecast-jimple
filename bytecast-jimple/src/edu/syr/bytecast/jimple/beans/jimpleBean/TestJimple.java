@@ -107,7 +107,10 @@ public class TestJimple {
     jim_ass.JimpleArrayAssign(byteArray, 0, 5, jMainMethod);
      jim_ass.JimpleArrayAssign(byteArray, 1, 6, jMainMethod);
       jim_ass.JimpleArrayAssign(byteArray, 2, 7, jMainMethod);
+      
+       JimpleVariable testArrayAssign = new JimpleVariable("testArrayAssign" , "String" , jMainMethod);
     
+       jim_ass.JimpleAssignFromArray(testArrayAssign, byteArray, 0, jMainMethod);
     
     // $r2 = 1;
     jim_ass.JimpleDirectAssign(r2, 1, jMainMethod);
