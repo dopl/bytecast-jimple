@@ -31,6 +31,7 @@ public class JimpleMethod {
   private PatchingChain<Unit> units;
   private Chain<Local> locals;
   private SootMethod myMethod;
+  private Local thisref;
   /**
    *
    * @param methodName
@@ -89,7 +90,7 @@ public class JimpleMethod {
 //    } else {
 
       // Class r0;
-      Local thisref = Jimple.v().newLocal("r0", declaringClass.getType());
+      thisref = Jimple.v().newLocal("r0", declaringClass.getType());
       locals.add(thisref);
       
       // r0 := @this: Class;
@@ -157,5 +158,9 @@ public class JimpleMethod {
       Unit returnstmt = Jimple.v().newReturnStmt(returnvariable.getVariable());
       units.add(returnstmt);
     }
+  }
+  
+  protected Local getThisRef() {
+    return this.thisref;
   }
 }
