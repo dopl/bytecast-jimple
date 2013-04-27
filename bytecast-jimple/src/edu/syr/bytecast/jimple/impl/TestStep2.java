@@ -187,8 +187,8 @@ public class TestStep2 {
 //        ifWith2VaribFilterProcess(m, pis);
       } else if (pis.getInfo().getInstruction_Name().equals("DivBy2N")) {
         divideBy2NFilterProcess(m, pis);
-////            } else if (pis.getInfo().getInstruction_Name().equals("If")) {
-////                ifFilterProcess(m, pis);
+      } else if (pis.getInfo().getInstruction_Name().equals("If")) {
+          ifFilterProcess(m, pis);
       } else if (pis.getInfo().getInstruction_Name().equals("Add")) {
         addFilterProcess(m, pis);
       }
@@ -208,7 +208,7 @@ public class TestStep2 {
                 && ins.getOperands().get(0).getOperandValue().equals(RegisterType.EAX)) {
             IInstruction ins_last = lastSingleLine.getInstruction();
             if (ins_last.getInstructiontype().equals(InstructionType.CALLQ)) {
-                String funcName = (String)ins.getOperands().get(1).getOperandValue();
+                String funcName = (String) ins_last.getOperands().get(1).getOperandValue();
                 if (ins.getOperands().get(0).getOperandType().equals(OperandType.MEMORY_EFFECITVE_ADDRESS)//OperandType.MEMORY_PHYSICAL_ADDRESS )
                         && !funcName.contains("printf")) {
                     String leftop = getRegister(ins.getOperands().get(0).getOperandValue());
@@ -300,7 +300,13 @@ public class TestStep2 {
 
   private void callingFilterProcess(Method m, ParsedInstructionsSet ins_set) {
     JimpleMethod baseMethod = Map_jMethod.get(m.getMethodInfo().getMethodName());
-    
+    String startAddr = ins_set.getInstructions_List().get(0).getmInstructionAddress().toString();
+    JimpleCondition jmpFrom = null;
+    boolean isTarget = false;
+    if (memAddrToJCond.containsKey(startAddr)) {
+      jmpFrom = memAddrToJCond.get(startAddr);
+      isTarget = true;
+    }
     // return value is default int
     JimpleVariable retResult = new JimpleVariable("ret"+getVcount(), "int", baseMethod);
     ArrayList<JimpleVariable> parameters = new ArrayList<JimpleVariable>();
@@ -322,12 +328,26 @@ public class TestStep2 {
           parameters.add(getExistJVar(leftReg));
         }
       } else if (thisIType.equals(InstructionType.CALLQ)) {
-        String methodName = (String) curOps.get(1).getOperandValue();
-        if (baseMethod.getMethodName().equals("main")) {
-          jimInvk.invokeUserDefined(objectOfThisClass,
-                  Map_jMethod.get(methodName), parameters, retResult, baseMethod);
+        if (isTarget) {
+          JimpleInvoke targetinvoke = new JimpleInvoke();
+          targetinvoke.setAsTarget();
+          String methodName = (String) curOps.get(1).getOperandValue();
+          if (baseMethod.getMethodName().equals("main")) {
+
+            targetinvoke.invokeUserDefined(objectOfThisClass,
+                    Map_jMethod.get(methodName), parameters, retResult, baseMethod);
+          } else {
+            targetinvoke.invokeUserDefined(Map_jMethod.get(methodName), parameters, retResult, baseMethod);
+          }
+          jmpFrom.setTargets(new JimpleElement[]{targetinvoke});
         } else {
-          jimInvk.invokeUserDefined(Map_jMethod.get(methodName), parameters, retResult, baseMethod);
+          String methodName = (String) curOps.get(1).getOperandValue();
+          if (baseMethod.getMethodName().equals("main")) {
+            jimInvk.invokeUserDefined(objectOfThisClass,
+                    Map_jMethod.get(methodName), parameters, retResult, baseMethod);
+          } else {
+            jimInvk.invokeUserDefined(Map_jMethod.get(methodName), parameters, retResult, baseMethod);
+          }
         }
       }
     }
@@ -389,9 +409,10 @@ public class TestStep2 {
         JimpleVariable sum = new JimpleVariable(getNewVarName(), "int", currentJM);
         jimAss.JimpleMul(addend, scale, currentJM);
 
-
+        String rhs = getRegister(curOps.get(1).getOperandValue());
         // the offset is defaulted zero
         jimAss.JimpleAdd(sum, addend, augend, currentJM);
+        updateRegToVarMap(rhs, sum);
       }
 
     }
