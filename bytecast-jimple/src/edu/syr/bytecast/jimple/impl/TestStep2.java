@@ -80,7 +80,7 @@ public class TestStep2 {
 
         initializeAllJimpleMethod();
 
-        // implementJimpleMethod();
+        implementJimpleMethod();
     }
 
     private void initializeAllJimpleMethod() {
@@ -224,7 +224,7 @@ public class TestStep2 {
             String leftReg = getRegister(curOps.get(0).getOperandValue());
             String rightReg = getMemoryEffectiveAddress(curOps.get(1).getOperandValue());
 
-            if (thisIType.equals(InstructionType.MOV) && leftReg.equals("%rsi")) {
+            if (thisIType.equals(InstructionType.MOV) && leftReg.equals("RSI")) {
                 updateRegToVarMap(rightReg, j_argv);
             } else {
                 updateRegToVarMap(rightReg, j_argc);
@@ -259,8 +259,7 @@ public class TestStep2 {
                     long temp = getLong(pair_list.get(i+1).getInstruction().getOperands().get(0).getOperandValue());
                     index = (int)temp/8 -1;      
                 }                
-         }
-          
+         }          
               if(thisIType.equals(InstructionType.MOVSBL)){
                    //change getReg later to obtain all the value from right operand
                     rightReg =getRegister(pair_list.get(i).getInstruction().getOperands().get(1).getOperandValue());;
@@ -299,11 +298,16 @@ public class TestStep2 {
 
     private void leaveFilterProcess(Method m, ParsedInstructionsSet ins_set) {
         
-        JimpleMethod baseMethod = Map_jMethod.get(m.getMethodInfo().getMethodName());
+        JimpleMethod j_method = Map_jMethod.get(m.getMethodInfo().getMethodName());
         
         JimpleVariable return_j = null;
         
         return_j=regToJVar.get("EAX");
+      
+      if(return_j!= null)  
+        j_method.setReturn(return_j);
+      else
+          j_method.setReturn(null);
         
         
         
@@ -393,7 +397,7 @@ public class TestStep2 {
            if(thisIType.equals(InstructionType.MOV)){
             
             String leftReg = getRegister(curOps.get(0).getOperandValue());
-            String rightReg = getRegister(curOps.get(1).getOperandValue());
+            String rightReg = getMemoryEffectiveAddress(curOps.get(1).getOperandValue());
 
             //two paranums , and will assign to second para first then the first para
             //use mipindex to decide which para is assigned         
