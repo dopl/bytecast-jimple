@@ -4,6 +4,9 @@
  */
 package edu.syr.bytecast.jimple.impl;
 
+import edu.syr.bytecast.amd64.api.constants.InstructionType;
+import edu.syr.bytecast.amd64.api.constants.OperandType;
+import edu.syr.bytecast.amd64.api.constants.RegisterType;
 import edu.syr.bytecast.jimple.impl.filter.IfWithBothVariableFilter;
 import edu.syr.bytecast.jimple.impl.filter.IfFilter;
 import edu.syr.bytecast.jimple.impl.filter.GetTwoParameterFilter;
@@ -23,6 +26,7 @@ import edu.syr.bytecast.jimple.api.IFilter;
 import edu.syr.bytecast.jimple.api.MethodInfo;
 import edu.syr.bytecast.jimple.beans.*;
 import edu.syr.bytecast.jimple.api.Method;
+import edu.syr.bytecast.jimple.api.Methods;
 import java.util.*;
 
 /**
@@ -35,35 +39,36 @@ public class PatternSeperator {
   private Map<Method, List<ParsedInstructionsSet>> result;
 
   public Map<Method, List<ParsedInstructionsSet>> doSeperate(ISection section) {
-    List<MethodInfo> m_info = new ArrayList<MethodInfo>();
-    MethodInfo mi1 = new MethodInfo();
-    mi1.setMethodName("main");
-    mi1.setStartIndex(0);
-    mi1.setEndIndex(31);
-    mi1.setStartMemAddress(0x400542L);
-    mi1.setEndMemAddress(0x4005a9L);
-    m_info.add(mi1);
-    MethodInfo mi2 = new MethodInfo();
-    mi2.setMethodName("dustuff");
-    mi2.setStartIndex(32);
-    mi2.setEndIndex(50);
-    mi2.setStartMemAddress(0x40050fL);
-    mi2.setEndMemAddress(0x400541L);
-    m_info.add(mi2);
-    MethodInfo mi3 = new MethodInfo();
-    mi3.setMethodName("sum");
-    mi3.setStartIndex(51);
-    mi3.setEndIndex(60);
-    mi3.setStartMemAddress(0x400414L);
-    mi3.setEndMemAddress(0x4004f8L);
-    m_info.add(mi3);
-    MethodInfo mi4 = new MethodInfo();
-    mi4.setMethodName("halve");
-    mi4.setStartIndex(61);
-    mi4.setEndIndex(71);
-    mi4.setStartMemAddress(0x4004f9L);
-    mi4.setEndMemAddress(0x40050eL);
-    m_info.add(mi4);
+    
+    List<MethodInfo> m_info = Methods.methods;//getMethodInfo(section.getAllInstructionObjects());
+//    MethodInfo mi1 = new MethodInfo();
+//    mi1.setMethodName("main");
+//    mi1.setStartIndex(0);
+//    mi1.setEndIndex(31);
+//    mi1.setStartMemAddress(0x400542L);
+//    mi1.setEndMemAddress(0x4005a9L);
+//    m_info.add(mi1);
+//    MethodInfo mi2 = new MethodInfo();
+//    mi2.setMethodName("dustuff");
+//    mi2.setStartIndex(32);
+//    mi2.setEndIndex(50);
+//    mi2.setStartMemAddress(0x40050fL);
+//    mi2.setEndMemAddress(0x400541L);
+//    m_info.add(mi2);
+//    MethodInfo mi3 = new MethodInfo();
+//    mi3.setMethodName("sum");
+//    mi3.setStartIndex(51);
+//    mi3.setEndIndex(60);
+//    mi3.setStartMemAddress(0x400414L);
+//    mi3.setEndMemAddress(0x4004f8L);
+//    m_info.add(mi3);
+//    MethodInfo mi4 = new MethodInfo();
+//    mi4.setMethodName("halve");
+//    mi4.setStartIndex(61);
+//    mi4.setEndIndex(71);
+//    mi4.setStartMemAddress(0x4004f9L);
+//    mi4.setEndMemAddress(0x40050eL);
+//    m_info.add(mi4);
     List<Method> result_methods = divideMethod(section.getAllInstructionObjects(), m_info);
 
 
@@ -73,6 +78,7 @@ public class PatternSeperator {
     Map<Method, List<ParsedInstructionsSet>> result_map =
             doFilter(result_methods, m_info);
     Comparator<ParsedInstructionsSet> mysorter = new Comparator<ParsedInstructionsSet>() {
+
       @Override
       public int compare(ParsedInstructionsSet pis1, ParsedInstructionsSet pis2) {
         if (pis1.getInfo().getStart_Index() > pis2.getInfo().getStart_Index()) {
@@ -93,7 +99,48 @@ public class PatternSeperator {
     return result_map;
   }
 
-  
+  // copied from MethodStartFilter & MethodEndFilter
+//  private List<MethodInfo> getMethodInfo(List<MemoryInstructionPair> mips) {
+//    List<MethodInfo> resultMIPs = new ArrayList<MethodInfo>();
+//    for (int index = 0; index < mips.size(); ++index) {//MemoryInstructionPair mip : mips) {
+//      MemoryInstructionPair mip = mips.get(index);
+//      IInstruction inst = mip.getInstruction();
+//      if (inst.getInstructiontype().equals(InstructionType.PUSH)) {
+//        index += 1;
+//        mip = mips.get(index);
+//        inst = mip.getInstruction();
+//        if (inst.getInstructiontype().equals(InstructionType.MOV)) {
+//          if (inst.getOperands().get(0).getOperandType().equals(OperandType.REGISTER)
+//                  && inst.getOperands().get(0).getOperandValue().equals(RegisterType.RSP)
+//                  && inst.getOperands().get(1).getOperandType().equals(OperandType.REGISTER)
+//                  && inst.getOperands().get(1).getOperandValue().equals(RegisterType.RBP)) {
+//            MethodInfo m_info = new MethodInfo();
+//            index -= 1;
+//            mip = mips.get(index);
+//            m_info.setStartMemAddress(mip.getmInstructionAddress());
+//            m_info.setStartIndex(index);
+//            resultMIPs.add(m_info);
+//          }
+//        }
+//      } else if (inst.getInstructiontype().equals(InstructionType.LEAVE)) {
+//        index += 1;
+//        mip = mips.get(index);
+//        inst = mip.getInstruction();
+//        if(inst.getInstructiontype() == InstructionType.RET)
+//        {
+//            if (!resultMIPs.isEmpty()) {
+//              MethodInfo curMI = resultMIPs.get(resultMIPs.size()-1);
+//              curMI.setEndMemAddress(mip.getmInstructionAddress());
+//              curMI.setEndIndex(index);
+//            }
+//
+//        }
+//      }
+//    }
+//    
+//    
+//    return resultMIPs;
+//  }
 
   private List<Method> divideMethod(List<MemoryInstructionPair> mip, List<MethodInfo> meInfo) {
 //      List<MemoryInstructionPair> mip = wholeSection.getAllInstructionObjects();
@@ -101,6 +148,9 @@ public class PatternSeperator {
     for (MethodInfo m_info : meInfo) {
       Method m = new Method();
       List<MemoryInstructionPair> l_ins = new ArrayList<MemoryInstructionPair>();
+      if (m_info.getMethodName().equals("DEFAULT")) {
+        m_info.setMethodName("main");
+      }
       m.setMethodInfo(m_info);
       for (int i = 0; i < mip.size(); i++) {
         if (mip.get(i).getmInstructionAddress() >= m_info.getStartMemeAddress()
