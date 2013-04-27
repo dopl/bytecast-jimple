@@ -299,6 +299,13 @@ public class TestStep2 {
 
     private void leaveFilterProcess(Method m, ParsedInstructionsSet ins_set) {
         
+        JimpleMethod baseMethod = Map_jMethod.get(m.getMethodInfo().getMethodName());
+        
+        JimpleVariable return_j = null;
+        
+        return_j=regToJVar.get("EAX");
+        
+        
         
     }
 
@@ -491,10 +498,10 @@ public class TestStep2 {
             return regToJVar.get(regName);
         } else {
             // I know, too ugly
-            if (regName.equals("rax")) {
-                return regToJVar.get("eax");
-            } else if (regName.equals("rdx")) {
-                return regToJVar.get("edx");
+            if (regName.equals("RAX")) {
+                return regToJVar.get("EAX");
+            } else if (regName.equals("RDX")) {
+                return regToJVar.get("EDX");
 
             } else {
                 return null;
