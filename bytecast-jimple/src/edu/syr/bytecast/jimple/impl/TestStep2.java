@@ -146,6 +146,7 @@ public class TestStep2 {
     for (Method m : methods) {
       List<ParsedInstructionsSet> method_ParseIns = method_map.get(m);
       implementSingleJimpleMethod(m, method_ParseIns);
+      cleanVarMap();
     }
   }
 
@@ -414,7 +415,7 @@ public class TestStep2 {
       }
 
     }
-
+    
   }
 
   private void getOneParaFilterProcess(Method m, ParsedInstructionsSet ins_set) {
@@ -570,6 +571,12 @@ public class TestStep2 {
     return temp;
   }
 
+  private void cleanVarMap(){
+  
+      regToJVar.clear();;
+  
+  }
+  
   private JimpleVariable getExistJVar(String regName) {
     if (regToJVar.containsKey(regName)) {
       return regToJVar.get(regName);
