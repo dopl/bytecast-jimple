@@ -236,6 +236,7 @@ public class TestStep2 {
   private void prememoryFilterProcess(Method m, ParsedInstructionsSet ins_set) {
   }
 
+
   private void setArgFilterProcess(Method m, ParsedInstructionsSet ins_set) {
     JimpleMethod jmethod = Map_jMethod.get(m.getMethodInfo().getMethodName());
 
@@ -340,12 +341,11 @@ public class TestStep2 {
 
     return_j = regToJVar.get("EAX");
     
-    if (return_j != null) {
-      baseMethod.setReturn(return_j);
-      
-    } else {
-      baseMethod.setReturn(null);
-    }
+    if(return_j==null)
+        baseMethod.setReturn(null);
+    
+   else
+        baseMethod.setReturn(return_j);
 
 
 
@@ -445,8 +445,6 @@ public class TestStep2 {
       }
     }
 
-
-
   }
 
   //cmp -0x8(%rbp)<right hand side>, %eax<left hand side>
@@ -511,7 +509,6 @@ public class TestStep2 {
             // a /= 2;
             jimAss.JimpleDiv(dividendJV, 2, currentJM);
           }
-
         }
       }
     }
