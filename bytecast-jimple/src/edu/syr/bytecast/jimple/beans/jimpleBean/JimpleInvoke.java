@@ -34,11 +34,12 @@ public class JimpleInvoke extends JimpleElement {
   private Stmt invokestmt;
   private Local baseObject;
   private boolean isTarget;
+  private Unit nativeAssi;
 
   public JimpleInvoke() {
     this.isTarget = false;
   }
-  
+
   public void invokeUserDefined(JimpleVariable baseobj, JimpleMethod method2Call, List paraVal,
           JimpleVariable returnTo, JimpleMethod basemethod) {
     // Local to store return value
@@ -80,57 +81,46 @@ public class JimpleInvoke extends JimpleElement {
     basemethod.getMethod().getActiveBody().getUnits().add(invokestmt);
   }
 
-  public void invokeNative(JimpleVariable baseobj, String method2Call, 
+  public void invokeNative(JimpleVariable baseobj, String method2Call,
           List paraVal, JimpleVariable returnTo, JimpleMethod callFromMethod) {
-    if (method2Call.equals("println")) {
-      
-    }
+//    this.i
   }
-//  public void invokeNative(String nativemethod, ArrayList<String> paraVal,
-//          JimpleVariable returnTo) {
-//    invokeNative(nativemethod, paraVal, returnTo, null);
-//  }
-  // specificly for "println"
 
   public void invokeNative(String nativemethod, ArrayList<String> paraVal,
           JimpleVariable returnTo, JimpleMethod basemethod) {
-    SootMethod toCall = null;
-
     if (nativemethod.equals("println")) {
-      // java.io.PrintStream print_line;
-      baseObject = Jimple.v().newLocal("print_line",
-              JimpleUtil.getTypeByString("println"));
-      basemethod.getMethod().getActiveBody().getLocals().add(baseObject);
-      // $r3 = <java.lang.System: java.io.PrintStream out>;
-      Unit print_assi = Jimple.v().newAssignStmt(baseObject, 
-              Jimple.v().newStaticFieldRef(
-              Scene.v().getField("<java.lang.System: java.io.PrintStream out>").makeRef()));
-      toCall = Scene.v().getMethod("<java.io.PrintStream: void println(java.lang.String)>");
-//      if (!this.isTarget) {
-        basemethod.getMethod().getActiveBody().getUnits().add(print_assi);
-//      }
+      invokePrintln(paraVal, basemethod);
     }
+  }
 
-    // Local to store return value
-
-    // 
-    Value invokeExpr = null;
-    if (paraVal != null && toCall != null) {
+  private void invokePrintln(ArrayList<String> paraVal, JimpleMethod basemethod) {
+    // java.io.PrintStream print_line;
+    baseObject = Jimple.v().newLocal("print_line",
+            JimpleUtil.getTypeByString("println"));
+    // print_line = <java.lang.System: java.io.PrintStream out>;
+    nativeAssi = Jimple.v().newAssignStmt(baseObject,
+            Jimple.v().newStaticFieldRef(
+            Scene.v().getField("<java.lang.System: java.io.PrintStream out>").makeRef()));
+    
+    SootMethod toCall = Scene.v().getMethod("<java.io.PrintStream: void println(java.lang.String)>");
+    Value invokeExpr;
+    if (paraVal != null) {
       List<Value> sParaVals = new ArrayList<Value>();
       for (String str : paraVal) {
         sParaVals.add(StringConstant.v(str));
       }
       invokeExpr = Jimple.v().newVirtualInvokeExpr(baseObject,
               toCall.makeRef(), sParaVals);
-    } else if (toCall != null) {
-      invokeExpr = Jimple.v().newVirtualInvokeExpr(baseObject, 
+    } else {
+      invokeExpr = Jimple.v().newVirtualInvokeExpr(baseObject,
               toCall.makeRef());
     }
 
-    if (invokeExpr != null) {
-      this.invokestmt = Jimple.v().newInvokeStmt(invokeExpr);
-    }
-    if (!isTarget) {
+    // virtualinvoke print_line.<java.io.PrintStream: void println(java.lang.String)>("hello");
+    this.invokestmt = Jimple.v().newInvokeStmt(invokeExpr);
+    if (!isTarget && basemethod != null) {
+      basemethod.getMethod().getActiveBody().getLocals().add(baseObject);
+      basemethod.getMethod().getActiveBody().getUnits().add(nativeAssi);
       basemethod.getMethod().getActiveBody().getUnits().add(invokestmt);
     }
   }
@@ -138,7 +128,7 @@ public class JimpleInvoke extends JimpleElement {
   public void setAsTarget() {
     this.isTarget = true;
   }
-  
+
   @Override
   protected Local getVariable() {
     return null;
@@ -147,5 +137,20 @@ public class JimpleInvoke extends JimpleElement {
   @Override
   protected Unit getElement() {
     return invokestmt;
+  }
+
+  @Override
+  protected Local getLocalForTarget() {
+    return this.baseObject;
+  }
+
+  @Override
+  protected Unit getAssStmtForTarget() {
+    return this.nativeAssi;
+  }
+
+  @Override
+  protected Unit getInvStmtForTarget() {
+    return this.invokestmt;
   }
 }

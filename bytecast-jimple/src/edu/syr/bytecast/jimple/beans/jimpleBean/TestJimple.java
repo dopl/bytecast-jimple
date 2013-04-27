@@ -66,8 +66,8 @@ public class TestJimple {
     JimpleMethod jMainMethod = new JimpleMethod(9, "void","main", parameter_list_main, jClass);
     
     // println object for all println
-    JimpleVariable jPrintObj = new JimpleVariable("print_line", 
-            "println", jMainMethod);   
+//    JimpleVariable jPrintObj = new JimpleVariable("print_line", 
+//            "println", jMainMethod);   
     // int &r1;
     JimpleVariable r1 = new JimpleVariable("$r1", "int", jMainMethod);
     // &r1 = 0;
@@ -83,17 +83,7 @@ public class TestJimple {
     // if (a < 1)JAssignStmt
     JimpleCondition jc1 = new JimpleCondition("<", r1, 1, jMainMethod);
 
-    // set target (if else)(must be added to method after condition been added
-    // target MUST be added to JimpleMethod using addElement() explicitly
-    // but could be added anywhere you want
-    /// virtualinvoke print_line.<java.io.PrintStream: void println(java.lang.String)>("hello");
-    ArrayList<String> parameter_print = new ArrayList<String>();
-    parameter_print.add("hello");
-    JimpleInvoke forif = new JimpleInvoke();
-    forif.setAsTarget();
-    forif.invokeNative("println", parameter_print, null, jMainMethod);
-    JimpleElement[] paras = {forif};
-    jc1.setTargets(paras);
+    
 //    Runtime.AddPrintlntoJimple(jMainMethod);
     
     
@@ -117,7 +107,10 @@ public class TestJimple {
     jim_ass.JimpleArrayAssign(byteArray, 0, 5, jMainMethod);
      jim_ass.JimpleArrayAssign(byteArray, 1, 6, jMainMethod);
       jim_ass.JimpleArrayAssign(byteArray, 2, 7, jMainMethod);
+      
+       JimpleVariable testArrayAssign = new JimpleVariable("testArrayAssign" , "String" , jMainMethod);
     
+       jim_ass.JimpleAssignFromArray(testArrayAssign, byteArray, 0, jMainMethod);
     
     // $r2 = 1;
     jim_ass.JimpleDirectAssign(r2, 1, jMainMethod);
@@ -137,8 +130,23 @@ public class TestJimple {
 //    // r4 = lengthof r5;
 //    jim_ass.JimpleLengthOf(r4, r5, jMainMethod);
     
+    
+    
+    // set target (if else)(must be added to method after condition been added
+    // target MUST be added to JimpleMethod using addElement() explicitly
+    // but could be added anywhere you want
+    /// virtualinvoke print_line.<java.io.PrintStream: void println(java.lang.String)>("hello");
+    ArrayList<String> parameter_print = new ArrayList<String>();
+    parameter_print.add("helloworld");
+    JimpleInvoke forif = new JimpleInvoke();
+    forif.setAsTarget();
+    forif.invokeNative("println", parameter_print, null, jMainMethod);
+    jc1.setTargets(new JimpleElement[]{forif});
+    
+    
+    
     // add lable0
-    jMainMethod.addElement(forif);
+//    jMainMethod.addElement(forif);
     // return;
     jMainMethod.setReturn(null); 
     

@@ -37,10 +37,16 @@ public class JimpleAssign extends JimpleElement {
     a_assign = Jimple.v().newAssignStmt(jVariable1.getVariable(), jVariable2.getVariable());
 
   }
+  
+  public void JimpleDirectAssign(JimpleVariable lhs, JimpleVariable rhs, JimpleMethod baseMethod) {
+    add_lhs = lhs.getVariable();
+    a_assign = Jimple.v().newAssignStmt(add_lhs, rhs.getVariable());
+    baseMethod.getMethod().getActiveBody().getUnits().add(a_assign);
+  }
 
-  public void JimpleDirectAssign(JimpleVariable jVariable1, int jVariable2, JimpleMethod baseMethod) {
-    add_lhs = jVariable1.getVariable();
-    a_assign = Jimple.v().newAssignStmt(jVariable1.getVariable(), IntConstant.v(jVariable2));
+  public void JimpleDirectAssign(JimpleVariable lhs, int rhs, JimpleMethod baseMethod) {
+    add_lhs = lhs.getVariable();
+    a_assign = Jimple.v().newAssignStmt(add_lhs, IntConstant.v(rhs));
 //    baseMethod.getMethod().getActiveBody().getLocals().add(add_lhs);
     baseMethod.getMethod().getActiveBody().getUnits().add(a_assign);
   }
@@ -90,6 +96,16 @@ public class JimpleAssign extends JimpleElement {
       
   }
 
+      //assign a value to a variable of array :  array[0]=1
+  public void JimpleAssignFromArray(JimpleVariable jv ,JimpleVariable j_array, int index , JimpleMethod baseMethod){
+   Value lhs =  Jimple.v().newArrayRef(j_array.getVariable(), IntConstant.v(index)); 
+  a_assign = Jimple.v().newAssignStmt(jv.getVariable(), lhs);
+  
+ //baseMethod.getMethod().getActiveBody().getLocals().add(add_lhs);
+    baseMethod.getMethod().getActiveBody().getUnits().add(a_assign);
+      
+  }
+  
 
   //overload for add assignment     
   public void JimpleAdd(JimpleVariable jVariable1, JimpleVariable jVariable2) {
@@ -174,6 +190,12 @@ public class JimpleAssign extends JimpleElement {
     add_lhs = Jimple.v().newLocal("add_lhs", IntType.v());
     a_assign = Jimple.v().newAssignStmt(add_lhs, rhs);
   }
+  
+  public void JimpleMul(JimpleVariable lhs, int multipend, JimpleMethod jMethod) {
+    Value rhs = Jimple.v().newMulExpr(lhs.getVariable(), IntConstant.v(multipend));
+    a_assign = Jimple.v().newAssignStmt(lhs.getVariable(), rhs);
+    jMethod.getMethod().getActiveBody().getUnits().add(a_assign);
+  }
 
   //overload for divide assignment     
   public void JimpleDiv(JimpleVariable jVariable1, JimpleVariable jVariable2) {
@@ -189,6 +211,13 @@ public class JimpleAssign extends JimpleElement {
     Value rhs = Jimple.v().newDivExpr(jVariable1.getVariable(), IntConstant.v(jVariable2));
     add_lhs = Jimple.v().newLocal("add_lhs", jVariable1.getType());
     a_assign = Jimple.v().newAssignStmt(add_lhs, rhs);
+  }
+  
+  public void JimpleDiv(JimpleVariable lhs, int divisor, JimpleMethod jMethod) {
+
+    Value rhs = Jimple.v().newDivExpr(lhs.getVariable(), IntConstant.v(divisor));
+    a_assign = Jimple.v().newAssignStmt(lhs.getVariable(), rhs);
+    jMethod.getMethod().getActiveBody().getUnits().add(a_assign);
   }
 
   public void JimpleDiv(int jVariable1, int jVariable2) {
@@ -241,5 +270,20 @@ public class JimpleAssign extends JimpleElement {
   @Override
   protected Unit getElement() {
     return a_assign;
+  }
+
+  @Override
+  protected Local getLocalForTarget() {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  @Override
+  protected Unit getAssStmtForTarget() {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  @Override
+  protected Unit getInvStmtForTarget() {
+    throw new UnsupportedOperationException("Not supported yet.");
   }
 }
