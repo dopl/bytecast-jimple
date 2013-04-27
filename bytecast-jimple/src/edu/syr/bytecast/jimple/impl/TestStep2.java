@@ -175,7 +175,7 @@ public class TestStep2 {
       } else if (pis.getInfo().getInstruction_Name().equals("UseArgvAndArgc")) {
         useArgFilterProcess(m, pis);
 //      } else if (pis.getInfo().getInstruction_Name().equals("Calling")) {
-        callingFilterProcess(m, pis);
+//        callingFilterProcess(m, pis);
       } else if (pis.getInfo().getInstruction_Name().equals("Leave")) {
         leaveFilterProcess(m, pis);
       } else if (pis.getInfo().getInstruction_Name().equals("GetOneParameter")) {
@@ -339,6 +339,13 @@ public class TestStep2 {
     JimpleVariable return_j = null;
 
     return_j = regToJVar.get("EAX");
+    
+    if (return_j != null) {
+      baseMethod.setReturn(return_j);
+      
+    } else {
+      baseMethod.setReturn(null);
+    }
 
 
 

@@ -44,6 +44,7 @@ public class TestStep1 {
             "<main>", exclusion);
     try {
       IBytecastAMD64 amd64Object = gen.generate();//buildInstructionObjects();
+      // only for getting MethodInfo
       IJimple jimple = new Jimple();
             jimple.createJimple(amd64Object, "Test");
       IExecutableFile exe_file = amd64Object.buildInstructionObjects();
