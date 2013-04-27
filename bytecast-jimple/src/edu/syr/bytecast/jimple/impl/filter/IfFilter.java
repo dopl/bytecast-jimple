@@ -35,7 +35,7 @@ public class IfFilter implements IFilter{
     {
         IInstruction ins = instList.get(index).getInstruction();
         int count = 0;
-        if( ins.getInstructiontype().equals(InstructionType.CMPL)
+        if( ins.getInstructiontype().equals(InstructionType.CMP)
                 && ins.getOperands().get(0).getOperandType().equals(OperandType.CONSTANT)
                 && ins.getOperands().get(1).getOperandType().equals(OperandType.MEMORY_EFFECITVE_ADDRESS ))
         {
