@@ -168,6 +168,28 @@ public class JimpleCondition extends JimpleElement {
 
         }
       }
+    } else if (stmt instanceof soot.jimple.GotoStmt) {
+      if (jelements != null) {
+        for (int i = 0; i < jelements.length; ++i) {
+          if (jelements[i].getLocalForTarget() != null) {
+            baseMethod.getActiveBody().getLocals().add(jelements[i].getLocalForTarget());
+          }
+          if (jelements[i].getAssStmtForTarget() != null) {
+            if (i == 0) {
+              ((soot.jimple.GotoStmt) stmt).setTarget(jelements[i].getAssStmtForTarget());
+            }
+            baseMethod.getActiveBody().getUnits().add(jelements[i].getAssStmtForTarget());
+          }
+          if (jelements[i].getAssStmtForTarget() == null &&
+                  jelements[i].getInvStmtForTarget() != null) {
+            if (i == 0) {
+              ((soot.jimple.GotoStmt) stmt).setTarget(jelements[i].getInvStmtForTarget());
+            }
+            baseMethod.getActiveBody().getUnits().add(jelements[i].getInvStmtForTarget());
+          }
+
+        }
+      }
     }
   }
 

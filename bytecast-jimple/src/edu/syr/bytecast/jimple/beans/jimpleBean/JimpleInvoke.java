@@ -145,7 +145,7 @@ public class JimpleInvoke extends JimpleElement {
 //        }
 //        System.out.println(baseObject.getName());
         boolean reused = true;
-        if (baseObject == null ) {
+        if (baseObject == null) {
             baseObject = Jimple.v().newLocal("char_at", JimpleUtil.getTypeByString("String"));
             reused = false;
         }
@@ -195,6 +195,18 @@ public class JimpleInvoke extends JimpleElement {
             basemethod.getMethod().getActiveBody().getUnits().add(nativeAssi);
             basemethod.getMethod().getActiveBody().getUnits().add(invokestmt);
         }
+    }
+
+    public void invokeSystemExit(int state, JimpleMethod basemethod) {
+
+        //add system exit class 
+        SootMethod toCall = Scene.v().getSootClass("java.lang.System").getMethod("void exit(int)");
+        Value invokeExpr = Jimple.v().newStaticInvokeExpr(toCall.makeRef(), IntConstant.v(state));
+        this.invokestmt = Jimple.v().newInvokeStmt(invokeExpr);
+        if (!isTarget && basemethod != null) {
+            basemethod.getMethod().getActiveBody().getUnits().add(invokestmt);
+        }
+
     }
 
     public void setAsTarget() {
