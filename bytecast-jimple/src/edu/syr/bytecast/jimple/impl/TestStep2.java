@@ -109,9 +109,8 @@ public class TestStep2 {
       //main method
       if (m.getMethodInfo().getMethodName().equals("main")) {
         ArrayList<String> parameter_type = new ArrayList<String>();
-        parameter_type.add("int");
         parameter_type.add("String[]");
-        JimpleMethod jMethod = new JimpleMethod(1, "void", "main", parameter_type, jimple_class);
+        JimpleMethod jMethod = new JimpleMethod(9, "void", "main", parameter_type, jimple_class);
         Map_jMethod.put("main", jMethod);
         // thisclass obj = new thisclass();
       } else {
@@ -270,12 +269,13 @@ public class TestStep2 {
    // JimpleAssign jim_ass = new JimpleAssign();
     JimpleVariable j_argc = new JimpleVariable("argc", "int", jmethod);
     JimpleVariable j_argv = new JimpleVariable("argv", "String[]", jmethod); 
-    jimAss.JimpleParameterAssign(j_argc, "int", 0, jmethod);
-    jimAss.JimpleParameterAssign(j_argv, "String[]", 1, jmethod);
+    
+    //jimAss.JimpleParameterAssign(j_argc, "int", 0, jmethod);
+    jimAss.JimpleParameterAssign(j_argv, "String[]", 0, jmethod);
     
     objectOfThisClass = new JimpleVariable("obj", jimple_class.getJClassName(), jmethod);
     jimAss.JimpleNewClass(objectOfThisClass, jimple_class, jmethod);
-   // jimAss.JimpleLengthOf(j_argc, j_argv, jmethod);
+    jimAss.JimpleLengthOf(j_argc, j_argv, jmethod);
     for (MemoryInstructionPair mip : pair_list) {
       InstructionType thisIType = mip.getInstruction().getInstructiontype();
       List<IOperand> curOps = mip.getInstruction().getOperands();
@@ -309,21 +309,23 @@ public class TestStep2 {
           j_array = regToJVar.get(leftReg);
 
           long temp = getLong(pair_list.get(i + 1).getInstruction().getOperands().get(0).getOperandValue());
-          index = (int) temp / 8 ;
+          index = (int) temp / 8 -1;
         }
       }
 
       if (thisIType.equals(InstructionType.MOVSBL)) {
         //change getReg later to obtain all the value from right operand
         rightReg = getRegister(pair_list.get(i).getInstruction().getOperands().get(1).getOperandValue());;
+        
         JimpleVariable j_var = new JimpleVariable("argv" + Integer.toString(index), "String", jmethod);
+        jimAss.JimpleAssignFromArray(j_var, j_array, index, jmethod);
         JimpleVariable j_char = new JimpleVariable("char"+Integer.toString(index) + "0", "char" , jmethod);
         
         //judge whether this value is between 0-9  
-        jimInvk.invokeCharAt(j_array, 0, j_char, jmethod);
+        jimInvk.invokeCharAt(j_var, 0, j_char, jmethod);
         
         //j_char = checkValue(j_char, jmethod);
-        //jimAss.JimpleAssignFromArray(j_var, j_array, index, jmethod);
+        
         updateRegToVarMap(rightReg, j_char);
       }
 

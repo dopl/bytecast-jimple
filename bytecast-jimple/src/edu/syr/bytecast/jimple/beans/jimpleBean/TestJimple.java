@@ -85,7 +85,7 @@ public class TestJimple {
     jim_ass.JimpleNewClass(sumClassObj, jClass, jMainMethod);
 
     // if (a < 1)JAssignStmt
-  //  JimpleCondition jc1 = new JimpleCondition("<", r1, 1, jMainMethod);
+    JimpleCondition jc1 = new JimpleCondition("<", r1, 1, jMainMethod);
 
 
 //    Runtime.AddPrintlntoJimple(jMainMethod);
@@ -146,12 +146,12 @@ public class TestJimple {
     // target MUST be added to JimpleMethod using addElement() explicitly
     // but could be added anywhere you want
     /// virtualinvoke print_line.<java.io.PrintStream: void println(java.lang.String)>("hello");
-//    ArrayList<String> parameter_print = new ArrayList<String>();
-//    parameter_print.add("helloworld");
-//    JimpleInvoke forif = new JimpleInvoke();
-//    forif.setAsTarget();
-//    forif.invokeNative("println", parameter_print, null, jMainMethod);
-   // jc1.setTargets(new JimpleElement[]{forif});
+    ArrayList<String> parameter_print = new ArrayList<String>();
+    parameter_print.add("helloworld");
+    JimpleInvoke forif = new JimpleInvoke();
+    forif.setAsTarget();
+    forif.invokeNative("println", parameter_print, null, jMainMethod);
+    jc1.setTargets(new JimpleElement[]{forif});
 
     
     // add lable0
