@@ -41,35 +41,7 @@ public class PatternSeperator {
 
   public Map<Method, List<ParsedInstructionsSet>> doSeperate(ISection section) {
     
-    List<MethodInfo> m_info = Methods.methods;//getMethodInfo(section.getAllInstructionObjects());
-//    MethodInfo mi1 = new MethodInfo();
-//    mi1.setMethodName("main");
-//    mi1.setStartIndex(0);
-//    mi1.setEndIndex(31);
-//    mi1.setStartMemAddress(0x400542L);
-//    mi1.setEndMemAddress(0x4005a9L);
-//    m_info.add(mi1);
-//    MethodInfo mi2 = new MethodInfo();
-//    mi2.setMethodName("dustuff");
-//    mi2.setStartIndex(32);
-//    mi2.setEndIndex(50);
-//    mi2.setStartMemAddress(0x40050fL);
-//    mi2.setEndMemAddress(0x400541L);
-//    m_info.add(mi2);
-//    MethodInfo mi3 = new MethodInfo();
-//    mi3.setMethodName("sum");
-//    mi3.setStartIndex(51);
-//    mi3.setEndIndex(60);
-//    mi3.setStartMemAddress(0x400414L);
-//    mi3.setEndMemAddress(0x4004f8L);
-//    m_info.add(mi3);
-//    MethodInfo mi4 = new MethodInfo();
-//    mi4.setMethodName("halve");
-//    mi4.setStartIndex(61);
-//    mi4.setEndIndex(71);
-//    mi4.setStartMemAddress(0x4004f9L);
-//    mi4.setEndMemAddress(0x40050eL);
-//    m_info.add(mi4);
+    List<MethodInfo> m_info = Methods.methods;
     List<Method> result_methods = divideMethod(section.getAllInstructionObjects(), m_info);
 
 
