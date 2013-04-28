@@ -13,6 +13,7 @@ package edu.syr.bytecast.jimple.beans.jimpleBean;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import soot.jimple.Jimple;
 
 public class TestJimple {
 
@@ -62,6 +63,7 @@ public class TestJimple {
     //create parameterList of main method 
     ArrayList<String> parameter_list_main = new ArrayList<String>();
     parameter_list_main.add("String[]");
+    parameter_list_main.add("int");
 
     //create main method add initiate first few lines of main
     JimpleMethod jMainMethod = new JimpleMethod(9, "void", "main", parameter_list_main, jClass);
@@ -71,6 +73,7 @@ public class TestJimple {
 //            "println", jMainMethod);   
     // int &r1;
     JimpleVariable r1 = new JimpleVariable("$r1", "int", jMainMethod);
+    
     // &r1 = 0;
     jim_ass.JimpleDirectAssign(r1, 0, jMainMethod);
 
@@ -95,8 +98,14 @@ public class TestJimple {
     // int $rsum
     JimpleVariable rsum = new JimpleVariable("$rsum", "int", jMainMethod);
 
+     JimpleVariable testcast = new JimpleVariable("testCast", "char", jMainMethod);
+     JimpleVariable testcastint = new JimpleVariable("testcastint", "int", jMainMethod);
+    
+     jim_ass.JimpleDirectAssign(testcast, '5', jMainMethod);
     //test for byte[]
-
+     jim_ass.JimpleCastCharToInt(testcastint, testcast, jMainMethod);
+     
+     
     // byte[] testByteArray;
     JimpleVariable byteArray = new JimpleVariable("testByteArray", "byte[]", jMainMethod);
 
@@ -144,8 +153,6 @@ public class TestJimple {
     forif.invokeNative("println", parameter_print, null, jMainMethod);
     jc1.setTargets(new JimpleElement[]{forif});
 
-
-    
     // add lable0
 //    jMainMethod.addElement(forif);
     // return;
