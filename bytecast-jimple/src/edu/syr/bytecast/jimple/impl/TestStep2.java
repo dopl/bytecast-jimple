@@ -177,7 +177,7 @@ public class TestStep2 {
         prememoryFilterProcess(m, pis);
       } else if (pis.getInfo().getInstruction_Name().equals("SetArgvAndArgc")) {
         setArgFilterProcess(m, pis);
-      } else if (pis.getInfo().getInstruction_Name().equals("UseArgvAndArgc")) {
+      } else if (pis.getInfo().getInstruction_Name().equals("UseArgvAsPara")) {
         useArgFilterProcess(m, pis);
       } else if (pis.getInfo().getInstruction_Name().equals("Calling")) {
         callingFilterProcess(m, pis);
@@ -395,6 +395,7 @@ public class TestStep2 {
 
     JimpleMethod baseMethod = Map_jMethod.get(m.getMethodInfo().getMethodName());
 
+    if(!baseMethod.getMethodName().equals("main")){
     JimpleVariable return_j = null;
 
     return_j = regToJVar.get("EAX");
@@ -406,7 +407,7 @@ public class TestStep2 {
     }
 
 
-
+    }
   }
 
   private void addFilterProcess(Method m, ParsedInstructionsSet ins_set) {

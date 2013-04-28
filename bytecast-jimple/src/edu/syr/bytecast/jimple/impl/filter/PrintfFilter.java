@@ -22,8 +22,7 @@ public class PrintfFilter implements IFilter {
         IInstruction ins = instList.get(index).getInstruction();
         if (ins.getInstructiontype().equals(InstructionType.CALLQ)
                 && ins.getOperands().get(1).getOperandType().equals(OperandType.SECTION_NAME)
-                && (ins.getOperands().get(1).getOperandValue().equals("printf@plt")
-                || ins.getOperands().get(1).getOperandValue().equals("Printf@plt"))) {
+                && ((String) ins.getOperands().get(1).getOperandValue()).equals("_IO_printf")) {
             return true;
         }
         return false;
