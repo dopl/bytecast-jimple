@@ -208,6 +208,15 @@ public class JimpleInvoke extends JimpleElement {
         }
 
     }
+    
+    public void invokeSystemExit(JimpleVariable ret, JimpleMethod basemethod) {
+      SootMethod toCall = Scene.v().getSootClass("java.lang.System").getMethod("void exit(int)");
+        Value invokeExpr = Jimple.v().newStaticInvokeExpr(toCall.makeRef(), ret.getVariable());
+        this.invokestmt = Jimple.v().newInvokeStmt(invokeExpr);
+        if (!isTarget && basemethod != null) {
+            basemethod.getMethod().getActiveBody().getUnits().add(invokestmt);
+        }
+    }
 
     public void setAsTarget() {
         this.isTarget = true;
