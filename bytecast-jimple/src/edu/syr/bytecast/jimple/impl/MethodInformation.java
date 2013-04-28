@@ -19,8 +19,9 @@ import java.util.List;
  */
 public class MethodInformation {
     
-    ArrayList<MethodInfo> getMethodsInfo(List<MemoryInstructionPair> mip_list, ArrayList<ParsedInstructionsSet> pis_list)
+    ArrayList<MethodInfo> getMethodsInfo(List<MemoryInstructionPair> mip_list)
     {
+        ArrayList<ParsedInstructionsSet> pis_list = new  ArrayList<ParsedInstructionsSet>();
         FilterScanner fs = new FilterScanner();
         ArrayList<IFilter> filtersList = new ArrayList<IFilter>(); 
         ArrayList<FilterInfo> filterInfoList = new ArrayList<FilterInfo>();
