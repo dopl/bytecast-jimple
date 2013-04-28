@@ -238,10 +238,12 @@ public class PatternTranslator {
             String rightop = getOperandValue(ins.getOperands().get(1).getOperandValue());
             updateRegToVarMap(rightop, getExistJVar(leftop));
             
+            
             JimpleMethod currentJM = Map_jMethod.get(m.getMethodInfo().getMethodName());
-            currentJM.setReturn(getExistJVar(rightop));
+            jimInvk.invokeSystemExit(getExistJVar(rightop), currentJM);
+            currentJM.setReturn(null);
           
-          
+            
           
 
         } else if (ins.getInstructiontype().equals(InstructionType.MOV)) {
