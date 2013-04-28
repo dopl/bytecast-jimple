@@ -50,6 +50,14 @@ public class JimpleAssign extends JimpleElement {
 //    baseMethod.getMethod().getActiveBody().getLocals().add(add_lhs);
     baseMethod.getMethod().getActiveBody().getUnits().add(a_assign);
   }
+  
+    public void JimpleDirectAssign(JimpleVariable lhs, char rhs, JimpleMethod baseMethod) {
+    add_lhs = lhs.getVariable();
+    a_assign = Jimple.v().newAssignStmt(add_lhs, IntConstant.v(rhs));
+//    baseMethod.getMethod().getActiveBody().getLocals().add(add_lhs);
+    baseMethod.getMethod().getActiveBody().getUnits().add(a_assign);
+  }
+  
 
   public void JimpleDirectAssign(JimpleVariable jVariable1, String stringConstant, JimpleMethod baseMethod) {
     add_lhs = jVariable1.getVariable();
@@ -260,6 +268,13 @@ public class JimpleAssign extends JimpleElement {
     Value rhs = Jimple.v().newLengthExpr(arr.getVariable());
     a_assign = Jimple.v().newAssignStmt(jv.getVariable(), rhs);
     basemethod.getMethod().getActiveBody().getUnits().add(a_assign);
+  }
+  //cast char to int
+  public void JimpleCastCharToInt(JimpleVariable des ,  JimpleVariable ori, JimpleMethod basemethod){
+      Value rhs = Jimple.v().newCastExpr(ori.getVariable(), JimpleUtil.getTypeByString("int"));
+      a_assign = Jimple.v().newAssignStmt(des.getVariable(), rhs);
+      basemethod.getMethod().getActiveBody().getUnits().add(a_assign);
+      
   }
 
   @Override

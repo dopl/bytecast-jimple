@@ -31,7 +31,7 @@ public class TestStep1 {
 
 
     Set<String> exclusion = new HashSet<String>();
-    Paths.v().setRoot("/home/peike/code/bytecast");
+    Paths.v().setRoot("/home/mandy/code/bytecast");
     try {
       Paths.v().parsePathsFile();
     } catch (Exception e) {
@@ -40,7 +40,7 @@ public class TestStep1 {
     exclusion.add("<_IO_printf>");
     AMD64MockGenerator gen =
             new AMD64MockGenerator(new MockBytecastFsys(),
-            "/home/peike/code/bytecast/bytecast-documents/AsciiManip01Prototype/a.out.static.objdump",
+            "/home/mandy/code/bytecast/bytecast-documents/AsciiManip01Prototype/a.out.static.objdump",
             "<main>", exclusion);
     try {
       IBytecastAMD64 amd64Object = gen.generate();//buildInstructionObjects();
