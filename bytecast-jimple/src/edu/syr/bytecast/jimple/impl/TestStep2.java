@@ -321,6 +321,7 @@ public class TestStep2 {
         //change getReg later to obtain all the value from right operand
         rightReg = getRegister(pair_list.get(i).getInstruction().getOperands().get(1).getOperandValue());;
         JimpleVariable j_var = new JimpleVariable("argv" + Integer.toString(index), "String", jmethod);
+        JimpleVariable j_char = new JimpleVariable("char"+Integer.toString(index) + "0", "char" , jmethod);
         jimAss.JimpleAssignFromArray(j_var, j_array, index, jmethod);
         updateRegToVarMap(rightReg, j_var);
       }
