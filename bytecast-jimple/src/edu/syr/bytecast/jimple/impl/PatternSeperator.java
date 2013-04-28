@@ -4,9 +4,6 @@
  */
 package edu.syr.bytecast.jimple.impl;
 
-import edu.syr.bytecast.amd64.api.constants.InstructionType;
-import edu.syr.bytecast.amd64.api.constants.OperandType;
-import edu.syr.bytecast.amd64.api.constants.RegisterType;
 import edu.syr.bytecast.jimple.impl.filter.IfWithBothVariableFilter;
 import edu.syr.bytecast.jimple.impl.filter.IfFilter;
 import edu.syr.bytecast.jimple.impl.filter.GetTwoParameterFilter;
@@ -19,7 +16,6 @@ import edu.syr.bytecast.jimple.impl.filter.PreMemoryProcessFilter;
 import edu.syr.bytecast.jimple.impl.filter.PrintfFilter;
 import edu.syr.bytecast.jimple.impl.filter.SetArgvAndArgcFilter;
 import edu.syr.bytecast.jimple.impl.filter.UseArgvAsParaFilter;
-import edu.syr.bytecast.amd64.api.instruction.IInstruction;
 import edu.syr.bytecast.amd64.api.output.ISection;
 import edu.syr.bytecast.amd64.api.output.MemoryInstructionPair;
 import edu.syr.bytecast.jimple.api.IFilter;
@@ -39,9 +35,9 @@ public class PatternSeperator {
 
   private Map<Method, List<ParsedInstructionsSet>> result;
 
-  public Map<Method, List<ParsedInstructionsSet>> doSeperate(ISection section) {
+  public Map<Method, List<ParsedInstructionsSet>> doSeperate(ISection section, List<MethodInfo> l_info) {
     
-    List<MethodInfo> m_info = Methods.methods;
+    List<MethodInfo> m_info = l_info;
     List<Method> result_methods = divideMethod(section.getAllInstructionObjects(), m_info);
 
 
