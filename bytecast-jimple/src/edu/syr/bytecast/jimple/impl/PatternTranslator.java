@@ -568,8 +568,19 @@ public class PatternTranslator {
             } else if (mips.get(mipIndex).getInstruction().getInstructiontype().equals(InstructionType.CMP)) {
                 long rhs = getLong(ins_set.getInstructions_List().get(0).
                         getInstruction().getOperands().get(0).getOperandValue());
-                String rhsStr = getOperandValue(mips.get(mipIndex).getInstruction().getOperands().get(1).getOperandValue());
-
+                
+                rhs -= 1;
+                Object opVal = mips.get(mipIndex).getInstruction().getOperands().get(1).getOperandValue();
+//                String rhsStr = getOperandValue(mips.get(mipIndex).getInstruction().getOperands().get(1).getOperandValue());
+                String rhsStr = getOperandValue(opVal);
+//                
+//                if (opVal instanceof Long) {
+//                  rhsStr = String.valueOf(((Long)opVal).longValue() - 1);
+//                } else  {
+//                  rhsStr = getOperandValue(opVal);
+//                }
+//                
+                
                 mipIndex += 1;
                 MemoryInstructionPair jmpMip = mips.get(mipIndex);
                 String cmprSymbol = judgeSymbolOfIfStatement(jmpMip.getInstruction().getInstructiontype());
@@ -583,37 +594,6 @@ public class PatternTranslator {
 
 
 
-
-
-//    Object rhsobj = ins_set.getInstructions_List().get(0).
-//            getInstruction().getOperands().get(0).getOperandValue();
-//    JimpleCondition ifcondition = null;
-//    String targetAddr;
-//    if (rhsobj instanceof Long) {
-//      long rhs = getLong(ins_set.getInstructions_List().get(0).
-//              getInstruction().getOperands().get(0).getOperandValue());
-//
-//      JimpleVariable lhs = getExistJVar(getMemoryEffectiveAddress(ins_set.getInstructions_List().get(0).getInstruction().
-//              getOperands().get(1).getOperandValue()));
-//
-//      String compareSymbol = judgeSymbolOfIfStatement(ins_set.getInstructions_List().get(1).getInstruction().getInstructiontype());
-//
-//      ifcondition = new JimpleCondition(
-//              compareSymbol, lhs, (int) rhs, Map_jMethod.get(m.getMethodInfo().getMethodName()));
-//
-//    } else if (rhsobj instanceof OperandTypeMemoryEffectiveAddress) {
-//      JimpleVariable rhs = getExistJVar(getMemoryEffectiveAddress(rhsobj));
-//      JimpleVariable lhs = getExistJVar(getRegister(ins_set.getInstructions_List().get(0).getInstruction().
-//              getOperands().get(1).getOperandValue()));
-//      String compareSymbol = judgeSymbolOfIfStatement(ins_set.getInstructions_List().get(1).getInstruction().getInstructiontype());
-//
-//      ifcondition = new JimpleCondition(compareSymbol, lhs, rhs,
-//              Map_jMethod.get(m.getMethodInfo().getMethodName()));
-//    }
-//
-//    Object jmpTo = ins_set.getInstructions_List().get(1).getInstruction().getOperands().get(0).getOperandValue();
-//    targetAddr = getMemoryEffectiveAddress(jmpTo);
-//    memAddrToJCond.put(targetAddr, ifcondition);
     }
 
     private void ifWith2VaribFilterProcess(Method m, ParsedInstructionsSet ins_set) {
