@@ -210,6 +210,7 @@ public class PatternTranslator {
                 exeinv.invokeSystemExit(1, currentJM);
                 JimpleCondition jc = memAddrToJCond.get(InstrAddr.toString());
                 jc.setTargets(new JimpleElement[]{exeinv});
+                currentJM.setReturn(null);
 //        currentJVM.setReturn(null, memAddrToJCond.get(InstrAddr.toString()));
                 hasUnsetTarget = false;
 //      } else {
@@ -431,6 +432,7 @@ public class PatternTranslator {
                 exeinv.invokeSystemExit(0, baseMethod);
                 JimpleCondition jc = memAddrToJCond.get(startAddr.toString());
                 jc.setTargets(new JimpleElement[]{exeinv});
+                baseMethod.setReturn(null);
             } else if (return_j == null) {
                 baseMethod.setReturn(null, jmpFrom);
             } else {
@@ -443,7 +445,8 @@ public class PatternTranslator {
                 exeinv.invokeSystemExit(0, baseMethod);
                 JimpleCondition jc = memAddrToJCond.get(startAddr.toString());
                 jc.setTargets(new JimpleElement[]{exeinv});
-            } else if (return_j == null) {
+            } 
+            if (return_j == null) {
                 baseMethod.setReturn(null);
             } else {
                 baseMethod.setReturn(return_j);

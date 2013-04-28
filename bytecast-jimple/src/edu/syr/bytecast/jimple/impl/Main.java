@@ -39,7 +39,7 @@ public class Main {
         Map<Method, List<ParsedInstructionsSet>> filter_result = new HashMap<Method, List<ParsedInstructionsSet>>();
         
         Set<String> exclusion = new HashSet<String>();
-    Paths.v().setRoot("/home/nick/code/bytecast");
+    Paths.v().setRoot("/home/peike/code/bytecast");
     try {
       Paths.v().parsePathsFile();
     } catch (Exception e) {
@@ -48,7 +48,7 @@ public class Main {
     exclusion.add("<_IO_printf>");
     AMD64MockGenerator gen =
             new AMD64MockGenerator(new MockBytecastFsys(),
-            "/home/nick/code/bytecast/bytecast-documents/AsciiManip01Prototype/a.out.static.objdump",
+            "/home/peike/code/bytecast/bytecast-documents/AsciiManip01Prototype/a.out.static.objdump",
             "<main>", exclusion);
         try {
             IBytecastAMD64 amd64Object = gen.generate();//buildInstructionObjects();
