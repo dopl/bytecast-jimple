@@ -78,6 +78,21 @@ public class JimpleCondition extends JimpleElement {
     init(type, comprt, leftv, rightv);
   }
 
+  /**
+   * 04/27
+   * added for Goto statement
+   * @param basemethod 
+   */
+  public JimpleCondition(JimpleMethod basemethod) {
+    baseMethod = basemethod.getMethod();
+    fakestmt = Jimple.v().newReturnVoidStmt();
+    stmt = Jimple.v().newGotoStmt(fakestmt);
+    if (baseMethod != null) {
+      baseMethod.getActiveBody().getUnits().add(stmt);
+//            baseMethod.getActiveBody().getUnits().add(fakestmt);
+    }
+    
+  }
   private void init(String type, String comprt, Value leftv, Value rightv) {
     this.type = type;
     this.comparator = comprt != null ? comprt : null;
@@ -116,6 +131,8 @@ public class JimpleCondition extends JimpleElement {
       condition = Jimple.v().newGeExpr(this.leftV, this.rightV);
     } else if (this.comparator.equals(">")) {
       condition = Jimple.v().newGtExpr(this.leftV, this.rightV);
+    } else if (this.comparator.equals("!=")){ 
+      condition = Jimple.v().newNeExpr(this.leftV, this.rightV);
     }
 
     // initially fill targets with a fake Unit
@@ -132,15 +149,20 @@ public class JimpleCondition extends JimpleElement {
     if (stmt instanceof soot.jimple.IfStmt) {
       if (jelements != null) {
         for (int i = 0; i < jelements.length; ++i) {
-          baseMethod.getActiveBody().getLocals().add(jelements[i].getLocalForTarget());
-
+          if (jelements[i].getLocalForTarget() != null) {
+            baseMethod.getActiveBody().getLocals().add(jelements[i].getLocalForTarget());
+          }
           if (jelements[i].getAssStmtForTarget() != null) {
             if (i == 0) {
               ((soot.jimple.IfStmt) stmt).setTarget(jelements[i].getAssStmtForTarget());
             }
             baseMethod.getActiveBody().getUnits().add(jelements[i].getAssStmtForTarget());
           }
-          if (jelements[i].getInvStmtForTarget() != null) {
+          if (jelements[i].getAssStmtForTarget() == null &&
+                  jelements[i].getInvStmtForTarget() != null) {
+            if (i == 0) {
+              ((soot.jimple.IfStmt) stmt).setTarget(jelements[i].getInvStmtForTarget());
+            }
             baseMethod.getActiveBody().getUnits().add(jelements[i].getInvStmtForTarget());
           }
 

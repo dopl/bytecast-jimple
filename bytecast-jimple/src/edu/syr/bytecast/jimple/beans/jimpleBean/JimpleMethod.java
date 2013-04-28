@@ -160,6 +160,29 @@ public class JimpleMethod {
     }
   }
   
+  /**
+   * 04/27
+   * added to set the return statement as a target
+   * @param retVariable
+   * @param jmpFrom 
+   */
+  public void setReturn(JimpleVariable retVariable, JimpleCondition jmpFrom) {
+    if (retVariable == null) {
+      Unit returnstmt = Jimple.v().newReturnVoidStmt();
+      if (jmpFrom.getElement() instanceof soot.jimple.IfStmt) {
+        soot.jimple.IfStmt ifstmt = (soot.jimple.IfStmt) jmpFrom.getElement();
+        ifstmt.setTarget(returnstmt);
+        units.add(returnstmt);
+      }
+    } else {
+      Unit returnstmt = Jimple.v().newReturnStmt(retVariable.getVariable());
+      if (jmpFrom.getElement() instanceof soot.jimple.IfStmt) {
+        soot.jimple.IfStmt ifstmt = (soot.jimple.IfStmt) jmpFrom.getElement();
+        ifstmt.setTarget(returnstmt);
+        units.add(returnstmt);
+      }
+    }
+  }
   protected Local getThisRef() {
     return this.thisref;
   }

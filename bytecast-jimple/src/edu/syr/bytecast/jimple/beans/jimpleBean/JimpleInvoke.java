@@ -40,10 +40,18 @@ public class JimpleInvoke extends JimpleElement {
     this.isTarget = false;
   }
 
+  /**
+   * 04/27
+   * used in any method except for main
+   * @param method2Call
+   * @param paraVal
+   * @param returnTo
+   * @param basemethod 
+   */
   public void invokeUserDefined(JimpleMethod method2Call, List paraVal,
           JimpleVariable returnTo, JimpleMethod basemethod) {
     Value invokeExpr;
-    if (paraVal == null) {
+    if (paraVal == null && basemethod != null) {
       invokeExpr = Jimple.v().newVirtualInvokeExpr(basemethod.getThisRef(),
               method2Call.getMethod().makeRef());
     } else {
@@ -72,11 +80,12 @@ public class JimpleInvoke extends JimpleElement {
     } else {
       this.invokestmt = Jimple.v().newInvokeStmt(invokeExpr);
     }
-    basemethod.getMethod().getActiveBody().getUnits().add(invokestmt);
+    if (!isTarget) {
+      basemethod.getMethod().getActiveBody().getUnits().add(invokestmt);
+    }
   }
   
-  
-  
+
   
   
   

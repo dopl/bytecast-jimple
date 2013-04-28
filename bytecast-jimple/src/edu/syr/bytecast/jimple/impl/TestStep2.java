@@ -40,6 +40,8 @@ import sun.font.EAttribute;
 
 public class TestStep2 {
 
+  boolean hasUnsetTarget;
+  Long jumpAddress;
   private Map<Method, List<ParsedInstructionsSet>> method_map;
   private Map<String, JimpleMethod> Map_jMethod;
   private JimpleDoc jimple_doc;
@@ -65,6 +67,8 @@ public class TestStep2 {
   private Map<String, JimpleCondition> memAddrToJCond;
 
   public TestStep2(Map<Method, List<ParsedInstructionsSet>> temp_map) {
+    hasUnsetTarget = false;
+    jumpAddress = null;
     this.method_map = temp_map;
     this.methods = temp_map.keySet();
     Map_jMethod = new HashMap<String, JimpleMethod>();
@@ -183,60 +187,86 @@ public class TestStep2 {
         getOneParaFilterProcess(m, pis);
       } else if (pis.getInfo().getInstruction_Name().equals("GetTwoParameter")) {
         getTwoParaFilterProcess(m, pis);
-//      } else if (pis.getInfo().getInstruction_Name().equals("IfWithBothVariable")) {
-//        ifWith2VaribFilterProcess(m, pis);
+      } else if (pis.getInfo().getInstruction_Name().equals("IfWithBothVariable")) {
+        ifWith2VaribFilterProcess(m, pis);
       } else if (pis.getInfo().getInstruction_Name().equals("DivBy2N")) {
         divideBy2NFilterProcess(m, pis);
       } else if (pis.getInfo().getInstruction_Name().equals("If")) {
-          ifFilterProcess(m, pis);
+        ifFilterProcess(m, pis);
       } else if (pis.getInfo().getInstruction_Name().equals("Add")) {
         addFilterProcess(m, pis);
       }
       end_index_of_last = pis.getInfo().getStart_Index() + pis.getInfo().getInstructions_Count();
     }
   }
-    private void handleUnparsedLines(Method m ,MemoryInstructionPair singleLine, MemoryInstructionPair lastSingleLine) {
-        IInstruction ins = singleLine.getInstruction();
-        if (ins.getInstructiontype().equals(InstructionType.MOV)
-                && ins.getOperands().get(0).getOperandType().equals(OperandType.CONSTANT)
-                && ins.getOperands().get(1).getOperandValue().equals(RegisterType.EAX)) {
-            // add return statement return 0 to the coresponding fucntion;
-            JimpleMethod currentJVM = Map_jMethod.get(m.getMethodInfo().getMethodName());
-            currentJVM.setReturn(null);   // return void
-                           
-        } else if (ins.getInstructiontype().equals(InstructionType.MOV)
-                && ins.getOperands().get(0).getOperandValue().equals(RegisterType.EAX)) {
-            IInstruction ins_last = lastSingleLine.getInstruction();
-            if (ins_last.getInstructiontype().equals(InstructionType.CALLQ)) {
-                String funcName = (String) ins_last.getOperands().get(1).getOperandValue();
-                if (ins.getOperands().get(0).getOperandType().equals(OperandType.MEMORY_EFFECITVE_ADDRESS)//OperandType.MEMORY_PHYSICAL_ADDRESS )
-                        && !funcName.contains("printf")) {
-                    String leftop = getRegister(ins.getOperands().get(0).getOperandValue());
-                    String rightop = getMemoryEffectiveAddress(ins.getOperands().get(1).getOperandValue());
-                    updateRegToVarMap(rightop, getExistJVar(leftop));
-                }
-            }
-        } else if (ins.getInstructiontype().equals(InstructionType.MOV)){
-            String leftop, rightop;
-            if(ins.getOperands().get(0).getOperandValue() instanceof OperandTypeMemoryEffectiveAddress){
-                leftop = getMemoryEffectiveAddress(ins.getOperands().get(0).getOperandValue());
-            } else {
-                leftop = getRegister(ins.getOperands().get(0).getOperandValue());
-            }
-            if(ins.getOperands().get(1).getOperandValue() instanceof OperandTypeMemoryEffectiveAddress){
-                rightop = getMemoryEffectiveAddress(ins.getOperands().get(1).getOperandValue());
-            } else {
-                rightop = getRegister(ins.getOperands().get(1).getOperandValue());
-            }
-            updateRegToVarMap(rightop, getExistJVar(leftop));
+
+  private void handleUnparsedLines(Method m, MemoryInstructionPair singleLine, MemoryInstructionPair lastSingleLine) {
+    IInstruction ins = singleLine.getInstruction();
+    Long InstrAddr = singleLine.getmInstructionAddress();
+    if (ins.getInstructiontype().equals(InstructionType.MOV)
+            && ins.getOperands().get(0).getOperandType().equals(OperandType.CONSTANT)
+            && ins.getOperands().get(1).getOperandValue().equals(RegisterType.EAX)) {
+      // add return statement return 0 to the coresponding fucntion;
+      if (memAddrToJCond.containsKey(InstrAddr.toString()) ||
+              hasUnsetTarget) {
+        if(hasUnsetTarget)
+        {
+          InstrAddr = jumpAddress;
+        }
+        
+        checkPreLine(lastSingleLine, Map_jMethod.get(m.getMethodInfo().getMethodName()));
+        
+        JimpleMethod currentJVM = Map_jMethod.get(m.getMethodInfo().getMethodName());
+        currentJVM.setReturn(null, memAddrToJCond.get(InstrAddr.toString()));
+        hasUnsetTarget = false;
+      } else {
+        JimpleMethod currentJVM = Map_jMethod.get(m.getMethodInfo().getMethodName());
+        currentJVM.setReturn(null);   // return void
+      }
+
+    } else if (ins.getInstructiontype().equals(InstructionType.MOV)
+            && ins.getOperands().get(0).getOperandValue().equals(RegisterType.EAX)) {
+      IInstruction ins_last = lastSingleLine.getInstruction();
+      if (ins_last.getInstructiontype().equals(InstructionType.CALLQ)) {
+        String funcName = (String) ins_last.getOperands().get(1).getOperandValue();
+        if (ins.getOperands().get(0).getOperandType().equals(OperandType.MEMORY_EFFECITVE_ADDRESS)//OperandType.MEMORY_PHYSICAL_ADDRESS )
+                && !funcName.contains("printf")) {
+          String leftop = getRegister(ins.getOperands().get(0).getOperandValue());
+          String rightop = getMemoryEffectiveAddress(ins.getOperands().get(1).getOperandValue());
+          updateRegToVarMap(rightop, getExistJVar(leftop));
+          if (memAddrToJCond.containsKey(InstrAddr.toString())) {
             
+            checkPreLine(lastSingleLine, Map_jMethod.get(m.getMethodInfo().getMethodName()));
+            jumpAddress = InstrAddr;
+            hasUnsetTarget = true;
+          }
         }
       }
 
+    } else if (ins.getInstructiontype().equals(InstructionType.MOV)) {
+      String leftop, rightop;
+      if (ins.getOperands().get(0).getOperandValue() instanceof OperandTypeMemoryEffectiveAddress) {
+        leftop = getMemoryEffectiveAddress(ins.getOperands().get(0).getOperandValue());
+      } else {
+        leftop = getRegister(ins.getOperands().get(0).getOperandValue());
+      }
+      if (ins.getOperands().get(1).getOperandValue() instanceof OperandTypeMemoryEffectiveAddress) {
+        rightop = getMemoryEffectiveAddress(ins.getOperands().get(1).getOperandValue());
+      } else {
+        rightop = getRegister(ins.getOperands().get(1).getOperandValue());
+      }
+      updateRegToVarMap(rightop, getExistJVar(leftop));
+      if (memAddrToJCond.containsKey(InstrAddr.toString())) {
+        
+        checkPreLine(lastSingleLine, Map_jMethod.get(m.getMethodInfo().getMethodName()));
+        jumpAddress = InstrAddr;
+        hasUnsetTarget = true;
+      }
+    }
+  }
 
   private void prememoryFilterProcess(Method m, ParsedInstructionsSet ins_set) {
   }
-
 
   private void setArgFilterProcess(Method m, ParsedInstructionsSet ins_set) {
     JimpleMethod jmethod = Map_jMethod.get(m.getMethodInfo().getMethodName());
@@ -301,14 +331,21 @@ public class TestStep2 {
   private void callingFilterProcess(Method m, ParsedInstructionsSet ins_set) {
     JimpleMethod baseMethod = Map_jMethod.get(m.getMethodInfo().getMethodName());
     String startAddr = ins_set.getInstructions_List().get(0).getmInstructionAddress().toString();
+
+    // check if current ins_set is target of some condition
     JimpleCondition jmpFrom = null;
     boolean isTarget = false;
-    if (memAddrToJCond.containsKey(startAddr)) {
+    if (memAddrToJCond.containsKey(startAddr) || hasUnsetTarget) {
+      if(hasUnsetTarget)
+        {
+          startAddr = jumpAddress.toString();
+        }
       jmpFrom = memAddrToJCond.get(startAddr);
       isTarget = true;
+      hasUnsetTarget = false;
     }
     // return value is default int
-    JimpleVariable retResult = new JimpleVariable("ret"+getVcount(), "int", baseMethod);
+    JimpleVariable retResult = new JimpleVariable("ret" + getVcount(), "int", baseMethod);
     ArrayList<JimpleVariable> parameters = new ArrayList<JimpleVariable>();
 
     for (MemoryInstructionPair mip : ins_set.getInstructions_List()) {
@@ -361,12 +398,12 @@ public class TestStep2 {
     JimpleVariable return_j = null;
 
     return_j = regToJVar.get("EAX");
-    
-    if(return_j==null)
-        baseMethod.setReturn(null);
-    
-   else
-        baseMethod.setReturn(return_j);
+
+    if (return_j == null) {
+      baseMethod.setReturn(null);
+    } else {
+      baseMethod.setReturn(return_j);
+    }
 
 
 
@@ -416,7 +453,7 @@ public class TestStep2 {
       }
 
     }
-    
+
   }
 
   private void getOneParaFilterProcess(Method m, ParsedInstructionsSet ins_set) {
@@ -479,7 +516,7 @@ public class TestStep2 {
       long rhs = getLong(ins_set.getInstructions_List().get(0).
               getInstruction().getOperands().get(0).getOperandValue());
 
-      JimpleVariable lhs = getExistJVar(getRegister(ins_set.getInstructions_List().get(0).getInstruction().
+      JimpleVariable lhs = getExistJVar(getMemoryEffectiveAddress(ins_set.getInstructions_List().get(0).getInstruction().
               getOperands().get(1).getOperandValue()));
 
       String compareSymbol = judgeSymbolOfIfStatement(ins_set.getInstructions_List().get(1).getInstruction().getInstructiontype());
@@ -496,11 +533,36 @@ public class TestStep2 {
       ifcondition = new JimpleCondition(compareSymbol, lhs, rhs,
               Map_jMethod.get(m.getMethodInfo().getMethodName()));
     }
-    targetAddr = getMemoryEffectiveAddress(rhsobj);
+
+    Object jmpTo = ins_set.getInstructions_List().get(1).getInstruction().getOperands().get(0).getOperandValue();
+    targetAddr = getMemoryEffectiveAddress(jmpTo);
     memAddrToJCond.put(targetAddr, ifcondition);
   }
 
   private void ifWith2VaribFilterProcess(Method m, ParsedInstructionsSet ins_set) {
+    List<MemoryInstructionPair> mips = ins_set.getInstructions_List();
+    JimpleCondition ifcondition = null;
+    JimpleMethod baseMethod = Map_jMethod.get(m.getMethodInfo().getMethodName());
+    for (int mipIndex = 0; mipIndex < ins_set.getInstructions_List().size(); ++mipIndex) {//MemoryInstructionPair mip : ins_set.getInstructions_List()) {
+      if (mips.get(mipIndex).getInstruction().getInstructiontype().equals(InstructionType.MOV)) {
+
+        String lhsStr = getOperandValue(mips.get(mipIndex).getInstruction().getOperands().get(0).getOperandValue());
+        String rhsStr = getOperandValue(mips.get(mipIndex).getInstruction().getOperands().get(1).getOperandValue());
+        updateRegToVarMap(rhsStr, getExistJVar(lhsStr));
+      } else if (mips.get(mipIndex).getInstruction().getInstructiontype().equals(InstructionType.CMP)) {
+        String lhsStr = getOperandValue(mips.get(mipIndex).getInstruction().getOperands().get(1).getOperandValue());
+        String rhsStr = getOperandValue(mips.get(mipIndex).getInstruction().getOperands().get(0).getOperandValue());
+
+        mipIndex += 1;
+        MemoryInstructionPair jmpMip = mips.get(mipIndex);
+        String cmprSymbol = judgeSymbolOfIfStatement(jmpMip.getInstruction().getInstructiontype());
+
+        ifcondition = new JimpleCondition(cmprSymbol, getExistJVar(lhsStr), getExistJVar(rhsStr), baseMethod);
+      }
+    }
+    Object jmpTo = ins_set.getInstructions_List().get(2).getInstruction().getOperands().get(0).getOperandValue();
+    String targetAddr = getMemoryEffectiveAddress(jmpTo);
+    memAddrToJCond.put(targetAddr, ifcondition);
   }
 
   private void divideBy2NFilterProcess(Method m, ParsedInstructionsSet ins_set) {
@@ -509,7 +571,7 @@ public class TestStep2 {
       MemoryInstructionPair mip = ins_set.getInstructions_List().get(mipIndex);
       InstructionType thisIType = mip.getInstruction().getInstructiontype();
       List<IOperand> curOps = mip.getInstruction().getOperands();
-      
+
       if (thisIType.equals(InstructionType.MOV)) {
         String leftReg;
         if (curOps.get(0).getOperandValue() instanceof OperandTypeMemoryEffectiveAddress) {
@@ -533,6 +595,18 @@ public class TestStep2 {
           }
         }
       }
+    }
+  }
+
+  private String getOperandValue(Object operandValue) {
+    if (operandValue instanceof OperandTypeMemoryEffectiveAddress) {
+      return getMemoryEffectiveAddress(operandValue);
+    } else if (operandValue instanceof RegisterType) {
+      return getRegister(operandValue);
+    } else if (operandValue instanceof Long) {
+      return ((Long) operandValue).toString();
+    } else {
+      return "";
     }
   }
 
@@ -572,12 +646,12 @@ public class TestStep2 {
     return temp;
   }
 
-  private void cleanVarMap(){
-  
-      regToJVar.clear();;
-  
+  private void cleanVarMap() {
+
+    regToJVar.clear();;
+
   }
-  
+
   private JimpleVariable getExistJVar(String regName) {
     if (regToJVar.containsKey(regName)) {
       return regToJVar.get(regName);
@@ -623,6 +697,15 @@ public class TestStep2 {
     }
     // there are a lot of other situation, u can add "else if" statement to handle other situation
     return symbol;
+  }
+  
+  private void checkPreLine(MemoryInstructionPair mip, JimpleMethod basemethod) {
+    if (mip.getInstruction().getInstructiontype().equals(InstructionType.JMP)) {
+      JimpleCondition gotoCondition = new JimpleCondition(basemethod);
+      String addrJmpTo = getOperandValue(mip.getInstruction().getOperands().get(0).getOperandValue());
+      memAddrToJCond.put(addrJmpTo, gotoCondition);
+    }
+    
   }
 
   public static void main(String[] argv) {
