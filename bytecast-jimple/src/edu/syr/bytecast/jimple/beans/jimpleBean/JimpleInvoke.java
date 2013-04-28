@@ -147,14 +147,22 @@ public class JimpleInvoke extends JimpleElement {
           JimpleVariable returnTo, JimpleMethod basemethod) {
     if (nativemethod.equals("println")) {
       invokePrintln(paraVal, basemethod);
-    } else if (nativemethod.equals("charAt")) {
-      invokeCharAt(paraVal, returnTo, basemethod);
     }
   }
 
-  private void invokeCharAt(ArrayList<String> paraVal, JimpleVariable returnTo, JimpleMethod basemethod) {
+  public void invokeCharAt(JimpleVariable charFrom, int index, JimpleVariable returnTo, JimpleMethod basemethod) {
     baseObject = Jimple.v().newLocal("char_at", JimpleUtil.getTypeByString("String"));
-    
+    nativeAssi = Jimple.v().newAssignStmt(baseObject, charFrom.getVariable());
+    SootMethod toCall = Scene.v().getMethod("<java.io.String: char charAt(int)>");
+    Value invokeExpr = Jimple.v().newVirtualInvokeExpr(baseObject, toCall.makeRef(), IntConstant.v(index));
+
+    // virtualinvoke print_line.<java.io.PrintStream: void println(java.lang.String)>("hello");
+    this.invokestmt = Jimple.v().newInvokeStmt(invokeExpr);
+    if (!isTarget && basemethod != null) {
+      basemethod.getMethod().getActiveBody().getLocals().add(baseObject);
+      basemethod.getMethod().getActiveBody().getUnits().add(nativeAssi);
+      basemethod.getMethod().getActiveBody().getUnits().add(invokestmt);
+    }
   }
   private void invokePrintln(ArrayList<String> paraVal, JimpleMethod basemethod) {
     // java.io.PrintStream print_line;
