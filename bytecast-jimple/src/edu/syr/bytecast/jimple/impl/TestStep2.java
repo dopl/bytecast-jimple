@@ -31,12 +31,7 @@ import edu.syr.bytecast.jimple.beans.jimpleBean.*;
 import edu.syr.bytecast.util.Paths;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import sun.font.EAttribute;
+import java.util.*;
 
 public class TestStep2 {
 
@@ -229,8 +224,7 @@ public class TestStep2 {
       IInstruction ins_last = lastSingleLine.getInstruction();
       if (ins_last.getInstructiontype().equals(InstructionType.CALLQ)) {
         String funcName = (String) ins_last.getOperands().get(1).getOperandValue();
-        if (ins.getOperands().get(0).getOperandType().equals(OperandType.REGISTER)//OperandType.MEMORY_PHYSICAL_ADDRESS )
-                && !funcName.contains("printf")) {
+        if (!funcName.contains("printf")) {
           String leftop = getRegister(ins.getOperands().get(0).getOperandValue());
           String rightop = getMemoryEffectiveAddress(ins.getOperands().get(1).getOperandValue());
           updateRegToVarMap(rightop, getExistJVar(leftop));
@@ -378,12 +372,13 @@ public class TestStep2 {
           parameters.add(getExistJVar(leftReg));
         }
       } else if (thisIType.equals(InstructionType.CALLQ)) {
+        Collections.reverse(parameters);
         if (isTarget) {
           JimpleInvoke targetinvoke = new JimpleInvoke();
           targetinvoke.setAsTarget();
           String methodName = (String) curOps.get(1).getOperandValue();
           if (baseMethod.getMethodName().equals("main")) {
-
+            
             targetinvoke.invokeUserDefined(objectOfThisClass,
                     Map_jMethod.get(methodName), parameters, retResult, baseMethod);
           } else {
