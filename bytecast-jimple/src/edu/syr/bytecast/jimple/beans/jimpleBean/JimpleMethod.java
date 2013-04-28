@@ -167,21 +167,27 @@ public class JimpleMethod {
    * @param jmpFrom 
    */
   public void setReturn(JimpleVariable retVariable, JimpleCondition jmpFrom) {
+    Unit returnstmt = null;
     if (retVariable == null) {
-      Unit returnstmt = Jimple.v().newReturnVoidStmt();
+      returnstmt = Jimple.v().newReturnVoidStmt();
       if (jmpFrom.getElement() instanceof soot.jimple.IfStmt) {
         soot.jimple.IfStmt ifstmt = (soot.jimple.IfStmt) jmpFrom.getElement();
         ifstmt.setTarget(returnstmt);
-        units.add(returnstmt);
+      } else if (jmpFrom.getElement() instanceof soot.jimple.GotoStmt) {
+        soot.jimple.GotoStmt gotoStmt = (soot.jimple.GotoStmt) jmpFrom.getElement();
+        gotoStmt.setTarget(returnstmt);
       }
     } else {
-      Unit returnstmt = Jimple.v().newReturnStmt(retVariable.getVariable());
+      returnstmt = Jimple.v().newReturnStmt(retVariable.getVariable());
       if (jmpFrom.getElement() instanceof soot.jimple.IfStmt) {
         soot.jimple.IfStmt ifstmt = (soot.jimple.IfStmt) jmpFrom.getElement();
         ifstmt.setTarget(returnstmt);
-        units.add(returnstmt);
+      } else if (jmpFrom.getElement() instanceof soot.jimple.GotoStmt) {
+        soot.jimple.GotoStmt gotoStmt = (soot.jimple.GotoStmt) jmpFrom.getElement();
+        gotoStmt.setTarget(returnstmt);
       }
     }
+    units.add(returnstmt);
   }
   protected Local getThisRef() {
     return this.thisref;

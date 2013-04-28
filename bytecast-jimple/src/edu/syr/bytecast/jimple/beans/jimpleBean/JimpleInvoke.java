@@ -147,9 +147,15 @@ public class JimpleInvoke extends JimpleElement {
           JimpleVariable returnTo, JimpleMethod basemethod) {
     if (nativemethod.equals("println")) {
       invokePrintln(paraVal, basemethod);
+    } else if (nativemethod.equals("charAt")) {
+      invokeCharAt(paraVal, returnTo, basemethod);
     }
   }
 
+  private void invokeCharAt(ArrayList<String> paraVal, JimpleVariable returnTo, JimpleMethod basemethod) {
+    baseObject = Jimple.v().newLocal("char_at", JimpleUtil.getTypeByString("String"));
+    
+  }
   private void invokePrintln(ArrayList<String> paraVal, JimpleMethod basemethod) {
     // java.io.PrintStream print_line;
     baseObject = Jimple.v().newLocal("print_line",
@@ -210,4 +216,6 @@ public class JimpleInvoke extends JimpleElement {
   protected Unit getInvStmtForTarget() {
     return this.invokestmt;
   }
+
+  
 }
