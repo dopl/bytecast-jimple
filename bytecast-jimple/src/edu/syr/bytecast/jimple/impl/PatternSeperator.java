@@ -27,6 +27,7 @@ import edu.syr.bytecast.jimple.api.MethodInfo;
 import edu.syr.bytecast.jimple.beans.*;
 import edu.syr.bytecast.jimple.api.Method;
 import edu.syr.bytecast.jimple.api.Methods;
+import edu.syr.bytecast.jimple.impl.filter.UseArgvAsParaWith2DFilter;
 import java.util.*;
 
 /**
@@ -98,50 +99,7 @@ public class PatternSeperator {
     // seperate the whole sectin into different method
     return result_map;
   }
-
-  // copied from MethodStartFilter & MethodEndFilter
-//  private List<MethodInfo> getMethodInfo(List<MemoryInstructionPair> mips) {
-//    List<MethodInfo> resultMIPs = new ArrayList<MethodInfo>();
-//    for (int index = 0; index < mips.size(); ++index) {//MemoryInstructionPair mip : mips) {
-//      MemoryInstructionPair mip = mips.get(index);
-//      IInstruction inst = mip.getInstruction();
-//      if (inst.getInstructiontype().equals(InstructionType.PUSH)) {
-//        index += 1;
-//        mip = mips.get(index);
-//        inst = mip.getInstruction();
-//        if (inst.getInstructiontype().equals(InstructionType.MOV)) {
-//          if (inst.getOperands().get(0).getOperandType().equals(OperandType.REGISTER)
-//                  && inst.getOperands().get(0).getOperandValue().equals(RegisterType.RSP)
-//                  && inst.getOperands().get(1).getOperandType().equals(OperandType.REGISTER)
-//                  && inst.getOperands().get(1).getOperandValue().equals(RegisterType.RBP)) {
-//            MethodInfo m_info = new MethodInfo();
-//            index -= 1;
-//            mip = mips.get(index);
-//            m_info.setStartMemAddress(mip.getmInstructionAddress());
-//            m_info.setStartIndex(index);
-//            resultMIPs.add(m_info);
-//          }
-//        }
-//      } else if (inst.getInstructiontype().equals(InstructionType.LEAVE)) {
-//        index += 1;
-//        mip = mips.get(index);
-//        inst = mip.getInstruction();
-//        if(inst.getInstructiontype() == InstructionType.RET)
-//        {
-//            if (!resultMIPs.isEmpty()) {
-//              MethodInfo curMI = resultMIPs.get(resultMIPs.size()-1);
-//              curMI.setEndMemAddress(mip.getmInstructionAddress());
-//              curMI.setEndIndex(index);
-//            }
-//
-//        }
-//      }
-//    }
-//    
-//    
-//    return resultMIPs;
-//  }
-
+  
   private List<Method> divideMethod(List<MemoryInstructionPair> mip, List<MethodInfo> meInfo) {
 //      List<MemoryInstructionPair> mip = wholeSection.getAllInstructionObjects();
     List<Method> l_method = new ArrayList<Method>();
@@ -176,7 +134,7 @@ public class PatternSeperator {
   // filter the section
   private List<ParsedInstructionsSet> analyze(List<MemoryInstructionPair> obj_instruction) {
     List<ParsedInstructionsSet> parsed_list = new ArrayList<ParsedInstructionsSet>();
-
+    
     FilterRunner fr = new FilterRunner();
     //filter begins
     //PreMemoryProcess
@@ -185,14 +143,7 @@ public class PatternSeperator {
     finfo.setFilter_Name("PreMemoryProcess");
     finfo.setInst_Count(2);
     fr.run(obj_instruction, parsed_list, fil, finfo);
-
-    //SetArgvAndArgcFilter
-    fil = new SetArgvAndArgcFilter();
-    finfo = new FilterInfo();
-    finfo.setFilter_Name("SetArgvAndArgc");
-    finfo.setInst_Count(2);
-    fr.run(obj_instruction, parsed_list, fil, finfo);
-
+    
     //GetOneParameterFilter
     fil = new GetOneParameterFilter();
     finfo = new FilterInfo();
@@ -206,14 +157,42 @@ public class PatternSeperator {
     finfo.setFilter_Name("GetTwoParameter");
     finfo.setInst_Count(2);
     fr.run(obj_instruction, parsed_list, fil, finfo);
-
+    
+    //SetArgvAndArgcFilter
+    fil = new SetArgvAndArgcFilter();
+    finfo = new FilterInfo();
+    finfo.setFilter_Name("SetArgvAndArgc");
+    finfo.setInst_Count(2);
+    fr.run(obj_instruction, parsed_list, fil, finfo);
+    
     //IfWithBothVariableFilter
     fil = new UseArgvAsParaFilter();
     finfo = new FilterInfo();
     finfo.setFilter_Name("UseArgvAsPara");
     finfo.setInst_Count(5);
     fr.run(obj_instruction, parsed_list, fil, finfo);
-
+    
+    //UseArgvAsParaWith2DFilter
+    fil = new UseArgvAsParaWith2DFilter();
+    finfo = new FilterInfo();
+    finfo.setFilter_Name("UseArgvAsParaWith2D");
+    finfo.setInst_Count(6);
+    fr.run(obj_instruction, parsed_list, fil, finfo);
+    
+    //AddFilter
+    fil = new AddFilter();
+    finfo = new FilterInfo();
+    finfo.setFilter_Name("Add");
+    finfo.setInst_Count(3);
+    fr.run(obj_instruction, parsed_list, fil, finfo);
+    
+    //DivBy2NFilter
+    fil = new DivBy2NFilter();
+    finfo = new FilterInfo();
+    finfo.setFilter_Name("DivBy2N");
+    finfo.setInst_Count(5);
+    fr.run(obj_instruction, parsed_list, fil, finfo);
+    
     //IfFilter
     fil = new IfFilter();
     finfo = new FilterInfo();
@@ -227,28 +206,14 @@ public class PatternSeperator {
     finfo.setFilter_Name("IfWithBothVariable");
     finfo.setInst_Count(3);
     fr.run(obj_instruction, parsed_list, fil, finfo);
-
+    
     //CallingFilter
     fil = new CallingFilter();
     finfo = new FilterInfo();
     finfo.setFilter_Name("Calling");
     finfo.setInst_Count(1);
     fr.run(obj_instruction, parsed_list, fil, finfo);
-
-    //AddFilter
-    fil = new AddFilter();
-    finfo = new FilterInfo();
-    finfo.setFilter_Name("Add");
-    finfo.setInst_Count(3);
-    fr.run(obj_instruction, parsed_list, fil, finfo);
-
-    //DivBy2NFilter
-    fil = new DivBy2NFilter();
-    finfo = new FilterInfo();
-    finfo.setFilter_Name("DivBy2N");
-    finfo.setInst_Count(5);
-    fr.run(obj_instruction, parsed_list, fil, finfo);
-
+    
     //PrintfFilter
     fil = new PrintfFilter();
     finfo = new FilterInfo();
@@ -263,8 +228,6 @@ public class PatternSeperator {
     finfo.setInst_Count(2);
     fr.run(obj_instruction, parsed_list, fil, finfo);
 
-
-//       
     return parsed_list;
   }
 }
