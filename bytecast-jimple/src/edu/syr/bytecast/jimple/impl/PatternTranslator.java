@@ -211,19 +211,13 @@ public class PatternTranslator {
                 JimpleCondition jc = memAddrToJCond.get(InstrAddr.toString());
                 jc.setTargets(new JimpleElement[]{exeinv});
                 currentJM.setReturn(null);
-//        currentJVM.setReturn(null, memAddrToJCond.get(InstrAddr.toString()));
                 hasUnsetTarget = false;
-//      } else {
-//        JimpleMethod currentJVM = Map_jMethod.get(m.getMethodInfo().getMethodName());
-//        currentJVM.setReturn(null);   // return void
             }
 
         } else if (ins.getInstructiontype().equals(InstructionType.MOV)
-                && ins.getOperands().get(0).getOperandValue().equals(RegisterType.EAX)) {
-            IInstruction ins_last = lastSingleLine.getInstruction();
-            if (ins_last.getInstructiontype().equals(InstructionType.CALLQ)) {
-                String funcName = (String) ins_last.getOperands().get(1).getOperandValue();
-                if (!funcName.contains("printf")) {
+                && ins.getOperands().get(0).getOperandValue().equals(RegisterType.EAX)
+                && lastSingleLine.getInstruction().getInstructiontype().equals(InstructionType.CALLQ)
+                && !((String) lastSingleLine.getInstruction().getOperands().get(1).getOperandValue()).contains("printf")) {
                     String leftop = getRegister(ins.getOperands().get(0).getOperandValue());
                     String rightop = getMemoryEffectiveAddress(ins.getOperands().get(1).getOperandValue());
                     updateRegToVarMap(rightop, getExistJVar(leftop));
@@ -233,8 +227,22 @@ public class PatternTranslator {
                         jumpAddress = InstrAddr;
                         hasUnsetTarget = true;
                     }
-                }
-            }
+        } else if (ins.getInstructiontype().equals(InstructionType.MOV)
+                && ins.getOperands().get(0).getOperandType().equals(OperandType.MEMORY_EFFECITVE_ADDRESS)
+                && ins.getOperands().get(1).getOperandValue().equals(RegisterType.EAX)
+                && lastSingleLine.getInstruction().getInstructiontype().equals(InstructionType.MOV)
+                && lastSingleLine.getInstruction().getOperands().get(0).getOperandValue().equals(RegisterType.EAX)
+                && lastSingleLine.getInstruction().getOperands().get(1).getOperandType().equals(OperandType.MEMORY_EFFECITVE_ADDRESS)
+                ){
+            String leftop = getOperandValue(ins.getOperands().get(0).getOperandValue());
+            String rightop = getOperandValue(ins.getOperands().get(1).getOperandValue());
+            updateRegToVarMap(rightop, getExistJVar(leftop));
+            
+            JimpleMethod currentJM = Map_jMethod.get(m.getMethodInfo().getMethodName());
+            currentJM.setReturn(getExistJVar(rightop));
+          
+          
+          
 
         } else if (ins.getInstructiontype().equals(InstructionType.MOV)) {
             String leftop, rightop;
