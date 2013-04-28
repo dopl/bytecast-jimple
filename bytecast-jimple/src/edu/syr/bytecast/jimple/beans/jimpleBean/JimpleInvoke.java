@@ -8,18 +8,18 @@
  *    System.out.println:
  *        virtualinvoke print_line.<java.io.PrintStream: 
  *                 void println(java.lang.String)>("hello");
- *    [].length (to be developed)
- *    String.charAt()   (to be developed)
+ *    String.charAt()
+ * 
+ * NOTICE:
+ *   Must declare a new object if an instance
+ *   of this class is used as a target.
+ *   
  */
 package edu.syr.bytecast.jimple.beans.jimpleBean;
 
 import java.util.ArrayList;
 import java.util.List;
-import soot.Local;
-import soot.Scene;
-import soot.SootMethod;
-import soot.Unit;
-import soot.Value;
+import soot.*;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.jimple.Stmt;
@@ -153,11 +153,10 @@ public class JimpleInvoke extends JimpleElement {
   public void invokeCharAt(JimpleVariable charFrom, int index, JimpleVariable returnTo, JimpleMethod basemethod) {
     baseObject = Jimple.v().newLocal("char_at", JimpleUtil.getTypeByString("String"));
     nativeAssi = Jimple.v().newAssignStmt(baseObject, charFrom.getVariable());
-    SootMethod toCall = Scene.v().getMethod("<java.io.String: char charAt(int)>");
+    SootMethod toCall = Scene.v().getSootClass("java.lang.String").getMethod("char charAt(int)");
     Value invokeExpr = Jimple.v().newVirtualInvokeExpr(baseObject, toCall.makeRef(), IntConstant.v(index));
 
-    // virtualinvoke print_line.<java.io.PrintStream: void println(java.lang.String)>("hello");
-    this.invokestmt = Jimple.v().newInvokeStmt(invokeExpr);
+    this.invokestmt = Jimple.v().newAssignStmt(returnTo.getVariable(), invokeExpr);
     if (!isTarget && basemethod != null) {
       basemethod.getMethod().getActiveBody().getLocals().add(baseObject);
       basemethod.getMethod().getActiveBody().getUnits().add(nativeAssi);

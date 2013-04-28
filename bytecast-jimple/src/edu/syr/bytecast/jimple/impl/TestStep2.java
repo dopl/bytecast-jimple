@@ -31,12 +31,7 @@ import edu.syr.bytecast.jimple.beans.jimpleBean.*;
 import edu.syr.bytecast.util.Paths;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import sun.font.EAttribute;
+import java.util.*;
 
 public class TestStep2 {
 
@@ -369,12 +364,13 @@ public class TestStep2 {
           parameters.add(getExistJVar(leftReg));
         }
       } else if (thisIType.equals(InstructionType.CALLQ)) {
+        Collections.reverse(parameters);
         if (isTarget) {
           JimpleInvoke targetinvoke = new JimpleInvoke();
           targetinvoke.setAsTarget();
           String methodName = (String) curOps.get(1).getOperandValue();
           if (baseMethod.getMethodName().equals("main")) {
-
+            
             targetinvoke.invokeUserDefined(objectOfThisClass,
                     Map_jMethod.get(methodName), parameters, retResult, baseMethod);
           } else {
