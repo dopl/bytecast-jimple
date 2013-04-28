@@ -228,8 +228,7 @@ public class TestStep2 {
       IInstruction ins_last = lastSingleLine.getInstruction();
       if (ins_last.getInstructiontype().equals(InstructionType.CALLQ)) {
         String funcName = (String) ins_last.getOperands().get(1).getOperandValue();
-        if (ins.getOperands().get(0).getOperandType().equals(OperandType.REGISTER)//OperandType.MEMORY_PHYSICAL_ADDRESS )
-                && !funcName.contains("printf")) {
+        if (!funcName.contains("printf")) {
           String leftop = getRegister(ins.getOperands().get(0).getOperandValue());
           String rightop = getMemoryEffectiveAddress(ins.getOperands().get(1).getOperandValue());
           updateRegToVarMap(rightop, getExistJVar(leftop));
