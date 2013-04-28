@@ -32,7 +32,7 @@ import java.util.Map;
 public class Jimple implements IJimple {
 
     @Override
-    public boolean createJimple(IBytecastAMD64 amd64Obj, String fileName) {
+    public boolean createJimple(IBytecastAMD64 amd64Obj, String fileName, String outputFormat) {
 
         //get the all instruction
         IExecutableFile e_file = amd64Obj.buildInstructionObjects();
@@ -43,13 +43,13 @@ public class Jimple implements IJimple {
         List<MethodInfo> l_info = mi.getMethodsInfo(wholeSection.getAllInstructionObjects());
 
         //seperate into different pattern
-        Map<Method, List<ParsedInstructionsSet>> filter_result = new HashMap<Method, List<ParsedInstructionsSet>>();
         PatternSeperator patt_Seperator = new PatternSeperator();
-        filter_result = patt_Seperator.doSeperate(wholeSection, l_info);
+        Map<Method, List<ParsedInstructionsSet>> filter_result = 
+                patt_Seperator.doSeperate(wholeSection, l_info);
 
         //translate the pattern into jimple file
-//        TestStep2 ts2 = new TestStep2(filter_result);
-//        ts2.createJimple();
+        PatternTranslator patt_Translator = new PatternTranslator(filter_result, fileName);
+        patt_Translator.createJimpleObject(outputFormat);
         return true;
     }
 }

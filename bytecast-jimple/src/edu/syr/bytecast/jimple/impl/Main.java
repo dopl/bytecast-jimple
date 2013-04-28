@@ -54,7 +54,7 @@ public class Main {
             IBytecastAMD64 amd64Object = gen.generate();//buildInstructionObjects();
             // only for getting MethodInfo
             IJimple jimple = new Jimple();
-            jimple.createJimple(amd64Object, "test");
+            jimple.createJimple(amd64Object, "test", "jimple");
 
         } catch (FileNotFoundException ex1) {
             Logger.getLogger(AMD64MockGenerator.class.getName()).log(Level.SEVERE, null, ex1);

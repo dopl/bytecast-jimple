@@ -43,7 +43,6 @@ public class MethodStartFilter implements IFilter{
                     mip = instList.get(--index);
                     m_info.setStartMemAddress(mip.getmInstructionAddress());
                     m_info.setStartIndex(index);
-                    System.out.println(Methods.methods.size());
                     Methods.methods.add(m_info);
                     return true;
                 }
