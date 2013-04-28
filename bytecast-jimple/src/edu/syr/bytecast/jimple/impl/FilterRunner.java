@@ -61,6 +61,7 @@ public class FilterRunner {
                             IInstruction ins = unparsed_inst_list.get(j - goBack - 1).getInstruction();
                             if (ins.getInstructiontype().equals(InstructionType.MOV)
                                     && ins.getOperands().get(0).getOperandType().equals(OperandType.CONSTANT)
+                                    && (!ins.getOperands().get(0).getOperandValue().equals(0L))
                                     && ins.getOperands().get(1).getOperandType().equals(OperandType.REGISTER)
                                     && ins.getOperands().get(1).getOperandValue().equals(RegisterType.EAX)) //SectionName
                             {

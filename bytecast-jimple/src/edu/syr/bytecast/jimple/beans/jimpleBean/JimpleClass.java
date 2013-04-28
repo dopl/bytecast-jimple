@@ -48,6 +48,21 @@ public class JimpleClass {
     }
 
   }
+  
+  public JimpleClass(String className, int modifier, JimpleDoc jDoc) {
+    if (className != null && modifier > 0) {
+
+      this.classname = className;
+      this.modifier = Modifier.PUBLIC;
+
+
+      this.createClass();
+      this.init();
+    } else {
+      System.out.println("Please check the function prameters. "
+              + "It should  be class name , modifier , returnType");
+    }
+  }
 
   private void init() {
     /**

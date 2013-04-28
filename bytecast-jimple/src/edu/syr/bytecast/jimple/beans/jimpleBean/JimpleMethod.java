@@ -31,6 +31,7 @@ public class JimpleMethod {
   private PatchingChain<Unit> units;
   private Chain<Local> locals;
   private SootMethod myMethod;
+  private Local thisref;
   /**
    *
    * @param methodName
@@ -74,18 +75,22 @@ public class JimpleMethod {
   }
 
   private void initMethod() {
-    if (methodName.equals("main")) {
-      // java.lang.String[] p0
-      Local para0 = Jimple.v().newLocal("p0", 
-              JimpleUtil.getTypeByString("String[]"));
-      locals.add(para0);
-      // p0 := @parameter0: java.lang.String[];
-      Value para_assi = Jimple.v().newParameterRef(JimpleUtil.getTypeByString("String[]"), 0);
-      IdentityStmt parastmt = Jimple.v().newIdentityStmt(para0, para_assi);
-      units.add(parastmt);
-    } else {
+
+    if (!methodName.equals("main")) {
+//      // java.lang.String[] p0
+
+//      Local para0 = Jimple.v().newLocal("argv", 
+//              JimpleUtil.getTypeByString("String[]"));
+//      locals.add(para0);
+//      // p0 := @parameter0: java.lang.String[];
+//      Value para_assi = Jimple.v().newParameterRef(JimpleUtil.getTypeByString("String[]"), 0);
+//      IdentityStmt parastmt = Jimple.v().newIdentityStmt(para0, para_assi);
+//      units.add(parastmt);
+
+//    } else {
+
       // Class r0;
-      Local thisref = Jimple.v().newLocal("r0", declaringClass.getType());
+      thisref = Jimple.v().newLocal("r0", declaringClass.getType());
       locals.add(thisref);
       
       // r0 := @this: Class;
@@ -153,5 +158,38 @@ public class JimpleMethod {
       Unit returnstmt = Jimple.v().newReturnStmt(returnvariable.getVariable());
       units.add(returnstmt);
     }
+  }
+  
+  /**
+   * 04/27
+   * added to set the return statement as a target
+   * @param retVariable
+   * @param jmpFrom 
+   */
+  public void setReturn(JimpleVariable retVariable, JimpleCondition jmpFrom) {
+    Unit returnstmt = null;
+    if (retVariable == null) {
+      returnstmt = Jimple.v().newReturnVoidStmt();
+      if (jmpFrom.getElement() instanceof soot.jimple.IfStmt) {
+        soot.jimple.IfStmt ifstmt = (soot.jimple.IfStmt) jmpFrom.getElement();
+        ifstmt.setTarget(returnstmt);
+      } else if (jmpFrom.getElement() instanceof soot.jimple.GotoStmt) {
+        soot.jimple.GotoStmt gotoStmt = (soot.jimple.GotoStmt) jmpFrom.getElement();
+        gotoStmt.setTarget(returnstmt);
+      }
+    } else {
+      returnstmt = Jimple.v().newReturnStmt(retVariable.getVariable());
+      if (jmpFrom.getElement() instanceof soot.jimple.IfStmt) {
+        soot.jimple.IfStmt ifstmt = (soot.jimple.IfStmt) jmpFrom.getElement();
+        ifstmt.setTarget(returnstmt);
+      } else if (jmpFrom.getElement() instanceof soot.jimple.GotoStmt) {
+        soot.jimple.GotoStmt gotoStmt = (soot.jimple.GotoStmt) jmpFrom.getElement();
+        gotoStmt.setTarget(returnstmt);
+      }
+    }
+    units.add(returnstmt);
+  }
+  protected Local getThisRef() {
+    return this.thisref;
   }
 }

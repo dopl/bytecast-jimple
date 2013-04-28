@@ -8,18 +8,18 @@
  *    System.out.println:
  *        virtualinvoke print_line.<java.io.PrintStream: 
  *                 void println(java.lang.String)>("hello");
- *    [].length (to be developed)
- *    String.charAt()   (to be developed)
+ *    String.charAt()
+ * 
+ * NOTICE:
+ *   Must declare a new object if an instance
+ *   of this class is used as a target.
+ *   
  */
 package edu.syr.bytecast.jimple.beans.jimpleBean;
 
 import java.util.ArrayList;
 import java.util.List;
-import soot.Local;
-import soot.Scene;
-import soot.SootMethod;
-import soot.Unit;
-import soot.Value;
+import soot.*;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.jimple.Stmt;
@@ -34,10 +34,68 @@ public class JimpleInvoke extends JimpleElement {
   private Stmt invokestmt;
   private Local baseObject;
   private boolean isTarget;
+  private Unit nativeAssi;
 
   public JimpleInvoke() {
     this.isTarget = false;
   }
+
+  /**
+   * 04/27
+   * used in any method except for main
+   * @param method2Call
+   * @param paraVal
+   * @param returnTo
+   * @param basemethod 
+   */
+  public void invokeUserDefined(JimpleMethod method2Call, List paraVal,
+          JimpleVariable returnTo, JimpleMethod basemethod) {
+    Value invokeExpr;
+    if (paraVal == null && basemethod != null) {
+      invokeExpr = Jimple.v().newVirtualInvokeExpr(basemethod.getThisRef(),
+              method2Call.getMethod().makeRef());
+    } else {
+      // cast any parameter type to soot.Value
+      List<Value> paraForJimple = new ArrayList<Value>();
+      if (paraVal.get(0) instanceof JimpleVariable) {
+        for (JimpleVariable jv : (List<JimpleVariable>) paraVal) {
+          paraForJimple.add(jv.getVariable());
+        }
+      } else if (paraVal.get(0) instanceof String) {
+        for (String str : (List<String>) paraVal) {
+          paraForJimple.add(StringConstant.v(str));
+        }
+      } else if (paraVal.get(0) instanceof Integer) {
+        for (int i : (List<Integer>) paraVal) {
+          paraForJimple.add(IntConstant.v(i));
+        }
+      }
+      invokeExpr = Jimple.v().newVirtualInvokeExpr(basemethod.getThisRef(),
+              method2Call.getMethod().makeRef(), paraForJimple);
+
+    }
+
+    if (!method2Call.getReturnType().equals("void") && returnTo != null) {
+      this.invokestmt = Jimple.v().newAssignStmt(returnTo.getVariable(), invokeExpr);
+    } else {
+      this.invokestmt = Jimple.v().newInvokeStmt(invokeExpr);
+    }
+    if (!isTarget) {
+      basemethod.getMethod().getActiveBody().getUnits().add(invokestmt);
+    }
+  }
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   public void invokeUserDefined(JimpleVariable baseobj, JimpleMethod method2Call, List paraVal,
           JimpleVariable returnTo, JimpleMethod basemethod) {
@@ -68,7 +126,7 @@ public class JimpleInvoke extends JimpleElement {
 
     }
 
-    if (!method2Call.getReturnType().equals("void")) {
+    if (!method2Call.getReturnType().equals("void") && returnTo != null) {
       this.invokestmt = Jimple.v().newAssignStmt(returnTo.getVariable(), invokeExpr);
     } else {
       this.invokestmt = Jimple.v().newInvokeStmt(invokeExpr);
@@ -80,57 +138,59 @@ public class JimpleInvoke extends JimpleElement {
     basemethod.getMethod().getActiveBody().getUnits().add(invokestmt);
   }
 
-  public void invokeNative(JimpleVariable baseobj, String method2Call, 
+  public void invokeNative(JimpleVariable baseobj, String method2Call,
           List paraVal, JimpleVariable returnTo, JimpleMethod callFromMethod) {
-    if (method2Call.equals("println")) {
-      
-    }
+//    this.i
   }
-//  public void invokeNative(String nativemethod, ArrayList<String> paraVal,
-//          JimpleVariable returnTo) {
-//    invokeNative(nativemethod, paraVal, returnTo, null);
-//  }
-  // specificly for "println"
 
   public void invokeNative(String nativemethod, ArrayList<String> paraVal,
           JimpleVariable returnTo, JimpleMethod basemethod) {
-    SootMethod toCall = null;
-
     if (nativemethod.equals("println")) {
-      // java.io.PrintStream print_line;
-      baseObject = Jimple.v().newLocal("print_line",
-              JimpleUtil.getTypeByString("println"));
-      basemethod.getMethod().getActiveBody().getLocals().add(baseObject);
-      // $r3 = <java.lang.System: java.io.PrintStream out>;
-      Unit print_assi = Jimple.v().newAssignStmt(baseObject, 
-              Jimple.v().newStaticFieldRef(
-              Scene.v().getField("<java.lang.System: java.io.PrintStream out>").makeRef()));
-      toCall = Scene.v().getMethod("<java.io.PrintStream: void println(java.lang.String)>");
-//      if (!this.isTarget) {
-        basemethod.getMethod().getActiveBody().getUnits().add(print_assi);
-//      }
+      invokePrintln(paraVal, basemethod);
     }
+  }
 
-    // Local to store return value
+  public void invokeCharAt(JimpleVariable charFrom, int index, JimpleVariable returnTo, JimpleMethod basemethod) {
+    baseObject = Jimple.v().newLocal("char_at", JimpleUtil.getTypeByString("String"));
+    nativeAssi = Jimple.v().newAssignStmt(baseObject, charFrom.getVariable());
+    SootMethod toCall = Scene.v().getSootClass("java.lang.String").getMethod("char charAt(int)");
+    Value invokeExpr = Jimple.v().newVirtualInvokeExpr(baseObject, toCall.makeRef(), IntConstant.v(index));
 
-    // 
-    Value invokeExpr = null;
-    if (paraVal != null && toCall != null) {
+    this.invokestmt = Jimple.v().newAssignStmt(returnTo.getVariable(), invokeExpr);
+    if (!isTarget && basemethod != null) {
+      basemethod.getMethod().getActiveBody().getLocals().add(baseObject);
+      basemethod.getMethod().getActiveBody().getUnits().add(nativeAssi);
+      basemethod.getMethod().getActiveBody().getUnits().add(invokestmt);
+    }
+  }
+  private void invokePrintln(ArrayList<String> paraVal, JimpleMethod basemethod) {
+    // java.io.PrintStream print_line;
+    baseObject = Jimple.v().newLocal("print_line",
+            JimpleUtil.getTypeByString("println"));
+    // print_line = <java.lang.System: java.io.PrintStream out>;
+    nativeAssi = Jimple.v().newAssignStmt(baseObject,
+            Jimple.v().newStaticFieldRef(
+            Scene.v().getField("<java.lang.System: java.io.PrintStream out>").makeRef()));
+    
+    SootMethod toCall = Scene.v().getMethod("<java.io.PrintStream: void println(java.lang.String)>");
+    Value invokeExpr;
+    if (paraVal != null) {
       List<Value> sParaVals = new ArrayList<Value>();
       for (String str : paraVal) {
         sParaVals.add(StringConstant.v(str));
       }
       invokeExpr = Jimple.v().newVirtualInvokeExpr(baseObject,
               toCall.makeRef(), sParaVals);
-    } else if (toCall != null) {
-      invokeExpr = Jimple.v().newVirtualInvokeExpr(baseObject, 
+    } else {
+      invokeExpr = Jimple.v().newVirtualInvokeExpr(baseObject,
               toCall.makeRef());
     }
 
-    if (invokeExpr != null) {
-      this.invokestmt = Jimple.v().newInvokeStmt(invokeExpr);
-    }
-    if (!isTarget) {
+    // virtualinvoke print_line.<java.io.PrintStream: void println(java.lang.String)>("hello");
+    this.invokestmt = Jimple.v().newInvokeStmt(invokeExpr);
+    if (!isTarget && basemethod != null) {
+      basemethod.getMethod().getActiveBody().getLocals().add(baseObject);
+      basemethod.getMethod().getActiveBody().getUnits().add(nativeAssi);
       basemethod.getMethod().getActiveBody().getUnits().add(invokestmt);
     }
   }
@@ -138,7 +198,7 @@ public class JimpleInvoke extends JimpleElement {
   public void setAsTarget() {
     this.isTarget = true;
   }
-  
+
   @Override
   protected Local getVariable() {
     return null;
@@ -148,4 +208,21 @@ public class JimpleInvoke extends JimpleElement {
   protected Unit getElement() {
     return invokestmt;
   }
+
+  @Override
+  protected Local getLocalForTarget() {
+    return this.baseObject;
+  }
+
+  @Override
+  protected Unit getAssStmtForTarget() {
+    return this.nativeAssi;
+  }
+
+  @Override
+  protected Unit getInvStmtForTarget() {
+    return this.invokestmt;
+  }
+
+  
 }

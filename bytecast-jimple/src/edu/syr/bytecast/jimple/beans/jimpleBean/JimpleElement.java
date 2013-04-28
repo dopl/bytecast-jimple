@@ -25,4 +25,7 @@ import soot.Unit;
 public abstract class JimpleElement {
     protected abstract Unit getElement();
     protected abstract Local getVariable();
+    protected abstract Local getLocalForTarget();
+    protected abstract Unit getAssStmtForTarget();
+    protected abstract Unit getInvStmtForTarget();
 }

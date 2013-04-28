@@ -5,8 +5,9 @@
 package edu.syr.bytecast.jimple.beans.jimpleBean;
 
 /**
- * To test our jimple class ,  we rewrite the test case in java format 
- * and then using self-defined class to create a corresponding class
+ * To test our jimple class , we rewrite the test case in java format and then
+ * using self-defined class to create a corresponding class
+ *
  * @author xirui Wang
  */
 import java.io.*;
@@ -21,12 +22,12 @@ public class TestJimple {
     //declare variable
     //assign variable
     //
-    
+
     JimpleDoc jDoc = new JimpleDoc();
 
     JimpleClass jClass = new JimpleClass("test", 1);
     jDoc.addClass(jClass);
-    
+
     // assign object for all kinds of assign
     JimpleAssign jim_ass = new JimpleAssign();
     // invoke object for all kinds of invoke
@@ -57,68 +58,61 @@ public class TestJimple {
     sumMethod.setReturn(sumtoreturn);
 
     //--------- finish creating sum method-------------------
-    
+
     //create parameterList of main method 
     ArrayList<String> parameter_list_main = new ArrayList<String>();
     parameter_list_main.add("String[]");
 
     //create main method add initiate first few lines of main
-    JimpleMethod jMainMethod = new JimpleMethod(9, "void","main", parameter_list_main, jClass);
-    
+    JimpleMethod jMainMethod = new JimpleMethod(9, "void", "main", parameter_list_main, jClass);
+
     // println object for all println
-    JimpleVariable jPrintObj = new JimpleVariable("print_line", 
-            "println", jMainMethod);   
+//    JimpleVariable jPrintObj = new JimpleVariable("print_line", 
+//            "println", jMainMethod);   
     // int &r1;
     JimpleVariable r1 = new JimpleVariable("$r1", "int", jMainMethod);
     // &r1 = 0;
     jim_ass.JimpleDirectAssign(r1, 0, jMainMethod);
-    
+
     // test sumBase
     JimpleVariable sumClassObj = new JimpleVariable("sumBase", jClass.getJClassName(), jMainMethod);
-    
+
     // sumBase = new test;
     // specialinvoke sumBase.<test: void <init>()>();
     jim_ass.JimpleNewClass(sumClassObj, jClass, jMainMethod);
-    
+
     // if (a < 1)JAssignStmt
     JimpleCondition jc1 = new JimpleCondition("<", r1, 1, jMainMethod);
 
-    // set target (if else)(must be added to method after condition been added
-    // target MUST be added to JimpleMethod using addElement() explicitly
-    // but could be added anywhere you want
-    /// virtualinvoke print_line.<java.io.PrintStream: void println(java.lang.String)>("hello");
-    ArrayList<String> parameter_print = new ArrayList<String>();
-    parameter_print.add("hello");
-    JimpleInvoke forif = new JimpleInvoke();
-    forif.setAsTarget();
-    forif.invokeNative("println", parameter_print, null, jMainMethod);
-    JimpleElement[] paras = {forif};
-    jc1.setTargets(paras);
+
 //    Runtime.AddPrintlntoJimple(jMainMethod);
-    
-    
+
+
     // int $r2;
     JimpleVariable r2 = new JimpleVariable("$r2", "int", jMainMethod);
     // int $r3;
     JimpleVariable r3 = new JimpleVariable("$r3", "int", jMainMethod);
     // int $rsum
     JimpleVariable rsum = new JimpleVariable("$rsum", "int", jMainMethod);
-    
+
     //test for byte[]
-    
+
     // byte[] testByteArray;
-    JimpleVariable byteArray = new JimpleVariable("testByteArray" , "byte[]" , jMainMethod);
-    
+    JimpleVariable byteArray = new JimpleVariable("testByteArray", "byte[]", jMainMethod);
+
     // testByteArray = newarray (byte)[5];
     jim_ass.JimpleNewArray(byteArray, 5, jMainMethod);
-    
+
     //testByteArray[0] =1;
-    
+
     jim_ass.JimpleArrayAssign(byteArray, 0, 5, jMainMethod);
-     jim_ass.JimpleArrayAssign(byteArray, 1, 6, jMainMethod);
-      jim_ass.JimpleArrayAssign(byteArray, 2, 7, jMainMethod);
-    
-    
+    jim_ass.JimpleArrayAssign(byteArray, 1, 6, jMainMethod);
+    jim_ass.JimpleArrayAssign(byteArray, 2, 7, jMainMethod);
+
+    JimpleVariable testArrayAssign = new JimpleVariable("testArrayAssign", "String", jMainMethod);
+
+    jim_ass.JimpleAssignFromArray(testArrayAssign, byteArray, 0, jMainMethod);
+
     // $r2 = 1;
     jim_ass.JimpleDirectAssign(r2, 1, jMainMethod);
     // $r3 = 2;
@@ -128,7 +122,7 @@ public class TestJimple {
     parameter_value_sum.add(r2);
     parameter_value_sum.add(r3);
     jim_inv.invokeUserDefined(sumClassObj, sumMethod, parameter_value_sum, rsum, jMainMethod);
-    
+
     // FOR TEST ONLY
     // int $r4;
 //    JimpleVariable r4 = new JimpleVariable("$r4", "int", jMainMethod);
@@ -136,17 +130,32 @@ public class TestJimple {
 //    JimpleVariable r5 = new JimpleVariable("$r5", "String[]", jMainMethod);
 //    // r4 = lengthof r5;
 //    jim_ass.JimpleLengthOf(r4, r5, jMainMethod);
-    
-    // add lable0
-    jMainMethod.addElement(forif);
-    // return;
-    jMainMethod.setReturn(null); 
-    
 
-   //if u want to output as class file  indicate as class file   
-   // using jimple to create jimple file
+
+
+    // set target (if else)(must be added to method after condition been added
+    // target MUST be added to JimpleMethod using addElement() explicitly
+    // but could be added anywhere you want
+    /// virtualinvoke print_line.<java.io.PrintStream: void println(java.lang.String)>("hello");
+    ArrayList<String> parameter_print = new ArrayList<String>();
+    parameter_print.add("helloworld");
+    JimpleInvoke forif = new JimpleInvoke();
+    forif.setAsTarget();
+    forif.invokeNative("println", parameter_print, null, jMainMethod);
+    jc1.setTargets(new JimpleElement[]{forif});
+
+
+
+    // add lable0
+//    jMainMethod.addElement(forif);
+    // return;
+    jMainMethod.setReturn(null);
+
+
+    //if u want to output as class file  indicate as class file   
+    // using jimple to create jimple file
     try {
-      jDoc.printJimple(jClass.getJClassName() , "jimple");
+      jDoc.printJimple(jClass.getJClassName(), "jimple");
 
     } catch (FileNotFoundException e) {
       System.out.println("file exception");

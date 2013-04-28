@@ -22,13 +22,12 @@ import soot.Unit;
 public class JimpleVariable extends JimpleElement {
 
     private Local asVariable;
-
-    public JimpleVariable(String name, String type) {
-        this(name, type, null);
-    }
+    private String variableName;
+   
 
         public JimpleVariable(String name, String type, JimpleMethod baseMethod) {
         this.asVariable = Jimple.v().newLocal(name, JimpleUtil.getTypeByString(type));
+        this.variableName = name;
         if (baseMethod != null) {
             baseMethod.getMethod().getActiveBody().getLocals().add(asVariable);
         }
@@ -43,6 +42,13 @@ public class JimpleVariable extends JimpleElement {
         }
     }
 
+    
+    protected String getVariableName(){
+        
+        
+        return this.getVariableName();
+    }
+    
     protected Type getType() {
         if (asVariable != null) {
             return asVariable.getType();
@@ -55,4 +61,19 @@ public class JimpleVariable extends JimpleElement {
     protected Unit getElement() {
         return null;
     }
+
+  @Override
+  protected Local getLocalForTarget() {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  @Override
+  protected Unit getAssStmtForTarget() {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  @Override
+  protected Unit getInvStmtForTarget() {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
 }
