@@ -9,6 +9,7 @@ package edu.syr.bytecast.jimple.beans.jimpleBean;
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
+import soot.CharType;
 import soot.IntType;
 import soot.RefType;
 import soot.Type;
@@ -25,6 +26,12 @@ public class JimpleUtil {
       return RefType.v("java.lang.String");
     } else if (name.equals("String[]")) {
       return ArrayType.v(RefType.v("java.lang.String"), 1);
+    } 
+      else if (name.equals("char")){
+      return CharType.v();
+    } 
+       else if (name.equals("char[]")){
+      return ArrayType.v(RefType.v("java.lang.char"), 1);
     } else if (name.equals("int")) {
       return IntType.v();
     } else if (name.equals("int[]")) {
